@@ -12,10 +12,10 @@
   dctx.lineCap = 'round';
   dctx.lineJoin = 'round';
 
-  const hiddenLogoCanvas = document.getElementById('hiddenLogoCanvas');
-  hiddenLogoCanvas.width = DRAW_SIZE;
-  hiddenLogoCanvas.height = DRAW_SIZE;
-  const hctx = hiddenLogoCanvas.getContext('2d', { willReadFrequently: true });
+  const hiddenFlagCanvas = document.getElementById('hiddenFlagCanvas');
+  hiddenFlagCanvas.width = DRAW_SIZE;
+  hiddenFlagCanvas.height = DRAW_SIZE;
+  const hctx = hiddenFlagCanvas.getContext('2d', { willReadFrequently: true });
 
   const paletteEl = document.getElementById('palette');
   const brushSizeEl = document.getElementById('brushSize');
@@ -23,13 +23,13 @@
   const revealNameEl = document.getElementById('revealName');
   const verdictEl = document.getElementById('verdictText');
   const percentEl = document.getElementById('percentText');
-  const logoNameResultEl = document.getElementById('logoNameResult');
+  const countryNameResultEl = document.getElementById('countryNameResult');
   const yoursCanvas = document.getElementById('yoursCanvas');
-  const logoCanvas = document.getElementById('logoCanvas');
+  const flagCanvas = document.getElementById('flagCanvas');
 
-  let currentLogo = null;
-  let logoImage = null;
-  let logoImageData = null;
+  let currentFlag = null;
+  let flagImage = null;
+  let flagImageData = null;
   let currentColor = '#000000';
   let brushSize = parseInt(brushSizeEl.value, 10);
   let drawing = false;
@@ -45,7 +45,7 @@
     document.getElementById('screen-' + id).classList.add('active');
   }
 
-  // ---------- Carga y rasterizado de logos ----------
+  // ---------- Carga y rasterizado de banderas ----------
 
   function svgToImage(svgString) {
     return new Promise((resolve, reject) => {
@@ -56,17 +56,17 @@
     });
   }
 
-  async function prepareLogo(logo) {
-    logoImage = await svgToImage(logo.svg);
+  async function prepareFlag(flag) {
+    flagImage = await svgToImage(flag.svg);
     hctx.clearRect(0, 0, DRAW_SIZE, DRAW_SIZE);
-    hctx.drawImage(logoImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
-    logoImageData = hctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
+    hctx.drawImage(flagImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+    flagImageData = hctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
   }
 
-  function pickRandomLogo() {
-    let pool = LOGOS;
-    if (currentLogo && LOGOS.length > 1) {
-      pool = LOGOS.filter(l => l !== currentLogo);
+  function pickRandomFlag() {
+    let pool = FLAGS;
+    if (currentFlag && FLAGS.length > 1) {
+      pool = FLAGS.filter(f => f !== currentFlag);
     }
     return pool[Math.floor(Math.random() * pool.length)];
   }
@@ -193,16 +193,16 @@
   // ---------- Flujo de ronda ----------
 
   async function beginRound() {
-    currentLogo = pickRandomLogo();
-    await prepareLogo(currentLogo);
-    revealNameEl.textContent = currentLogo.nombre;
+    currentFlag = pickRandomFlag();
+    await prepareFlag(currentFlag);
+    revealNameEl.textContent = currentFlag.nombre;
     showScreen('reveal');
     setTimeout(beginDrawPhase, 2000);
   }
 
   function beginDrawPhase() {
     resetCanvas();
-    setupPalette(currentLogo.colores);
+    setupPalette(currentFlag.colores);
     showScreen('draw');
     startTimer();
   }
@@ -210,28 +210,28 @@
   function finishDrawing() {
     stopTimer();
     const userData = dctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
-    const result = computeScore(userData, logoImageData);
+    const result = computeScore(userData, flagImageData);
     showResult(result);
   }
 
   function showResult(result) {
     yoursCanvas.width = DRAW_SIZE;
     yoursCanvas.height = DRAW_SIZE;
-    logoCanvas.width = DRAW_SIZE;
-    logoCanvas.height = DRAW_SIZE;
+    flagCanvas.width = DRAW_SIZE;
+    flagCanvas.height = DRAW_SIZE;
 
     const yctx = yoursCanvas.getContext('2d');
-    const lctx = logoCanvas.getContext('2d');
+    const fctx = flagCanvas.getContext('2d');
 
     yctx.fillStyle = '#ffffff';
     yctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
     yctx.drawImage(drawCanvas, 0, 0);
 
-    lctx.fillStyle = '#ffffff';
-    lctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
-    lctx.drawImage(logoImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+    fctx.fillStyle = '#ffffff';
+    fctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
+    fctx.drawImage(flagImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
 
-    logoNameResultEl.textContent = currentLogo.nombre;
+    countryNameResultEl.textContent = currentFlag.nombre;
     verdictEl.textContent = result.label;
     percentEl.textContent = result.displayed + '% match';
 
@@ -273,14 +273,14 @@
     ctx.strokeRect(cardX + innerPad, boxY, boxSize, boxSize);
 
     const rightX = cardX + innerPad + boxSize + 30;
-    ctx.drawImage(logoCanvas, rightX, boxY, boxSize, boxSize);
+    ctx.drawImage(flagCanvas, rightX, boxY, boxSize, boxSize);
     ctx.strokeRect(rightX, boxY, boxSize, boxSize);
 
     ctx.fillStyle = '#33321f';
     ctx.font = '800 26px "Arial Narrow", Impact, Arial, sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('TUYO', cardX + innerPad + boxSize / 2, boxY + boxSize + 40);
-    ctx.fillText(currentLogo.nombre, rightX + boxSize / 2, boxY + boxSize + 40);
+    ctx.fillText(currentFlag.nombre, rightX + boxSize / 2, boxY + boxSize + 40);
 
     const verdictY = boxY + boxSize + 140;
     ctx.fillStyle = '#16150f';
@@ -301,7 +301,7 @@
 
     ctx.fillStyle = '#7a7761';
     ctx.font = '600 24px Arial, sans-serif';
-    ctx.fillText('DIBUJA EL LOGO', cardX + cardW / 2, cardY + cardH - 40);
+    ctx.fillText('DIBUJA LA BANDERA', cardX + cardW / 2, cardY + cardH - 40);
 
     return new Promise(resolve => share.toBlob(resolve, 'image/png'));
   }
@@ -318,12 +318,12 @@
 
   async function shareResult() {
     const blob = await buildSharePng();
-    const filename = 'dibuja-el-logo-' + currentLogo.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+    const filename = 'dibuja-la-bandera-' + currentFlag.nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
     const file = new File([blob], filename, { type: 'image/png' });
 
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
       try {
-        await navigator.share({ files: [file], title: 'Dibuja el logo', text: percentEl.textContent });
+        await navigator.share({ files: [file], title: 'Dibuja la bandera', text: percentEl.textContent });
         return;
       } catch (err) {
         // el usuario canceló o falló el share nativo -> fallback a descarga

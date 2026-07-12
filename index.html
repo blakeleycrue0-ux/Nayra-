@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>¿Cuánto sabes del logo?</title>
+<title>¿Cuánto sabes de banderas?</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,17 +11,17 @@
 <!-- Pantalla 1: inicio -->
 <section id="screen-start" class="screen active">
   <div class="stage">
-    <h1 class="app-title">DIBUJA<br>EL LOGO</h1>
+    <h1 class="app-title">DIBUJA<br>LA BANDERA</h1>
     <p class="app-sub">¿Cuánto te acuerdas de verdad?</p>
     <button id="btnEmpezar" class="btn btn-primary btn-big">EMPEZAR</button>
   </div>
 </section>
 
-<!-- Pantalla 2: reveal de marca -->
+<!-- Pantalla 2: reveal de país -->
 <section id="screen-reveal" class="screen">
   <div class="stage stage-center">
-    <p class="reveal-label">LA MARCA ES</p>
-    <h2 id="revealName" class="reveal-name">NIKE</h2>
+    <p class="reveal-label">EL PAÍS ES</p>
+    <h2 id="revealName" class="reveal-name">ESPAÑA</h2>
   </div>
 </section>
 
@@ -59,8 +59,8 @@
         <span class="result-caption">TUYO</span>
       </div>
       <div class="result-col">
-        <canvas id="logoCanvas" class="result-canvas"></canvas>
-        <span class="result-caption" id="logoNameResult">NIKE</span>
+        <canvas id="flagCanvas" class="result-canvas"></canvas>
+        <span class="result-caption" id="countryNameResult">ESPAÑA</span>
       </div>
     </div>
 
@@ -70,15 +70,15 @@
     </div>
 
     <div class="result-actions">
-      <button id="btnOtro" class="btn btn-primary">OTRO LOGO</button>
+      <button id="btnOtro" class="btn btn-primary">OTRA BANDERA</button>
       <button id="btnCompartir" class="btn btn-ghost">COMPARTIR</button>
     </div>
   </div>
 </section>
 
-<canvas id="hiddenLogoCanvas" style="display:none"></canvas>
+<canvas id="hiddenFlagCanvas" style="display:none"></canvas>
 
-<script src="logos.js"></script>
+<script src="flags.js"></script>
 <script src="scoring.js"></script>
 <script src="app.js"></script>
 </body>

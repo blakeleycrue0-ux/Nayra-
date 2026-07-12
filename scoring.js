@@ -1,4 +1,4 @@
-// Motor de puntuación: compara el dibujo del usuario contra el logo objetivo.
+// Motor de puntuación: compara el dibujo del usuario contra la bandera objetivo.
 // Funciona sobre arrays RGBA planos (Uint8ClampedArray o Array normal) del mismo tamaño,
 // para poder testearse sin DOM/canvas real.
 
@@ -22,23 +22,23 @@ function labelFor(pct) {
 const MIN_INK_PIXELS = 40;
 
 // tolerance: distancia euclídea máxima en RGB (0-441) para considerar "mismo color"
-function computeScore(userPixels, logoPixels, tolerance) {
+function computeScore(userPixels, targetPixels, tolerance) {
   tolerance = tolerance == null ? 90 : tolerance;
-  const n = Math.min(userPixels.length, logoPixels.length) / 4;
+  const n = Math.min(userPixels.length, targetPixels.length) / 4;
   let inter = 0, union = 0, colorMatch = 0, userInk = 0;
 
   for (let i = 0; i < n; i++) {
     const o = i * 4;
     const uInk = userPixels[o + 3] > 10;
-    const lInk = logoPixels[o + 3] > 10;
+    const tInk = targetPixels[o + 3] > 10;
 
     if (uInk) userInk++;
-    if (uInk || lInk) union++;
-    if (uInk && lInk) {
+    if (uInk || tInk) union++;
+    if (uInk && tInk) {
       inter++;
       const dist = colorDistance(
         userPixels[o], userPixels[o + 1], userPixels[o + 2],
-        logoPixels[o], logoPixels[o + 1], logoPixels[o + 2]
+        targetPixels[o], targetPixels[o + 1], targetPixels[o + 2]
       );
       if (dist <= tolerance) colorMatch++;
     }
