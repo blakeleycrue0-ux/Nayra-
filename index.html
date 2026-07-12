@@ -13,7 +13,14 @@
   <div class="stage">
     <h1 class="app-title">DIBUJA<br>LA BANDERA</h1>
     <p class="app-sub">¿Cuánto te acuerdas de verdad?</p>
-    <button id="btnEmpezar" class="btn btn-primary btn-big">EMPEZAR</button>
+
+    <div class="mode-buttons">
+      <button id="btnDaily" class="btn btn-primary btn-big">
+        RETO DIARIO <span class="streak-badge" id="streakBadge">🔥 0</span>
+      </button>
+      <button id="btnLibre" class="btn btn-ghost btn-big">MODO LIBRE</button>
+    </div>
+    <p class="daily-status" id="dailyStatus"></p>
   </div>
 </section>
 
@@ -33,6 +40,7 @@
       <button id="btnListo" class="btn btn-primary">LISTO</button>
     </div>
 
+    <p class="draw-hint">el cuadrado ENTERO es la bandera — pinta hasta el borde</p>
     <div class="canvas-holder">
       <canvas id="drawCanvas"></canvas>
     </div>
@@ -67,6 +75,7 @@
     <div class="verdict-block">
       <div class="verdict" id="verdictText">SOOO GOOD...</div>
       <div class="percent" id="percentText">98% match</div>
+      <p class="streak-note" id="streakNote"></p>
     </div>
 
     <div class="result-actions">
