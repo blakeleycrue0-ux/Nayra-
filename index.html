@@ -3,190 +3,260 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>MARCA · el juego diario de logos</title>
+<meta name="theme-color" content="#101014">
+<title>TRAZO · el juego diario de logos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --paper:#F2F1EC; --card:#FFF; --ink:#141414; --muted:#8A877E; --line:#E2E0D8;
-    --good:#1F7A4C; --bad:#B23A2E; --gold:#C79A21; --r:16px;
-  }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;padding:0}
-  body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,sans-serif;
-    font-size:16px;line-height:1.45;padding:0 18px calc(48px + env(safe-area-inset-bottom));
-    max-width:560px;margin:0 auto;overscroll-behavior:none}
-  h1,h2,h3{margin:0}
-  button{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;cursor:pointer}
+/* ══ TOKENS ═══════════════════════════════════════════════════════
+   Dirección: un muestrario de color (swatch book) hecho juego.
+   Cada marca es un chip con su color oficial y su hex en mono.
+   FIRMA: la app se tiñe del color de la marca que estás dibujando. */
+:root{
+  --void:#101014;      /* fondo */
+  --surface:#191921;   /* tarjetas */
+  --raise:#22222C;     /* controles */
+  --edge:#2E2E3A;      /* bordes */
+  --text:#F3F2EF;
+  --dim:#8B8998;
+  --paper:#FFFFFF;     /* lienzo */
+  --spark:#F5D90A;     /* acento por defecto: se sustituye por el color de marca */
+  --ink-on-spark:#101014;
+  --ok:#3DD68C;
+  --no:#FF6B5A;
+  --r:18px;
+  --nav:74px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--void)}
+body{
+  color:var(--text);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:16px;line-height:1.45;
+  max-width:560px;margin:0 auto;overscroll-behavior:none;
+  padding:0 18px calc(var(--nav) + 28px + env(safe-area-inset-bottom));
+}
+h1,h2,h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.02}
+button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
+input{font:inherit}
+.mono{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+.dim{color:var(--dim)}
 
-  header{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 0 14px;border-bottom:1px solid var(--line);margin-bottom:22px}
-  .brand{font-family:'Archivo Black',sans-serif;font-size:26px;letter-spacing:.22em;line-height:1}
-  .brand small{display:block;font-family:'Archivo',sans-serif;font-weight:400;font-size:13px;letter-spacing:0;color:var(--muted);margin-top:6px}
-  .chips{display:flex;gap:8px;margin-top:4px;flex-shrink:0}
-  .chip{display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);border-radius:999px;height:36px;padding:0 13px;font-weight:600;font-size:14px}
-  .chip.icon{width:36px;padding:0;justify-content:center}
-  .chip:active{transform:scale(.94)}
+/* ══ IDENTIDAD ════════════════════════════════════════════════════ */
+.wordmark{display:inline-flex;align-items:center;gap:1px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1}
+.wordmark .ring{display:block;color:var(--spark);transition:color .5s}
+/* El anillo: un círculo dibujado a mano, torcido. Es el chiste del juego. */
 
-  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-  .daily{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:var(--r);padding:20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-  .daily .eyebrow{color:var(--gold)}
-  .daily h2{font-family:'Archivo Black',sans-serif;font-size:24px;margin-top:4px;line-height:1.1}
-  .daily p{margin:4px 0 0;font-size:13px;color:#A9A69C}
-  .daily .go{background:#fff;color:var(--ink);border-radius:10px;padding:11px 15px;font-weight:700;font-size:14px;white-space:nowrap}
-  .daily .ghost{position:absolute;right:-30px;top:50%;transform:translateY(-50%);width:150px;opacity:.09;pointer-events:none}
-  .daily .ghost svg{width:100%;fill:#fff}
+/* ══ CABECERA ═════════════════════════════════════════════════════ */
+header{display:flex;align-items:center;justify-content:space-between;padding:20px 0 18px}
+header .wordmark{font-size:27px}
+.streak{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--edge);border-radius:999px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
+.streak b{color:var(--spark);transition:color .5s}
 
-  .levels{display:flex;gap:6px;overflow-x:auto;margin:10px -18px 26px;padding:0 18px 4px;scrollbar-width:none}
-  .levels::-webkit-scrollbar{display:none}
-  .lv{flex-shrink:0;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600;white-space:nowrap}
-  .lv[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* ══ NAV INFERIOR ═════════════════════════════════════════════════ */
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  display:flex;justify-content:center;gap:4px;
+  background:rgba(16,16,20,.86);backdrop-filter:blur(18px);
+  border-top:1px solid var(--edge);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+}
+nav .inner{display:flex;width:100%;max-width:560px}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--dim);border-radius:12px}
+nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+nav button span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+nav button[aria-current="page"]{color:var(--text)}
+nav button[aria-current="page"] svg{stroke:var(--spark)}
 
-  .packs{display:flex;flex-direction:column;gap:12px}
-  .pack{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
-  .pack:active{transform:scale(.985)}
-  .pack .marks{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:56px;flex-shrink:0}
-  .pack .marks svg{width:100%;display:block}
-  .pack h3{font-size:17px;font-weight:700;line-height:1.2}
-  .pack span{font-size:13px;color:var(--muted)}
-  .pack .arrow{margin-left:auto;font-size:20px;color:var(--muted)}
-  .empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted);font-size:14px}
+/* ══ LOGIN ════════════════════════════════════════════════════════ */
+.login{min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:26px;padding:40px 0}
+.login .wordmark{font-size:56px;align-self:flex-start}
+.login h1{font-size:40px;max-width:12ch}
+.login p{color:var(--dim);margin:0;max-width:34ch}
+.swatchrow{display:flex;gap:6px;margin:6px 0 2px}
+.swatchrow i{flex:1;height:44px;border-radius:8px;display:block}
+.authbtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;background:var(--text);color:var(--void);border-radius:14px;padding:16px;font-weight:600}
+.authbtn.alt{background:transparent;color:var(--text);border:1px solid var(--edge)}
+.authbtn:active{transform:scale(.985)}
+.authbtn svg{width:19px;height:19px}
+.guest{width:100%;text-align:center;color:var(--dim);padding:10px;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+.legal{color:#5D5B69;font-size:12px;text-align:center;line-height:1.5}
 
-  .prompt{margin-bottom:14px}
-  .prompt h2{font-family:'Archivo Black',sans-serif;font-size:36px;line-height:1;margin-top:5px;letter-spacing:-.01em}
-  .prompt .meta{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
-  .dots{display:inline-flex;gap:3px;vertical-align:middle;margin-left:8px}
-  .dots i{width:5px;height:5px;border-radius:50%;background:var(--line)}
-  .dots i.on{background:var(--ink)}
+/* ══ HOY ══════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;overflow:hidden;border-radius:var(--r);padding:22px;
+  background:var(--spark);color:var(--ink-on-spark);margin-bottom:14px;transition:background .5s,color .5s;
+}
+.hero .grid-bg{position:absolute;inset:0;opacity:.14;
+  background-image:linear-gradient(currentColor 1px,transparent 1px),linear-gradient(90deg,currentColor 1px,transparent 1px);
+  background-size:26px 26px;pointer-events:none}
+.hero .tag{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:4px 10px;margin-bottom:14px;opacity:.75}
+.hero h2{font-size:44px;margin-bottom:6px}
+.hero .sub{opacity:.8;font-size:14px;margin-bottom:18px}
+.hero .cta{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--ink-on-spark);color:var(--spark);border-radius:12px;padding:15px 18px;font-weight:600;transition:background .5s,color .5s}
+.hero .cta:active{transform:scale(.985)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:26px}
+.stat{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:14px 12px;text-align:center}
+.stat b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800}
+.stat span{color:var(--dim);font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
 
-  .stage{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;aspect-ratio:1/1;width:100%}
-  #pad,#ghost{position:absolute;inset:0;width:100%;height:100%;display:block}
-  #pad{touch-action:none;z-index:2}
-  #ghost{z-index:1;opacity:0;transition:opacity .4s}
-  #ghost.on{opacity:.14}
+/* ══ FILTRO DE NIVEL ══════════════════════════════════════════════ */
+.levels{display:flex;gap:6px;overflow-x:auto;margin:0 -18px 20px;padding:0 18px 4px;scrollbar-width:none}
+.levels::-webkit-scrollbar{display:none}
+.lv{flex-shrink:0;background:var(--surface);border:1px solid var(--edge);border-radius:999px;padding:9px 15px;
+  font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
+.lv[aria-pressed="true"]{background:var(--text);color:var(--void);border-color:var(--text)}
 
-  .hintbar{display:flex;gap:7px;margin:12px 0 4px}
-  .hint{flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 6px;font-size:12px;font-weight:600;line-height:1.25}
-  .hint b{display:block;font-size:11px;color:var(--bad);font-weight:700;margin-top:2px}
-  .hint:disabled{opacity:.38}
-  .hintout{font-size:13px;color:var(--muted);min-height:20px;margin-bottom:6px}
+/* ══ COLECCIONES · muestrario ═════════════════════════════════════ */
+.section-title{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 12px}
+.section-title h3{font-size:22px}
+.packs{display:flex;flex-direction:column;gap:10px}
+.pack{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:12px}
+.pack:active{transform:scale(.985)}
+.pack .chips{display:flex;flex-direction:column;gap:3px;width:52px;flex-shrink:0}
+.pack .chips i{height:11px;border-radius:3px;display:block}
+.pack h4{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px}
+.pack .meta{color:var(--dim);font-size:13px;line-height:1.35}
+.pack .arrow{margin-left:auto;color:var(--dim);font-size:20px}
 
-  .swatches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-  .sw{width:38px;height:38px;border-radius:9px;border:2px solid var(--line);position:relative}
-  .sw[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
-  .sw.rainbow{background:conic-gradient(#e33,#e83,#ec3,#3c6,#39c,#63c,#e33)}
-  .sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:none;padding:0}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.tile{position:relative;overflow:hidden;border-radius:14px;padding:12px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:1px solid rgba(255,255,255,.08)}
+.tile:active{transform:scale(.97)}
+.tile .ico{width:38%;align-self:flex-start;opacity:.92}
+.tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;line-height:1.15}
+.tile .hex{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;opacity:.72;margin-top:2px}
+.tile .dif{position:absolute;top:10px;right:11px;font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:.72}
+.search{width:100%;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;color:var(--text);margin-bottom:14px}
+.search::placeholder{color:var(--dim)}
 
-  .tools{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-  .tool{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
-  .tool svg{width:20px;height:20px;stroke:var(--ink);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .tool[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
-  .tool[aria-pressed="true"] svg{stroke:#fff}
-  .tool.sep{margin-left:auto}
-  .tool:disabled{opacity:.35}
+/* ══ DIBUJAR ══════════════════════════════════════════════════════ */
+.back{display:inline-flex;align-items:center;gap:7px;color:var(--dim);padding:6px 0;margin-bottom:12px;font-size:14px}
+.brief{margin-bottom:14px}
+.brief h2{font-size:40px;margin-top:6px}
+.brief .line{display:flex;align-items:center;gap:10px;margin-top:10px;color:var(--dim)}
+.gauge{display:inline-flex;gap:3px}
+.gauge i{width:6px;height:6px;border-radius:50%;background:var(--edge)}
+.gauge i.on{background:var(--spark);transition:background .5s}
 
-  .size{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-  .size label{font-size:13px;font-weight:600;color:var(--muted)}
-  .size input{flex:1;accent-color:var(--ink)}
-  .size b{width:28px;text-align:right;font-variant-numeric:tabular-nums}
+.stage{position:relative;background:var(--paper);border-radius:var(--r);overflow:hidden;aspect-ratio:1/1;width:100%;
+  box-shadow:0 0 0 1px var(--edge), 0 22px 50px -30px var(--spark);transition:box-shadow .5s}
+#pad,#ghost,#guides{position:absolute;inset:0;width:100%;height:100%;display:block}
+#guides{z-index:0;opacity:.5;pointer-events:none}
+#ghost{z-index:1;opacity:0;transition:opacity .4s}
+#ghost.on{opacity:.16}
+#pad{z-index:2;touch-action:none}
 
-  .primary{width:100%;background:var(--ink);color:#fff;border-radius:12px;padding:17px;font-weight:700;font-size:17px}
-  .secondary{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px;font-weight:600;margin-top:10px}
+.hints{display:flex;gap:7px;margin:14px 0 6px}
+.hint{flex:1;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:11px 6px;text-align:center;line-height:1.25}
+.hint b{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--no);margin-top:3px}
+.hint span{font-size:12px;font-weight:500}
+.hint:disabled{opacity:.35}
+.hintout{color:var(--dim);font-size:13px;min-height:20px;margin-bottom:10px}
 
-  .result{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 20px;text-align:center}
-  .verdict{font-family:'Archivo Black',sans-serif;font-size:25px;line-height:1.15;margin-bottom:22px;min-height:29px}
-  .versus{display:flex;justify-content:center;gap:18px;margin-bottom:18px}
-  .versus figure{margin:0;flex:1;max-width:150px}
-  .versus canvas,.versus .real{width:100%;aspect-ratio:1/1;background:#fff;border:1px solid var(--line);border-radius:10px;display:block}
-  .versus .real{display:flex;align-items:center;justify-content:center;padding:12%}
-  .versus .real svg{width:100%;height:100%}
-  .versus figcaption{font-size:13px;color:var(--muted);margin-top:8px}
-  .score{font-family:'Archivo Black',sans-serif;font-size:52px;line-height:1;margin-bottom:6px}
-  .score span{font-family:'Archivo',sans-serif;font-weight:500;font-size:16px;color:var(--muted)}
-  .breakdown,.judging{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
-  .breakdown em{font-style:normal;color:var(--bad)}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.sw{width:38px;height:38px;border-radius:10px;border:2px solid var(--edge);position:relative}
+.sw[aria-pressed="true"]{outline:2px solid var(--text);outline-offset:2px}
+.sw.rainbow{background:conic-gradient(#f43,#f93,#fd3,#3d8,#39d,#73d,#f43)}
+.sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:none;padding:0}
 
-  .loading,.error{text-align:center;color:var(--muted);padding:70px 20px;font-size:15px;line-height:1.6}
-  .error{color:var(--bad)}
-  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.tools{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.tool{width:42px;height:42px;border-radius:11px;background:var(--surface);border:1px solid var(--edge);display:flex;align-items:center;justify-content:center}
+.tool svg{width:19px;height:19px;stroke:var(--text);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tool[aria-pressed="true"]{background:var(--spark);border-color:var(--spark);transition:background .4s}
+.tool[aria-pressed="true"] svg{stroke:var(--ink-on-spark)}
+.tool.push{margin-left:auto}
+.tool:disabled{opacity:.35}
+.size{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.size input{flex:1;accent-color:var(--spark)}
+.size b{width:26px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px}
+
+.primary{width:100%;background:var(--text);color:var(--void);border-radius:14px;padding:17px;font-weight:600;font-size:17px}
+.primary:active{transform:scale(.99)}
+.ghostbtn{width:100%;background:transparent;border:1px solid var(--edge);border-radius:14px;padding:15px;font-weight:500;margin-top:10px;color:var(--text)}
+
+/* ══ RESULTADO ════════════════════════════════════════════════════ */
+.result{background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:24px 18px;text-align:center}
+.verdict{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.1;margin-bottom:20px;min-height:30px}
+.versus{display:flex;justify-content:center;gap:14px;margin-bottom:18px}
+.versus figure{margin:0;flex:1;max-width:150px}
+.versus canvas,.versus .real{width:100%;aspect-ratio:1/1;background:#fff;border-radius:12px;display:block}
+.versus .real{display:flex;align-items:center;justify-content:center;padding:13%}
+.versus figcaption{color:var(--dim);font-size:12px;margin-top:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;text-transform:uppercase}
+.score{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:64px;line-height:1}
+.score small{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--dim);display:block;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.judge{color:var(--dim);font-size:12px;font-family:'IBM Plex Mono',monospace;margin:14px 0 20px;letter-spacing:.04em}
+.judge em{font-style:normal;color:var(--no)}
+
+/* ══ RANKING ══════════════════════════════════════════════════════ */
+.notice{background:var(--surface);border:1px dashed var(--edge);border-radius:14px;padding:14px;color:var(--dim);font-size:13px;margin-bottom:16px;line-height:1.5}
+.rank{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:13px 15px}
+.row.me{border-color:var(--spark);transition:border-color .5s}
+.row .pos{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--dim);width:26px}
+.row.top .pos{color:var(--spark)}
+.row .who{font-weight:500;flex:1}
+.row .pct{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px}
+
+/* ══ PERFIL ═══════════════════════════════════════════════════════ */
+.avatar{width:62px;height:62px;border-radius:50%;background:var(--spark);color:var(--ink-on-spark);display:flex;align-items:center;justify-content:center;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:25px;transition:background .5s}
+.me-row{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+.me-row h2{font-size:26px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.slot{aspect-ratio:1/1;border-radius:12px;border:1px dashed var(--edge);display:flex;align-items:center;justify-content:center;color:#4A4856;font-size:22px}
+
+.center{text-align:center;color:var(--dim);padding:60px 20px;line-height:1.6}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-
-<header>
-  <div class="brand">MARCA<small>el juego diario de logos</small></div>
-  <div class="chips">
-    <div class="chip">🔥 <span id="streakN">0</span></div>
-    <button class="chip icon" id="helpBtn" aria-label="Cómo se juega">?</button>
-  </div>
-</header>
-
-<main id="app"><div class="loading">Cargando el catálogo de logos…</div></main>
+<div id="root"><div class="center">Cargando el muestrario…</div></div>
 
 <script type="module">
-/* ═══════════════════════════════════════════════════════════════
-   MARCA · dibuja logos de memoria
-   Los logos son los paths vectoriales REALES de Simple Icons
-   (~3.000 marcas, con su color oficial). Aquí no se dibuja nada a mano.
-   ═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════════
+   TRAZO · el juego diario de logos
+   Los logos son paths vectoriales REALES de Simple Icons (~3.000
+   marcas, con su color oficial). Aquí no se dibuja nada a mano.
+   ═══════════════════════════════════════════════════════════════════ */
 
-/* ── COLECCIONES ─────────────────────────────────────────────────
-   Solo slugs. La dificultad 1-10 se calcula sola a partir de la
-   complejidad del path SVG (ver difAuto). Un slug que no exista en
-   Simple Icons se cae solo y te lo dice la consola.
-   OJO: Simple Icons NO tiene marcas como Chanel, Pepsi, Oreo, Xbox o
-   Microsoft. Su catálogo es tech/dev y han ido retirando logos por
-   peticiones legales. Lo que no está aquí, no está en ningún sitio.  */
+const RING = `<svg viewBox="0 0 100 100" width="1em" height="1em" class="ring" aria-hidden="true"><path d="M71 23C59 13 37 12 25 26 11 42 14 70 32 80c18 10 44 4 50-14 5-15-2-32-16-38-6-3-13-4-19-3" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg>`;
+const LOGO = tam => `<span class="wordmark" style="font-size:${tam}">TRAZ${RING}</span>`;
+
 const PACKS = [
   {id:'iconicos', nombre:'Icónicos', desc:'Los que juras que sabes de memoria.', logos:[
     'nike','apple','adidas','mcdonalds','puma','playstation','x','spotify','whatsapp',
-    'youtube','instagram','netflix','amazon','google','facebook','tiktok','snapchat','pinterest'
-  ]},
+    'youtube','instagram','netflix','amazon','google','facebook','tiktok','snapchat','pinterest']},
   {id:'motor', nombre:'Motor', desc:'Estrellas, aros y caballos. Cuenta bien los aros.', logos:[
-    'tesla','mercedes','bmw','audi','volkswagen','toyota','honda','ford','ferrari',
-    'lamborghini','porsche','jeep','nissan','hyundai','kia','mazda','renault','peugeot',
-    'fiat','volvo','subaru','mitsubishi','chevrolet','jaguar','mini','bugatti','maserati',
-    'alfaromeo','seat','skoda','opel','dacia','suzuki','ducati','mclaren','landrover','lexus'
-  ]},
+    'tesla','mercedes','bmw','audi','volkswagen','toyota','honda','ford','ferrari','lamborghini',
+    'porsche','jeep','nissan','hyundai','kia','mazda','renault','peugeot','fiat','volvo','subaru',
+    'mitsubishi','chevrolet','jaguar','mini','bugatti','maserati','alfaromeo','seat','skoda','opel','ducati','mclaren']},
   {id:'comer', nombre:'De comer', desc:'Arcos, coronas y una sirena con dos colas.', logos:[
-    'mcdonalds','burgerking','kfc','starbucks','tacobell','cocacola','redbull','dunkin',
-    'deliveroo','ubereats','justeat','glovo','doordash','grubhub','wendys','chipotle',
-    'monster','carrefour','lidl','mercadona'
-  ]},
+    'mcdonalds','burgerking','kfc','starbucks','tacobell','cocacola','redbull','dunkin','deliveroo',
+    'ubereats','justeat','glovo','doordash','wendys','chipotle','carrefour','lidl','mercadona']},
   {id:'gaming', nombre:'Mando en mano', desc:'Cruces, esferas y una espiral que nadie recuerda.', logos:[
-    'playstation','nintendo','nintendoswitch','steam','twitch','discord','epicgames',
-    'ubisoft','ea','rockstargames','riotgames','roblox','unity','unrealengine','sega',
-    'activision','itchdotio','godotengine'
-  ]},
-  {id:'moda', nombre:'Moda y deporte', desc:'Rayas, felinos y una montaña con tres picos.', logos:[
-    'nike','adidas','puma','underarmour','newbalance','reebok','fila','thenorthface',
-    'zara','uniqlo','shein','zalando','aliexpress','decathlon','crocs','timberland'
-  ]},
+    'playstation','nintendo','nintendoswitch','steam','twitch','discord','epicgames','ubisoft','ea',
+    'rockstargames','riotgames','roblox','unity','unrealengine','sega','activision','godotengine']},
+  {id:'moda', nombre:'Moda y deporte', desc:'Rayas, felinos y una montaña de tres picos.', logos:[
+    'nike','adidas','puma','underarmour','newbalance','reebok','fila','thenorthface','zara','uniqlo',
+    'shein','zalando','aliexpress','decathlon','crocs','timberland']},
   {id:'pantallas', nombre:'Pantallas', desc:'Los que miras cien veces al día sin mirarlos nunca.', logos:[
-    'android','linux','firefoxbrowser','googlechrome','safari','reddit','telegram','linkedin',
-    'dropbox','slack','zoom','github','gitlab','figma','canva','adobe','openai','anthropic',
-    'samsung','xiaomi','huawei','sony','lg','intel','nvidia','amd','oracle','cisco','dell','asus'
-  ]},
+    'android','linux','firefoxbrowser','googlechrome','safari','reddit','telegram','linkedin','dropbox',
+    'slack','zoom','github','gitlab','figma','canva','adobe','openai','anthropic','samsung','xiaomi',
+    'huawei','sony','lg','intel','nvidia','amd','oracle','cisco','dell','asus']},
   {id:'dinero', nombre:'Dinero', desc:'Círculos que se solapan y una uve muy famosa.', logos:[
-    'visa','mastercard','paypal','revolut','stripe','americanexpress','klarna','bitcoin',
-    'ethereum','westernunion','wise','coinbase','binance','n26','monzo'
-  ]},
+    'visa','mastercard','paypal','revolut','stripe','americanexpress','klarna','bitcoin','ethereum',
+    'westernunion','wise','coinbase','binance','n26','monzo']},
   {id:'volar', nombre:'Volar', desc:'Colas, coronas y una grulla que casi nadie recuerda.', logos:[
-    'ryanair','easyjet','iberia','lufthansa','emirates','qatarairways','airfrance','klm',
-    'britishairways','americanairlines','delta','airbnb','tripadvisor','uber','vueling',
-    'turkishairlines','bookingdotcom','skyscanner'
-  ]}
+    'ryanair','easyjet','iberia','lufthansa','emirates','qatarairways','airfrance','klm','britishairways',
+    'americanairlines','delta','airbnb','tripadvisor','uber','vueling','turkishairlines','skyscanner']}
 ];
-
-/* Ajustes a mano cuando la fórmula se equivoca (opcional) */
-const MANUAL = { x:1, apple:2, nike:2, adidas:3, mcdonalds:4, playstation:5 };
-
-const PALETA = ['#141414','#FFFFFF','#E4322B','#1C4FD8','#F5C518','#1F9D55','#F07021','#7B4BC9'];
-const NIVELES = [['todo','Todos'],['1-3','Fácil · 1-3'],['4-6','Medio · 4-6'],['7-8','Difícil · 7-8'],['9-10','Infierno · 9-10']];
+const MANUAL = {x:1, apple:2, nike:2, adidas:3, mcdonalds:4, playstation:5};
+const PALETA = ['#111111','#FFFFFF','#E4322B','#1C4FD8','#F5C518','#1F9D55','#F07021','#7B4BC9'];
+const NIVELES = [['todo','Todos'],['1-3','Fácil'],['4-6','Medio'],['7-8','Difícil'],['9-10','Infierno']];
 const VEREDICTOS = [
   [0,'El lienzo en blanco también es arte.'],
   [1,'Valiente. Equivocado, pero valiente.'],
-  [30,'Vale, esto era más difícil de lo que parecía.'],
+  [30,'Vale, era más difícil de lo que parecía.'],
   [50,'Se intuye. Poco, pero se intuye.'],
   [65,'Oye, no está nada mal.'],
   [75,'Reconocible, la verdad.'],
@@ -194,60 +264,63 @@ const VEREDICTOS = [
   [93,'Esto no es memoria, es brujería.']
 ];
 
-/* ── ALMACENAMIENTO (localStorage en Netlify, memoria si no lo hay) ── */
+/* ── almacenamiento (localStorage en Netlify, memoria si no lo hay) ── */
 const mem = {};
 const store = {
-  get:k => { try{ return localStorage.getItem(k) }catch(e){ return mem[k] ?? null } },
-  set:(k,v) => { try{ localStorage.setItem(k,v) }catch(e){ mem[k]=v } }
+  get: k => { try{ return localStorage.getItem(k) }catch(e){ return mem[k] ?? null } },
+  set: (k,v) => { try{ localStorage.setItem(k,v) }catch(e){ mem[k]=v } }
 };
 
-/* ── CATÁLOGO REAL + DIFICULTAD AUTOMÁTICA ─────────────────────────
-   La dificultad sale de la complejidad del trazo: cuántos comandos
-   de curva tiene el path. Nike ~10, Starbucks ~300. Escala log a 1-10.
-   Así funciona para los 3.000 logos sin puntuarlos a mano.          */
+/* ── catálogo real + dificultad automática ─────────────────────────
+   La dificultad sale de la complejidad del trazo: cuántos comandos de
+   curva tiene el path. Nike ~10, Starbucks ~300. Escala log a 1-10.  */
 const ICON = {};
-const difAuto = path => {
-  const n = Math.max(8, (path.match(/[MmLlHhVvCcSsQqTtAaZz]/g) || []).length);
-  const d = 1 + 9 * (Math.log(n) - Math.log(8)) / (Math.log(600) - Math.log(8));
-  return Math.max(1, Math.min(10, Math.round(d)));
+const difAuto = p => {
+  const n = Math.max(8, (p.match(/[MmLlHhVvCcSsQqTtAaZz]/g)||[]).length);
+  return Math.max(1, Math.min(10, Math.round(1 + 9*(Math.log(n)-Math.log(8))/(Math.log(600)-Math.log(8)))));
 };
-
 async function cargarCatalogo(){
   const si = await import('https://cdn.jsdelivr.net/npm/simple-icons@13/+esm');
   for(const k in si){
     const i = si[k];
-    if(i && i.slug && i.path)
-      ICON[i.slug] = {titulo:i.title, path:i.path, hex:'#'+i.hex, dif: MANUAL[i.slug] ?? difAuto(i.path)};
+    if(i && i.slug && i.path) ICON[i.slug] = {titulo:i.title, path:i.path, hex:'#'+i.hex, dif: MANUAL[i.slug] ?? difAuto(i.path)};
   }
   const faltan = [];
   for(const p of PACKS) p.logos = p.logos.filter(s => ICON[s] || (faltan.push(s), false));
   if(faltan.length) console.warn('No están en Simple Icons:', [...new Set(faltan)]);
-  console.info('Catálogo:', Object.keys(ICON).length, 'logos jugables en total.');
+  console.info('Catálogo:', Object.keys(ICON).length, 'logos jugables.');
 }
-
 const nombre = s => ICON[s].titulo;
 const color  = s => ICON[s].hex;
 const dif    = s => ICON[s].dif;
-const filtrar = (logos, nivel) => {
-  if(nivel === 'todo') return logos;
-  const [a,b] = nivel.split('-').map(Number);
-  return logos.filter(s => dif(s) >= a && dif(s) <= b);
-};
-const todos = () => [...new Set(PACKS.flatMap(p => p.logos))];
+const todos  = () => [...new Set(PACKS.flatMap(p => p.logos))];
+const filtrar = (l, n) => n === 'todo' ? l : (([a,b]) => l.filter(s => dif(s) >= a && dif(s) <= b))(n.split('-').map(Number));
 
-/* ── PINTAR EL LOGO REAL ───────────────────────────────────────── */
-const svgLogo = s => `<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="${color(s)}" d="${ICON[s].path}"/></svg>`;
+/* luminancia → texto legible sobre el color de marca */
+const lum = hex => {
+  const v = i => parseInt(hex.slice(i, i+2), 16) / 255;
+  return .2126*v(1) + .7152*v(3) + .0722*v(5);
+};
+const sobre = hex => lum(hex) > .58 ? '#101014' : '#FFFFFF';
+
+/* FIRMA: la app se tiñe del color de la marca activa */
+function teñir(hex){
+  const r = document.documentElement.style;
+  r.setProperty('--spark', hex);
+  r.setProperty('--ink-on-spark', sobre(hex));
+}
+const svgLogo = (s, c) => `<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="${c || color(s)}" d="${ICON[s].path}"/></svg>`;
 function pintarLogo(ctx, s, S){
   const pad = .12*S, esc = (S - pad*2)/24;
   ctx.save(); ctx.translate(pad,pad); ctx.scale(esc,esc);
   ctx.fillStyle = color(s); ctx.fill(new Path2D(ICON[s].path)); ctx.restore();
 }
 
-/* ── JUEZ 1 · GEOMETRÍA (instantáneo, offline, determinista) ───── */
+/* ── juez 1 · geometría ─────────────────────────────────────────── */
 const N = 64;
 function mascara(cv){
-  const c = document.createElement('canvas'); c.width = c.height = N;
-  const x = c.getContext('2d',{willReadFrequently:true});
+  const c = Object.assign(document.createElement('canvas'), {width:N, height:N});
+  const x = c.getContext('2d', {willReadFrequently:true});
   x.fillStyle='#fff'; x.fillRect(0,0,N,N); x.drawImage(cv,0,0,N,N);
   const d = x.getImageData(0,0,N,N).data, m = new Uint8Array(N*N);
   for(let i=0;i<N*N;i++) m[i] = (d[i*4]+d[i*4+1]+d[i*4+2]) < 720 ? 1 : 0;
@@ -256,247 +329,335 @@ function mascara(cv){
 const iou = (a,b) => { let i=0,u=0; for(let k=0;k<a.length;k++){ if(a[k]&&b[k])i++; if(a[k]||b[k])u++; } return u?i/u:0; };
 function recortar(m){
   let x0=N,y0=N,x1=-1,y1=-1;
-  for(let y=0;y<N;y++)for(let x=0;x<N;x++) if(m[y*N+x]){ x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y); }
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++) if(m[y*N+x]){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
   if(x1<0) return m;
   const w=x1-x0+1, h=y1-y0+1, o=new Uint8Array(N*N);
   for(let y=0;y<N;y++)for(let x=0;x<N;x++) o[y*N+x] = m[(y0+((y*h/N)|0))*N + x0+((x*w/N)|0)];
   return o;
 }
-function notaGeometrica(dibujo, objetivo){
-  const md = mascara(dibujo), mo = mascara(objetivo);
-  let tinta = 0; for(let i=0;i<md.length;i++) tinta += md[i];
-  if(tinta < 12) return 0;                                    // lienzo vacío = 0, sin regalos
+function notaGeo(dibujo, obj){
+  const md = mascara(dibujo), mo = mascara(obj);
+  let tinta=0; for(let i=0;i<md.length;i++) tinta += md[i];
+  if(tinta < 12) return 0;                                  // lienzo vacío = 0, sin regalos
   const bruto = Math.max(iou(md,mo), iou(recortar(md),recortar(mo)) * .95);
   return Math.min(99, Math.round(100 * Math.pow(bruto, .45)));
 }
 
-/* ── JUEZ 2 · IA CON VISIÓN (la nota final) ────────────────────────
-   ⚠ En Netlify: cambia API por tu propia Function que reenvíe a la
-     API de Anthropic con la clave en el servidor, nunca en el cliente. */
+/* ── juez 2 · IA con visión (solo en el reto diario) ────────────────
+   ⚠ En Netlify: mueve esta llamada a una Function con la clave en
+     el servidor. Nunca expongas la API key en el cliente.           */
 const API = 'https://api.anthropic.com/v1/messages';
-const b64 = cv => cv.toDataURL('image/png').split(',')[1];
-
 async function juezIA(dibujo, slug, geo){
-  const chico = Object.assign(document.createElement('canvas'), {width:384, height:384});
-  const cx = chico.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,384,384);
-  cx.drawImage(dibujo, 0, 0, 384, 384);
+  const mk = () => Object.assign(document.createElement('canvas'), {width:384, height:384});
+  const a = mk(), ax = a.getContext('2d'); ax.fillStyle='#fff'; ax.fillRect(0,0,384,384); ax.drawImage(dibujo,0,0,384,384);
+  const b = mk(), bx = b.getContext('2d'); bx.fillStyle='#fff'; bx.fillRect(0,0,384,384); pintarLogo(bx, slug, 384);
+  const img = cv => ({type:'image', source:{type:'base64', media_type:'image/png', data: cv.toDataURL('image/png').split(',')[1]}});
 
-  const real = Object.assign(document.createElement('canvas'), {width:384, height:384});
-  const rx = real.getContext('2d'); rx.fillStyle='#fff'; rx.fillRect(0,0,384,384);
-  pintarLogo(rx, slug, 384);
-
-  const prompt =
+  const res = await fetch(API, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:1000, messages:[{role:'user', content:[
+      img(a), img(b),
+      {type:'text', text:
 `Eres el juez de un juego en el que la gente dibuja logos de memoria, con el dedo, en un móvil.
+Imagen 1: el dibujo del jugador. Imagen 2: el logo real de ${nombre(slug)}.
 
-Imagen 1: el dibujo del jugador.
-Imagen 2: el logo real de ${nombre(slug)}.
-
-Puntúa de 0 a 100 lo bien que lo ha reproducido. Criterios por orden de peso:
+Puntúa de 0 a 100. Criterios por orden de peso:
 - Silueta y forma general: ¿se reconoce el logo?
 - Proporciones y orientación.
 - Colores.
 - Los detalles finos casi no cuentan: es un dedo sobre un cristal, no un vector.
 
-Calibración: 0 = lienzo vacío o nada que ver. 40 = se adivina la intención. 70 = reconocible. 90 = clavado, para estar hecho a mano.
-Una referencia geométrica automática ha dado ${geo}. Tenla en cuenta, pero manda tu criterio.
+Calibración: 0 = vacío o nada que ver. 40 = se adivina la intención. 70 = reconocible. 90 = clavado, para estar hecho a mano.
+Referencia geométrica automática: ${geo}. Tenla en cuenta, pero manda tu criterio.
 
-Devuelve SOLO este JSON, sin markdown ni texto alrededor:
-{"nota": <0-100>, "veredicto": "<frase corta en español, con guasa, máximo 8 palabras>"}`;
-
-  const res = await fetch(API, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      model:'claude-sonnet-4-6', max_tokens:1000,
-      messages:[{role:'user', content:[
-        {type:'image', source:{type:'base64', media_type:'image/png', data:b64(chico)}},
-        {type:'image', source:{type:'base64', media_type:'image/png', data:b64(real)}},
-        {type:'text', text:prompt}
-      ]}]
-    })
+Devuelve SOLO este JSON, sin markdown:
+{"nota": <0-100>, "veredicto": "<frase corta en español, con guasa, máx 8 palabras>"}`}
+    ]}]})
   });
   const data = await res.json();
   const txt = data.content.filter(c => c.type === 'text').map(c => c.text).join('');
   const j = JSON.parse(txt.replace(/```json|```/g,'').trim());
   return {nota: Math.max(0, Math.min(100, Math.round(j.nota))), veredicto: j.veredicto};
 }
-
 const veredictoLocal = n => VEREDICTOS.filter(v => n >= v[0]).pop()[1];
-const tono = n => n >= 65 ? 'var(--good)' : 'var(--bad)';
 
-/* ── RACHA ─────────────────────────────────────────────────────── */
+/* ── sesión y racha ────────────────────────────────────────────── */
 const hoy = () => new Date().toISOString().slice(0,10);
-const pintarRacha = () => document.getElementById('streakN').textContent = +(store.get('racha')||0);
+const usuario = () => { try{ return JSON.parse(store.get('user')) }catch(e){ return null } };
+const racha = () => +(store.get('racha') || 0);
 function sumarRacha(){
   if(store.get('ultimoDia') === hoy()) return;
   const ayer = new Date(Date.now()-864e5).toISOString().slice(0,10);
-  store.set('racha', store.get('ultimoDia') === ayer ? +(store.get('racha')||0)+1 : 1);
-  store.set('ultimoDia', hoy()); pintarRacha();
+  store.set('racha', store.get('ultimoDia') === ayer ? racha()+1 : 1);
+  store.set('ultimoDia', hoy());
+  store.set('jugados', +(store.get('jugados')||0) + 1);
+}
+const slugDelDia = () => { const l = todos(); return l[Math.floor(Date.now()/864e5) % l.length]; };
+
+/* ═══ NAVEGACIÓN ══════════════════════════════════════════════════ */
+const root = document.getElementById('root');
+let tab = 'hoy';
+const ICONOS = {
+  hoy:'M12 3 4 9v11h16V9zM9 20v-6h6v6',
+  packs:'M4 6h7v7H4zM13 6h7v7h-7zM4 15h7v5H4zM13 15h7v5h-7z',
+  rank:'M6 20V10M12 20V4M18 20v-7',
+  perfil:'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M4 21a8 8 0 0 1 16 0'
+};
+const TABS = [['hoy','Hoy'],['packs','Colecciones'],['rank','Ranking'],['perfil','Perfil']];
+
+function marco(html){
+  root.innerHTML = `
+    <header>
+      ${LOGO('27px')}
+      <div class="streak">🔥 <b>${racha()}</b></div>
+    </header>
+    <main>${html}</main>
+    <nav><div class="inner">
+      ${TABS.map(([k,t]) => `<button data-tab="${k}" ${k===tab?'aria-current="page"':''}>
+        <svg viewBox="0 0 24 24"><path d="${ICONOS[k]}"/></svg><span>${t}</span></button>`).join('')}
+    </div></nav>`;
+  root.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { tab = b.dataset.tab; teñir('#F5D90A'); pintar(); });
+  window.scrollTo(0,0);
+}
+const pantalla = html => { root.innerHTML = html; window.scrollTo(0,0); };
+
+function pintar(){
+  if(tab === 'hoy')    return vistaHoy();
+  if(tab === 'packs')  return vistaPacks();
+  if(tab === 'rank')   return vistaRank();
+  if(tab === 'perfil') return vistaPerfil();
 }
 
-/* ═══ PANTALLAS ═══════════════════════════════════════════════════ */
-const app = document.getElementById('app');
-const ir = v => { window.scrollTo(0,0); v(); };
-let nivel = store.get('nivel') || 'todo';
-
-function home(){
-  const lista = todos();
-  const slugDia = lista[Math.floor(Date.now()/864e5) % lista.length];
-
-  const packsHTML = PACKS.map(p => {
-    const v = filtrar(p.logos, nivel);
-    if(!v.length) return '';
-    return `<button class="pack" data-pack="${p.id}">
-      <div class="marks">${v.slice(0,6).map(s => svgLogo(s)).join('')}</div>
-      <div><h3>${p.nombre}</h3><span>${v.length} logos · ${p.desc}</span></div>
-      <div class="arrow">→</div>
-    </button>`;
-  }).join('') + `<button class="pack" id="explorar">
-      <div class="marks">${['github','figma','bitcoin','nvidia','reddit','ferrari'].filter(s => ICON[s]).slice(0,6).map(s => svgLogo(s)).join('')}</div>
-      <div><h3>Todo el catálogo</h3><span>${Object.keys(ICON).length} logos · Busca cualquier marca y dibújala.</span></div>
-      <div class="arrow">→</div>
-    </button>`;
-
-  app.innerHTML = `
-    <section class="daily">
-      <div class="ghost">${svgLogo(slugDia)}</div>
+/* ═══ LOGIN ═══════════════════════════════════════════════════════ */
+function vistaLogin(){
+  const muestras = ['spotify','ferrari','bitcoin','nvidia','ikea','netflix'].filter(s => ICON[s]).slice(0,6);
+  pantalla(`
+    <section class="login">
+      ${LOGO('56px')}
       <div>
-        <div class="eyebrow">Logo del día</div>
-        <h2>Uno al día,<br>de memoria.</h2>
-        <p>Fallar mantiene la racha. Rendirse no.</p>
+        <h1>Dibuja el logo. De memoria.</h1>
+        <p style="margin-top:12px">Un logo nuevo cada día para todo el mundo. Tú, tu dedo y lo poco que recuerdas.</p>
       </div>
-      <button class="go" id="jugarDiario">Dibujar →</button>
+      <div class="swatchrow">${muestras.map(s => `<i style="background:${color(s)}"></i>`).join('')}</div>
+      <div>
+        <button class="authbtn" id="g">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3c1.9 3.8 5.8 6.3 10.2 6.3"/><path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 0 1 0-4.6v-3H1.8a12 12 0 0 0 0 10.6z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.6 0 3.7 2.5 1.8 6.2l3.8 3a7.1 7.1 0 0 1 6.4-4.4"/></svg>
+          Continuar con Google
+        </button>
+        <button class="authbtn alt" id="a" style="margin-top:10px">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.5c0-2.6 2.1-3.8 2.2-3.9-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9s-2-.9-3.3-.9c-1.7 0-3.3 1-4.1 2.5-1.8 3-.5 7.5 1.3 10 .9 1.2 1.9 2.5 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8 2.2-1.2 3.1-2.4c1-1.4 1.4-2.7 1.4-2.8-.1 0-2.7-1-2.7-4zM14.6 4.6c.7-.9 1.2-2.1 1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3.1-1.5z"/></svg>
+          Continuar con Apple
+        </button>
+        <button class="guest" id="inv">Entrar sin cuenta</button>
+      </div>
+      <p class="legal">Con una cuenta guardas tu racha, tu galería y entras en el ranking diario.</p>
+    </section>`);
+
+  const entrar = quien => {
+    store.set('user', JSON.stringify({nombre: quien, inicial: quien[0].toUpperCase()}));
+    tab = 'hoy'; pintar();
+  };
+  document.getElementById('g').onclick = () => entrar('Tú');
+  document.getElementById('a').onclick = () => entrar('Tú');
+  document.getElementById('inv').onclick = () => { tab = 'hoy'; pintar(); };
+}
+
+/* ═══ HOY ═════════════════════════════════════════════════════════ */
+function vistaHoy(){
+  const s = slugDelDia();
+  teñir(color(s));
+  const hecho = store.get('ultimoDia') === hoy();
+
+  marco(`
+    <section class="hero">
+      <div class="grid-bg"></div>
+      <div class="mono tag">Logo del día · ${hoy().split('-').reverse().join('.')}</div>
+      <h2>${nombre(s)}</h2>
+      <div class="sub">Dificultad ${dif(s)} de 10 · el mismo logo para todo el mundo</div>
+      <button class="cta" id="jugar">
+        <span>${hecho ? 'Volver a dibujarlo' : 'Dibujarlo de memoria'}</span><span>→</span>
+      </button>
     </section>
 
-    <div class="eyebrow">Dificultad</div>
+    <div class="stats">
+      <div class="stat"><b>${racha()}</b><span>Racha</span></div>
+      <div class="stat"><b>${+(store.get('jugados')||0)}</b><span>Dibujados</span></div>
+      <div class="stat"><b>${+(store.get('mejor')||0)}%</b><span>Tu récord</span></div>
+    </div>
+
+    <div class="section-title"><h3>Entrenar</h3><span class="mono dim">Sin racha</span></div>
+    <div class="packs">
+      ${PACKS.slice(0,3).map(p => tarjetaPack(p)).join('')}
+    </div>
+    <button class="ghostbtn" id="mas" style="margin-top:12px">Ver las ${PACKS.length} colecciones</button>`);
+
+  document.getElementById('jugar').onclick = () => dibujar(s, 'Reto del día', null, true);
+  document.getElementById('mas').onclick = () => { tab = 'packs'; pintar(); };
+  engancharPacks();
+}
+
+const tarjetaPack = p => {
+  const v = p.logos.slice(0,3);
+  return `<button class="pack" data-pack="${p.id}">
+    <div class="chips">${v.map(s => `<i style="background:${color(s)}"></i>`).join('')}</div>
+    <div><h4>${p.nombre}</h4><div class="meta">${p.logos.length} logos · ${p.desc}</div></div>
+    <div class="arrow">→</div>
+  </button>`;
+};
+const engancharPacks = () => root.querySelectorAll('[data-pack]').forEach(b =>
+  b.onclick = () => vistaPack(PACKS.find(p => p.id === b.dataset.pack)));
+
+/* ═══ COLECCIONES ═════════════════════════════════════════════════ */
+let nivel = store.get('nivel') || 'todo';
+function vistaPacks(){
+  marco(`
+    <div class="section-title" style="margin-top:0"><h3>Colecciones</h3></div>
     <div class="levels" id="lvs">
       ${NIVELES.map(([k,t]) => `<button class="lv" data-lv="${k}" aria-pressed="${k===nivel}">${t}</button>`).join('')}
     </div>
+    <div class="packs">
+      ${PACKS.map(p => ({p, v: filtrar(p.logos, nivel)})).filter(o => o.v.length)
+        .map(({p,v}) => `<button class="pack" data-pack="${p.id}">
+          <div class="chips">${v.slice(0,3).map(s => `<i style="background:${color(s)}"></i>`).join('')}</div>
+          <div><h4>${p.nombre}</h4><div class="meta">${v.length} logos · ${p.desc}</div></div>
+          <div class="arrow">→</div></button>`).join('')}
+    </div>
+    <button class="ghostbtn" id="explorar" style="margin-top:12px">Buscar entre los ${Object.keys(ICON).length} logos</button>`);
 
-    <div class="eyebrow" style="margin-bottom:12px">Colecciones</div>
-    ${packsHTML ? `<div class="packs">${packsHTML}</div>` : `<div class="empty">Ninguna colección tiene logos de este nivel.<br>Prueba otra dificultad.</div>`}`;
-
-  document.getElementById('jugarDiario').onclick = () => ir(() => dibujar(slugDia, 'Reto del día', null));
-  document.getElementById('explorar').onclick = () => ir(explorar);
-  document.getElementById('lvs').querySelectorAll('.lv').forEach(b => b.onclick = () => {
-    nivel = b.dataset.lv; store.set('nivel', nivel); home();
-  });
-  app.querySelectorAll('[data-pack]').forEach(b => b.onclick = () => {
-    const p = PACKS.find(x => x.id === b.dataset.pack);
-    const cola = filtrar(p.logos, nivel).slice().sort(() => Math.random()-.5);
-    ir(() => dibujar(cola[0], p.nombre, {cola, i:0, pack:p}));
-  });
+  root.querySelectorAll('.lv').forEach(b => b.onclick = () => { nivel = b.dataset.lv; store.set('nivel', nivel); vistaPacks(); });
+  document.getElementById('explorar').onclick = vistaBuscar;
+  engancharPacks();
 }
 
-/* ── EXPLORAR TODO EL CATÁLOGO ─────────────────────────────────── */
-function explorar(){
-  app.innerHTML = `
-    <button class="chip" id="volver" style="margin-bottom:18px">← Inicio</button>
-    <div class="prompt"><div class="eyebrow">Todo el catálogo</div>
-      <h2 style="font-size:30px">${Object.keys(ICON).length} logos</h2></div>
+function vistaPack(p){
+  const v = filtrar(p.logos, nivel);
+  pantalla(`
+    <button class="back" id="volver">← Colecciones</button>
+    <div class="brief"><div class="mono dim">Colección</div><h2>${p.nombre}</h2>
+      <div class="line">${v.length} logos · ${p.desc}</div></div>
+    <div class="grid">${v.map(chip).join('')}</div>`);
+  document.getElementById('volver').onclick = () => { tab='packs'; teñir('#F5D90A'); pintar(); };
+  engancharChips(p, v);
+}
+
+const chip = s => {
+  const c = color(s), t = sobre(c);
+  return `<button class="tile" data-s="${s}" style="background:${c};color:${t}">
+    <div class="ico">${svgLogo(s, t)}</div>
+    <div class="mono dif">${dif(s)}/10</div>
+    <div><div class="name">${nombre(s)}</div><div class="hex">${c}</div></div>
+  </button>`;
+};
+const engancharChips = (p, lista) => root.querySelectorAll('.tile').forEach(b => b.onclick = () => {
+  const i = lista.indexOf(b.dataset.s);
+  dibujar(b.dataset.s, p ? p.nombre : 'Catálogo', p ? {cola: lista, i, pack: p} : null, false);
+});
+
+function vistaBuscar(){
+  pantalla(`
+    <button class="back" id="volver">← Colecciones</button>
+    <div class="brief"><div class="mono dim">Catálogo completo</div><h2>${Object.keys(ICON).length} logos</h2></div>
     <input id="q" class="search" placeholder="Busca una marca…" autocomplete="off">
-    <div class="grid" id="res"></div>`;
-
-  document.getElementById('volver').onclick = () => ir(home);
-  const res = document.getElementById('res'), q = document.getElementById('q');
-
-  const pintar = () => {
+    <div class="grid" id="res"></div>`);
+  document.getElementById('volver').onclick = () => { tab='packs'; pintar(); };
+  const q = document.getElementById('q'), res = document.getElementById('res');
+  const pinta = () => {
     const t = q.value.trim().toLowerCase();
-    const hit = Object.keys(ICON)
-      .filter(s => !t || ICON[s].titulo.toLowerCase().includes(t))
-      .sort((a,b) => ICON[a].titulo.localeCompare(ICON[b].titulo))
-      .slice(0, 60);
-    res.innerHTML = hit.length
-      ? hit.map(s => `<button class="tile" data-s="${s}">
-          <div class="ico">${svgLogo(s)}</div>
-          <span>${ICON[s].titulo}</span><small>Dif. ${dif(s)}</small>
-        </button>`).join('')
-      : `<div class="empty" style="grid-column:1/-1">Ninguna marca con ese nombre.</div>`;
-    res.querySelectorAll('.tile').forEach(b => b.onclick = () => ir(() => dibujar(b.dataset.s, 'Catálogo', null)));
+    const hit = Object.keys(ICON).filter(s => !t || ICON[s].titulo.toLowerCase().includes(t))
+      .sort((a,b) => ICON[a].titulo.localeCompare(ICON[b].titulo)).slice(0,40);
+    res.innerHTML = hit.length ? hit.map(chip).join('')
+      : `<div class="center" style="grid-column:1/-1">Ninguna marca con ese nombre.</div>`;
+    res.querySelectorAll('.tile').forEach(b => b.onclick = () => dibujar(b.dataset.s, 'Catálogo', null, false));
   };
-  q.oninput = pintar;
-  pintar();
+  q.oninput = pinta; pinta();
 }
 
-/* ── DIBUJAR ───────────────────────────────────────────────────── */
-function dibujar(slug, etiqueta, sesion){
+/* ═══ DIBUJAR ═════════════════════════════════════════════════════ */
+function dibujar(slug, etiqueta, sesion, esDiario){
   const marca = color(slug);
-  const dif = sesion ? sesion.cola[sesion.i][1] : (todos().find(l => l[0] === slug)?.[1] || 5);
+  teñir(marca);
   const paleta = [marca, ...PALETA.filter(c => c.toLowerCase() !== marca.toLowerCase())];
   let castigo = 0;
 
-  app.innerHTML = `
-    <button class="chip" id="volver" style="margin-bottom:18px">← Salir</button>
-    <div class="prompt">
-      <div class="eyebrow">Dibuja el logo de</div>
+  pantalla(`
+    <button class="back" id="volver">← Salir</button>
+    <div class="brief">
+      <div class="mono dim">Dibuja el logo de</div>
       <h2>${nombre(slug)}</h2>
-      <div class="meta">${etiqueta}${sesion ? ` · ${sesion.i+1} de ${sesion.cola.length}` : ''} · Dificultad ${dif}
-        <span class="dots">${Array.from({length:10},(_,i) => `<i class="${i<dif?'on':''}"></i>`).join('')}</span>
+      <div class="line">
+        <span class="mono">${etiqueta}${sesion ? ` · ${sesion.i+1}/${sesion.cola.length}` : ''}</span>
+        <span class="gauge">${Array.from({length:10},(_,i)=>`<i class="${i<dif(slug)?'on':''}"></i>`).join('')}</span>
       </div>
     </div>
 
     <div class="stage">
-      <canvas id="ghost" width="600" height="600"></canvas>
-      <canvas id="pad" width="600" height="600"></canvas>
+      <canvas id="guides" width="600" height="600"></canvas>
+      <canvas id="ghost"  width="600" height="600"></canvas>
+      <canvas id="pad"    width="600" height="600"></canvas>
     </div>
 
-    <div class="hintbar">
-      <button class="hint" data-h="1">Categoría<b>−5%</b></button>
-      <button class="hint" data-h="2">Paleta real<b>−10%</b></button>
-      <button class="hint" data-h="3">Silueta<b>−20%</b></button>
+    <div class="hints">
+      <button class="hint" data-h="1"><span>Categoría</span><b>−5%</b></button>
+      <button class="hint" data-h="2"><span>Color real</span><b>−10%</b></button>
+      <button class="hint" data-h="3"><span>Silueta</span><b>−20%</b></button>
     </div>
     <div class="hintout" id="hintout"></div>
 
     <div class="swatches" id="sw">
       ${paleta.map((c,i) => `<button class="sw" data-c="${c}" aria-pressed="${i===0}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')}
-      <button class="sw rainbow" id="custom" aria-label="Color personalizado"><input type="color" value="${marca}"></button>
+      <button class="sw rainbow" id="custom" aria-label="Color libre"><input type="color" value="${marca}"></button>
     </div>
 
     <div class="tools" id="tools">
-      ${[['brush','Pincel','M3 21c3 .5 5-1 6-3M8 17 18 6a2.1 2.1 0 0 1 3 3L10 19'],
-         ['fill','Relleno','M4 12 12 4l8 8-8 8zM20 15c1.5 2 1.5 4 0 4s-1.5-2 0-4'],
-         ['eraser','Goma','M4 16 12 8l6 6-4 4H6zM9 21h11'],
-         ['rect','Rectángulo','M4 7h16v10H4z'],
-         ['circle','Círculo','M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16'],
-         ['line','Línea','M5 19 19 5']
-        ].map(([id,t,d],i) => `<button class="tool" data-t="${id}" aria-pressed="${i===0}" aria-label="${t}"><svg viewBox="0 0 24 24"><path d="${d}"/></svg></button>`).join('')}
-      <button class="tool sep" id="undo" aria-label="Deshacer" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
-      <button class="tool" id="clear" aria-label="Borrar todo"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></button>
+      ${[['brush','M3 21c3 .5 5-1 6-3M8 17 18 6a2.1 2.1 0 0 1 3 3L10 19'],
+         ['fill','M4 12 12 4l8 8-8 8zM20 15c1.5 2 1.5 4 0 4s-1.5-2 0-4'],
+         ['eraser','M4 16 12 8l6 6-4 4H6zM9 21h11'],
+         ['rect','M4 7h16v10H4z'],
+         ['circle','M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16'],
+         ['line','M5 19 19 5']
+       ].map(([t,d],i) => `<button class="tool" data-t="${t}" aria-pressed="${i===0}"><svg viewBox="0 0 24 24"><path d="${d}"/></svg></button>`).join('')}
+      <button class="tool push" id="undo" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+      <button class="tool" id="clear"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></button>
     </div>
 
     <div class="size">
-      <label for="sz">Grosor</label><input id="sz" type="range" min="4" max="90" value="34"><b id="szN">34</b>
+      <span class="mono dim">Grosor</span>
+      <input id="sz" type="range" min="4" max="90" value="34"><b id="szN">34</b>
     </div>
 
-    <button class="primary" id="revelar">Revelar y comparar</button>`;
+    <button class="primary" id="revelar">Revelar y comparar</button>`);
 
-  document.getElementById('volver').onclick = () => ir(home);
+  document.getElementById('volver').onclick = () => { teñir('#F5D90A'); pintar(); };
+
+  /* rejilla de construcción, como una hoja de normas de marca */
+  const g = document.getElementById('guides').getContext('2d');
+  g.strokeStyle = '#EDECE8'; g.lineWidth = 1;
+  for(let i = 1; i < 6; i++){
+    const p = i*100 + .5;
+    g.beginPath(); g.moveTo(p,0); g.lineTo(p,600); g.stroke();
+    g.beginPath(); g.moveTo(0,p); g.lineTo(600,p); g.stroke();
+  }
+  g.strokeStyle = '#E3E1DC'; g.strokeRect(72.5, 72.5, 455, 455);   // área segura
 
   /* pistas */
   const out = document.getElementById('hintout');
   const gh = document.getElementById('ghost');
-  document.querySelectorAll('.hint').forEach(b => b.onclick = () => {
+  root.querySelectorAll('.hint').forEach(b => b.onclick = () => {
     const h = +b.dataset.h; b.disabled = true;
-    if(h === 1){ castigo += 5;  out.textContent = `Colección: ${etiqueta}. Símbolo, sin letras.`; }
-    if(h === 2){ castigo += 10; out.textContent = `Color de marca: ${marca}. Ya lo tienes seleccionado.`; }
-    if(h === 3){
-      castigo += 20;
-      pintarLogo(gh.getContext('2d'), slug, 600);
-      gh.classList.add('on');
-      out.textContent = 'Silueta fantasma activada. Calca sin vergüenza.';
-    }
+    if(h===1){ castigo += 5;  out.textContent = `Colección: ${etiqueta}. Símbolo, sin letras.`; }
+    if(h===2){ castigo += 10; out.textContent = `Color oficial: ${marca}. Ya lo tienes elegido.`; }
+    if(h===3){ castigo += 20; pintarLogo(gh.getContext('2d'), slug, 600); gh.classList.add('on');
+               out.textContent = 'Silueta fantasma activada. Calca sin vergüenza.'; }
   });
 
   /* lienzo */
   const cv = document.getElementById('pad'), ctx = cv.getContext('2d',{willReadFrequently:true}), S = 600;
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,S,S);
   ctx.lineCap = ctx.lineJoin = 'round';
-
-  let c = marca, herr = 'brush', grosor = 34, pintando = false, x0 = 0, y0 = 0, antes = null;
-  const pila = [], undoBtn = document.getElementById('undo');
-  const guardar = () => { pila.push(ctx.getImageData(0,0,S,S)); if(pila.length > 12) pila.shift(); undoBtn.disabled = false; };
-  undoBtn.onclick = () => { if(pila.length){ ctx.putImageData(pila.pop(),0,0); undoBtn.disabled = !pila.length; } };
-  document.getElementById('clear').onclick = () => { guardar(); ctx.fillStyle='#fff'; ctx.fillRect(0,0,S,S); };
+  let c = marca, herr = 'brush', grosor = 34, pintando = false, x0=0, y0=0, antes = null;
+  const pila = [], undo = document.getElementById('undo');
+  const snap = () => { pila.push(ctx.getImageData(0,0,S,S)); if(pila.length>12) pila.shift(); undo.disabled = false; };
+  undo.onclick = () => { if(pila.length){ ctx.putImageData(pila.pop(),0,0); undo.disabled = !pila.length; } };
+  document.getElementById('clear').onclick = () => { snap(); ctx.clearRect(0,0,S,S); };
 
   const swBox = document.getElementById('sw');
   swBox.querySelectorAll('.sw[data-c]').forEach(b => b.onclick = () => {
@@ -507,9 +668,9 @@ function dibujar(slug, etiqueta, sesion){
     swBox.querySelectorAll('.sw').forEach(o => o.setAttribute('aria-pressed','false'));
     document.getElementById('custom').setAttribute('aria-pressed','true'); c = e.target.value;
   };
-  const toolBox = document.getElementById('tools');
-  toolBox.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
-    toolBox.querySelectorAll('[data-t]').forEach(o => o.setAttribute('aria-pressed','false'));
+  const tb = document.getElementById('tools');
+  tb.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+    tb.querySelectorAll('[data-t]').forEach(o => o.setAttribute('aria-pressed','false'));
     b.setAttribute('aria-pressed','true'); herr = b.dataset.t;
   });
   const sz = document.getElementById('sz');
@@ -518,173 +679,214 @@ function dibujar(slug, etiqueta, sesion){
   const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX-r.left)*S/r.width, (e.clientY-r.top)*S/r.height]; };
 
   function relleno(px, py, hex){
-    const img = ctx.getImageData(0,0,S,S), d = img.data;
+    const im = ctx.getImageData(0,0,S,S), d = im.data;
     const p0 = (py|0)*S + (px|0), i0 = p0*4;
     const dst = [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
-    const src = [d[i0], d[i0+1], d[i0+2]];
-    if(Math.abs(src[0]-dst[0]) + Math.abs(src[1]-dst[1]) + Math.abs(src[2]-dst[2]) < 12) return;
+    const src = [d[i0], d[i0+1], d[i0+2], d[i0+3]];
     const st = [p0], visto = new Uint8Array(S*S);
     while(st.length){
       const p = st.pop(); if(visto[p]) continue; visto[p] = 1;
       const i = p*4;
-      if(Math.abs(d[i]-src[0]) + Math.abs(d[i+1]-src[1]) + Math.abs(d[i+2]-src[2]) > 60) continue;
-      d[i] = dst[0]; d[i+1] = dst[1]; d[i+2] = dst[2]; d[i+3] = 255;
-      const x = p % S, y = (p - x)/S;
-      if(x > 0) st.push(p-1);
-      if(x < S-1) st.push(p+1);
-      if(y > 0) st.push(p-S);
-      if(y < S-1) st.push(p+S);
+      const dif4 = Math.abs(d[i]-src[0]) + Math.abs(d[i+1]-src[1]) + Math.abs(d[i+2]-src[2]) + Math.abs(d[i+3]-src[3]);
+      if(dif4 > 60) continue;
+      d[i]=dst[0]; d[i+1]=dst[1]; d[i+2]=dst[2]; d[i+3]=255;
+      const x = p % S, y = (p-x)/S;
+      if(x>0) st.push(p-1);
+      if(x<S-1) st.push(p+1);
+      if(y>0) st.push(p-S);
+      if(y<S-1) st.push(p+S);
     }
-    ctx.putImageData(img, 0, 0);
+    ctx.putImageData(im,0,0);
   }
 
   cv.addEventListener('pointerdown', e => {
     e.preventDefault(); cv.setPointerCapture(e.pointerId);
-    const [x,y] = pos(e); guardar();
-    if(herr === 'fill'){ relleno(x, y, c); return; }
+    const [x,y] = pos(e); snap();
+    if(herr === 'fill'){ relleno(x,y,c); return; }
     pintando = true; x0 = x; y0 = y;
     if(herr === 'brush' || herr === 'eraser'){
-      ctx.strokeStyle = ctx.fillStyle = herr === 'eraser' ? '#fff' : c;
-      ctx.lineWidth = grosor;
-      ctx.beginPath(); ctx.arc(x, y, grosor/2, 0, 7); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(x, y);
+      ctx.globalCompositeOperation = herr === 'eraser' ? 'destination-out' : 'source-over';
+      ctx.strokeStyle = ctx.fillStyle = c; ctx.lineWidth = grosor;
+      ctx.beginPath(); ctx.arc(x,y,grosor/2,0,7); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x,y);
     } else antes = ctx.getImageData(0,0,S,S);
   });
   cv.addEventListener('pointermove', e => {
     if(!pintando) return;
     const [x,y] = pos(e);
     if(herr === 'brush' || herr === 'eraser'){ ctx.lineTo(x,y); ctx.stroke(); return; }
-    ctx.putImageData(antes, 0, 0);
+    ctx.putImageData(antes,0,0);
+    ctx.globalCompositeOperation = 'source-over';
     ctx.strokeStyle = ctx.fillStyle = c; ctx.lineWidth = grosor;
     if(herr === 'rect') ctx.fillRect(Math.min(x0,x), Math.min(y0,y), Math.abs(x-x0), Math.abs(y-y0));
-    if(herr === 'circle'){ ctx.beginPath(); ctx.ellipse((x0+x)/2, (y0+y)/2, Math.abs(x-x0)/2, Math.abs(y-y0)/2, 0, 0, 7); ctx.fill(); }
+    if(herr === 'circle'){ ctx.beginPath(); ctx.ellipse((x0+x)/2,(y0+y)/2,Math.abs(x-x0)/2,Math.abs(y-y0)/2,0,0,7); ctx.fill(); }
     if(herr === 'line'){ ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x,y); ctx.stroke(); }
   });
-  const soltar = () => { pintando = false; antes = null; };
+  const soltar = () => { pintando = false; antes = null; ctx.globalCompositeOperation = 'source-over'; };
   cv.addEventListener('pointerup', soltar);
   cv.addEventListener('pointercancel', soltar);
 
   document.getElementById('revelar').onclick = () => {
+    /* aplanamos sobre blanco para puntuar y compartir */
+    const plano = Object.assign(document.createElement('canvas'), {width:S, height:S});
+    const px = plano.getContext('2d'); px.fillStyle = '#fff'; px.fillRect(0,0,S,S); px.drawImage(cv,0,0);
     const obj = Object.assign(document.createElement('canvas'), {width:S, height:S});
-    const oc = obj.getContext('2d'); oc.fillStyle = '#fff'; oc.fillRect(0,0,S,S);
-    pintarLogo(oc, slug, S);
-    const geo = notaGeometrica(cv, obj);
-    if(!sesion) sumarRacha();
-    ir(() => resultado(slug, geo, castigo, cv, sesion));
+    const ox = obj.getContext('2d'); ox.fillStyle = '#fff'; ox.fillRect(0,0,S,S); pintarLogo(ox, slug, S);
+    if(esDiario) sumarRacha();
+    resultado(slug, notaGeo(plano, obj), castigo, plano, sesion, esDiario);
   };
 }
 
-/* ── RESULTADO ─────────────────────────────────────────────────── */
-function resultado(slug, geo, castigo, dibujo, sesion){
+/* ═══ RESULTADO ═══════════════════════════════════════════════════ */
+function resultado(slug, geo, castigo, dibujo, sesion, esDiario){
   const hay = sesion && sesion.i + 1 < sesion.cola.length;
-  const inicial = Math.max(0, geo - castigo);
+  const ini = Math.max(0, geo - castigo);
 
-  app.innerHTML = `
+  pantalla(`
+    <button class="back" id="volver">← Salir</button>
     <section class="result">
-      <div class="verdict" id="vd" style="color:${tono(inicial)}">${veredictoLocal(inicial)}</div>
+      <div class="verdict" id="vd">${veredictoLocal(ini)}</div>
       <div class="versus">
         <figure><canvas id="tuyo" width="300" height="300"></canvas><figcaption>El tuyo</figcaption></figure>
-        <figure><div class="real">${svgLogo(slug)}</div><figcaption>${nombre(slug)}</figcaption></figure>
+        <figure><div class="real" style="background:#fff">${svgLogo(slug)}</div><figcaption>${nombre(slug)}</figcaption></figure>
       </div>
-      <div class="score" id="sc" style="color:${tono(inicial)}">${inicial} <span>% de acierto</span></div>
-      <div class="judging" id="jd">El juez está mirando tu dibujo…</div>
-      <button class="primary" id="sig">${hay ? 'Siguiente logo' : 'Volver al inicio'}</button>
-      <button class="secondary" id="share">Compartir resultado</button>
-    </section>`;
+      <div class="score" id="sc" style="color:var(--spark)">${ini}<small>% de acierto</small></div>
+      <div class="judge" id="jz">${esDiario ? 'El juez está mirando tu dibujo…' : `Geometría ${geo}${castigo?` · pistas −${castigo}`:''}`}</div>
+      <button class="primary" id="sig">${hay ? 'Siguiente logo' : 'Volver'}</button>
+      <button class="ghostbtn" id="share">Compartir resultado</button>
+    </section>`);
 
   document.getElementById('tuyo').getContext('2d').drawImage(dibujo, 0, 0, 300, 300);
-  let nota = inicial, frase = veredictoLocal(inicial);
+  let nota = ini, frase = veredictoLocal(ini);
+  const guardarRecord = n => { if(n > +(store.get('mejor')||0)) store.set('mejor', n); };
+  guardarRecord(nota);
 
+  document.getElementById('volver').onclick = () => { teñir('#F5D90A'); pintar(); };
   document.getElementById('sig').onclick = () => {
-    if(hay){ const s = {...sesion, i:sesion.i+1}; ir(() => dibujar(s.cola[s.i][0], s.pack.nombre, s)); }
-    else ir(home);
+    if(hay){ const s = {...sesion, i: sesion.i+1}; dibujar(s.cola[s.i], s.pack.nombre, s, false); }
+    else { teñir('#F5D90A'); pintar(); }
   };
   document.getElementById('share').onclick = () => compartir(slug, nota, frase, dibujo);
 
-  /* el juez IA da la nota final; la geometría queda de red de seguridad */
+  /* El juez IA solo en el reto diario: es el que cuesta dinero. */
+  if(!esDiario || geo === 0) return;
   (async () => {
-    const jd = document.getElementById('jd');
-    if(geo === 0){ jd.className = 'breakdown'; jd.innerHTML = 'Geometría <b>0</b> · el juez no tiene nada que mirar.'; return; }
+    const jz = document.getElementById('jz');
     try{
       const r = await juezIA(dibujo, slug, geo);
-      nota = Math.max(0, r.nota - castigo);
-      frase = r.veredicto;
-      const sc = document.getElementById('sc'), vd = document.getElementById('vd');
-      sc.innerHTML = `${nota} <span>% de acierto</span>`; sc.style.color = tono(nota);
-      vd.textContent = frase; vd.style.color = tono(nota);
-      jd.className = 'breakdown';
-      jd.innerHTML = `Juez IA <b>${r.nota}</b> · geometría <b>${geo}</b>${castigo ? ` · pistas <em>−${castigo}</em>` : ''}`;
+      nota = Math.max(0, r.nota - castigo); frase = r.veredicto; guardarRecord(nota);
+      document.getElementById('sc').innerHTML = `${nota}<small>% de acierto</small>`;
+      document.getElementById('vd').textContent = frase;
+      jz.innerHTML = `Juez IA ${r.nota} · geometría ${geo}${castigo ? ` · pistas <em>−${castigo}</em>` : ''}`;
     }catch(e){
-      jd.className = 'breakdown';
-      jd.innerHTML = `Solo geometría <b>${geo}</b>${castigo ? ` · pistas <em>−${castigo}</em>` : ''} · el juez IA no ha respondido.`;
+      jz.innerHTML = `Solo geometría ${geo}${castigo ? ` · pistas <em>−${castigo}</em>` : ''} · el juez IA no responde`;
     }
   })();
 }
 
-/* ── TARJETA PARA COMPARTIR ────────────────────────────────────── */
+/* ═══ COMPARTIR ═══════════════════════════════════════════════════ */
 async function compartir(slug, nota, frase, dibujo){
-  const W = 1080, H = 1350;
-  const cnv = Object.assign(document.createElement('canvas'), {width:W, height:H});
-  const x = cnv.getContext('2d');
+  const W = 1080, H = 1350, marca = color(slug), t = sobre(marca);
+  const cn = Object.assign(document.createElement('canvas'), {width:W, height:H});
+  const x = cn.getContext('2d');
 
-  x.fillStyle = '#F2F1EC'; x.fillRect(0,0,W,H);
-  x.fillStyle = '#141414'; x.font = '900 42px "Archivo Black",sans-serif';
-  x.letterSpacing = '10px'; x.fillText('MARCA', 80, 110); x.letterSpacing = '0px';
-  x.fillStyle = '#8A877E'; x.font = '400 28px Archivo,sans-serif';
-  x.fillText('el juego diario de logos', 80, 155);
+  x.fillStyle = marca; x.fillRect(0,0,W,H);
+  x.fillStyle = t; x.globalAlpha = .12;
+  for(let i = 1; i < 20; i++){ x.fillRect(i*54, 0, 1, H); x.fillRect(0, i*54, W, 1); }
+  x.globalAlpha = 1;
 
-  x.fillStyle = '#fff'; x.beginPath(); x.roundRect(60, 240, W-120, H-360, 32); x.fill();
+  x.font = '800 44px "Bricolage Grotesque",sans-serif';
+  x.fillText('TRAZO', 70, 105);
 
-  x.textAlign = 'center';
-  x.fillStyle = nota >= 65 ? '#1F7A4C' : '#B23A2E';
-  x.font = '900 44px "Archivo Black",sans-serif';
-  x.fillText(frase, W/2, 340);
+  x.fillStyle = '#fff'; x.beginPath(); x.roundRect(60, 170, W-120, 980, 34); x.fill();
 
-  const S = 340, gap = 60, L = (W - S*2 - gap)/2, T = 410;
-  x.fillStyle = '#fff'; x.strokeStyle = '#E2E0D8'; x.lineWidth = 2;
-  [0,1].forEach(i => { x.beginPath(); x.roundRect(L + i*(S+gap), T, S, S, 18); x.fill(); x.stroke(); });
+  x.textAlign = 'center'; x.fillStyle = '#101014';
+  x.font = '800 46px "Bricolage Grotesque",sans-serif';
+  x.fillText(frase, W/2, 265);
+
+  const S = 350, gap = 50, L = (W - S*2 - gap)/2, T = 330;
+  x.strokeStyle = '#E7E5E0'; x.lineWidth = 2;
+  x.strokeRect(L, T, S, S); x.strokeRect(L + S + gap, T, S, S);
   x.drawImage(dibujo, L, T, S, S);
   x.save(); x.translate(L + S + gap, T); pintarLogo(x, slug, S); x.restore();
 
-  x.fillStyle = '#8A877E'; x.font = '400 26px Archivo,sans-serif';
-  x.fillText('El tuyo', L + S/2, T + S + 44);
-  x.fillText(nombre(slug), L + S + gap + S/2, T + S + 44);
+  x.fillStyle = '#8B8998'; x.font = '500 24px "IBM Plex Mono",monospace';
+  x.fillText('EL TUYO', L + S/2, T + S + 46);
+  x.fillText(nombre(slug).toUpperCase(), L + S + gap + S/2, T + S + 46);
 
-  x.fillStyle = nota >= 65 ? '#1F7A4C' : '#B23A2E';
-  x.font = '900 130px "Archivo Black",sans-serif';
-  x.fillText(nota + '%', W/2, T + S + 190);
-  x.fillStyle = '#8A877E'; x.font = '400 30px Archivo,sans-serif';
-  x.fillText('dibujando de memoria, con el dedo', W/2, T + S + 235);
+  x.fillStyle = marca; x.font = '800 190px "Bricolage Grotesque",sans-serif';
+  x.fillText(nota + '%', W/2, T + S + 240);
+  x.fillStyle = '#8B8998'; x.font = '500 26px "IBM Plex Mono",monospace';
+  x.fillText('DIBUJADO DE MEMORIA, CON EL DEDO', W/2, T + S + 300);
 
-  const blob = await new Promise(r => cnv.toBlob(r, 'image/png'));
-  const file = new File([blob], 'marca.png', {type:'image/png'});
+  const blob = await new Promise(r => cn.toBlob(r, 'image/png'));
+  const file = new File([blob], 'trazo.png', {type:'image/png'});
   const texto = `${nota}% dibujando el logo de ${nombre(slug)} de memoria. ¿Puedes hacerlo mejor?`;
-  try{
-    if(navigator.canShare?.({files:[file]})){ await navigator.share({files:[file], text:texto}); return; }
-  }catch(e){ return; }
+  try{ if(navigator.canShare?.({files:[file]})){ await navigator.share({files:[file], text:texto}); return; } }
+  catch(e){ return; }
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'marca.png'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = 'trazo.png'; a.click();
 }
 
-/* ── AYUDA ─────────────────────────────────────────────────────── */
-document.getElementById('helpBtn').onclick = () => alert(
-  'MARCA\n\n' +
-  '1. Te decimos una marca. Dibujas su logo de memoria, sin mirarlo.\n' +
-  '2. Revelas: comparamos tu trazo con el logo real.\n' +
-  '3. Puntúan dos jueces. La geometría mide cuánto solapa tu dibujo con el logo (instantáneo). El juez IA lo mira como lo miraría una persona: perdona el pulso, castiga los errores de concepto. Manda el segundo.\n\n' +
-  'Las pistas ayudan, pero cuestan puntos.\n' +
-  'Un logo al día mantiene la racha.'
-);
+/* ═══ RANKING (maqueta: los datos llegan con Supabase) ════════════ */
+function vistaRank(){
+  const s = slugDelDia();
+  const yo = usuario();
+  const mio = +(store.get('mejor') || 0);
+  const falsos = [['martaog',97],['dani_pz',94],['luisss',91],['nachete',88],['cris.m',85],['pablo_v',82],['aina',79]];
+  const filas = [...falsos, ...(yo ? [[yo.nombre, mio]] : [])]
+    .sort((a,b) => b[1]-a[1])
+    .map(([n,p],i) => `<div class="row ${i<3?'top':''} ${yo && n===yo.nombre ? 'me':''}">
+      <div class="pos">${String(i+1).padStart(2,'0')}</div>
+      <div class="who">${n}</div><div class="pct">${p}%</div></div>`).join('');
 
-/* ── ARRANQUE ──────────────────────────────────────────────────── */
+  marco(`
+    <div class="section-title" style="margin-top:0"><h3>Ranking de hoy</h3>
+      <span class="mono dim">${nombre(s)}</span></div>
+    <div class="notice">Maqueta. Las posiciones reales llegan cuando conectemos Supabase: una fila por jugador y día, con la nota del juez IA.</div>
+    <div class="rank">${filas}</div>
+    ${yo ? '' : `<button class="ghostbtn" id="ent" style="margin-top:14px">Crear cuenta para entrar en el ranking</button>`}`);
+
+  const b = document.getElementById('ent');
+  if(b) b.onclick = vistaLogin;
+}
+
+/* ═══ PERFIL ══════════════════════════════════════════════════════ */
+function vistaPerfil(){
+  const u = usuario();
+  if(!u) return marco(`
+    <div class="center" style="padding-top:40px">
+      <div style="font-size:46px;margin-bottom:14px;color:var(--spark)">${RING}</div>
+      <h3 style="font-size:24px;color:var(--text);margin-bottom:10px">Estás jugando sin cuenta</h3>
+      <p style="margin:0 0 22px">Tu racha vive solo en este móvil. Con cuenta la guardas, entras en el ranking y guardas cada dibujo.</p>
+      <button class="primary" id="ent">Crear cuenta gratis</button>
+    </div>`) || (document.getElementById('ent').onclick = vistaLogin);
+
+  marco(`
+    <div class="me-row">
+      <div class="avatar">${u.inicial}</div>
+      <div><h2>${u.nombre}</h2><div class="mono dim">Racha de ${racha()} días</div></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>${racha()}</b><span>Racha</span></div>
+      <div class="stat"><b>${+(store.get('jugados')||0)}</b><span>Dibujados</span></div>
+      <div class="stat"><b>${+(store.get('mejor')||0)}%</b><span>Récord</span></div>
+    </div>
+    <div class="section-title"><h3>Tu galería</h3><span class="mono dim">Próximamente</span></div>
+    <div class="gallery">${Array.from({length:6},()=>'<div class="slot">+</div>').join('')}</div>
+    <button class="ghostbtn" id="salir" style="margin-top:20px">Cerrar sesión</button>`);
+
+  document.getElementById('salir').onclick = () => { store.set('user',''); vistaPerfil(); };
+}
+
+/* ═══ ARRANQUE ════════════════════════════════════════════════════ */
 (async () => {
-  pintarRacha();
   try{
     await cargarCatalogo();
-    home();
+    if(usuario()) pintar(); else vistaLogin();
   }catch(e){
     console.error(e);
-    app.innerHTML = '<div class="error">No se ha podido cargar el catálogo de logos.<br>Revisa la conexión y recarga.</div>';
+    root.innerHTML = '<div class="center">No se ha podido cargar el catálogo de logos.<br>Revisa la conexión y recarga.</div>';
   }
 })();
 </script>
