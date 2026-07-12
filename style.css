@@ -104,6 +104,37 @@ body {
   padding: 18px 48px;
 }
 
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn:disabled:active {
+  transform: none;
+}
+
+.mode-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.streak-badge {
+  margin-left: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.daily-status {
+  font-size: 13px;
+  color: #7a7761;
+  margin: 16px 0 0;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ---------- Pantalla reveal ---------- */
 
 .reveal-label {
@@ -147,11 +178,21 @@ body {
   min-width: 60px;
 }
 
+.draw-hint {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #8a8670;
+  text-align: center;
+  margin: 0;
+}
+
 .canvas-holder {
   width: 100%;
   aspect-ratio: 1 / 1;
   background: #ffffff;
   border-radius: 16px;
+  border: 2px solid rgba(22, 21, 15, 0.2);
   box-shadow: var(--card-shadow);
   overflow: hidden;
   touch-action: none;
@@ -281,6 +322,16 @@ body {
   transform: scaleX(0.9);
   color: var(--olive);
   margin-top: 4px;
+}
+
+.streak-note {
+  font-size: 13px;
+  color: #7a7761;
+  margin: 10px 0 0;
+}
+
+.streak-note:empty {
+  display: none;
 }
 
 .result-actions {

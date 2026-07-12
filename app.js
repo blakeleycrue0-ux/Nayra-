@@ -26,6 +26,10 @@
   const countryNameResultEl = document.getElementById('countryNameResult');
   const yoursCanvas = document.getElementById('yoursCanvas');
   const flagCanvas = document.getElementById('flagCanvas');
+  const streakBadgeEl = document.getElementById('streakBadge');
+  const dailyStatusEl = document.getElementById('dailyStatus');
+  const streakNoteEl = document.getElementById('streakNote');
+  const btnDaily = document.getElementById('btnDaily');
 
   let currentFlag = null;
   let flagImage = null;
@@ -37,6 +41,84 @@
   let undoStack = [];
   let timerInterval = null;
   let timeLeft = ROUND_SECONDS;
+  let isDailyRound = false;
+
+  // ---------- Reto diario (racha guardada en localStorage, sin servidor) ----------
+
+  const DAILY_STORAGE_KEY = 'dibujaLaBandera.daily';
+
+  function dateKey(date) {
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
+  }
+
+  function todayKey() {
+    return dateKey(new Date());
+  }
+
+  function yesterdayKey() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return dateKey(d);
+  }
+
+  function hashString(s) {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) {
+      h = (h * 31 + s.charCodeAt(i)) | 0;
+    }
+    return Math.abs(h);
+  }
+
+  function dailyFlagForToday() {
+    return FLAGS[hashString(todayKey()) % FLAGS.length];
+  }
+
+  function loadDailyState() {
+    try {
+      return JSON.parse(localStorage.getItem(DAILY_STORAGE_KEY)) || { streak: 0, lastPlayedDate: null, lastScore: null };
+    } catch (e) {
+      return { streak: 0, lastPlayedDate: null, lastScore: null };
+    }
+  }
+
+  function saveDailyState(state) {
+    try {
+      localStorage.setItem(DAILY_STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      // localStorage no disponible (modo privado, etc.) -> la racha simplemente no persiste
+    }
+  }
+
+  function recordDailyResult(score) {
+    const state = loadDailyState();
+    const today = todayKey();
+    if (state.lastPlayedDate === today) {
+      state.lastScore = score;
+    } else if (state.lastPlayedDate === yesterdayKey()) {
+      state.streak = (state.streak || 0) + 1;
+      state.lastPlayedDate = today;
+      state.lastScore = score;
+    } else {
+      state.streak = 1;
+      state.lastPlayedDate = today;
+      state.lastScore = score;
+    }
+    saveDailyState(state);
+    return state;
+  }
+
+  function refreshStartScreen() {
+    const state = loadDailyState();
+    streakBadgeEl.textContent = '🔥 ' + (state.streak || 0);
+    const playedToday = state.lastPlayedDate === todayKey();
+    if (playedToday) {
+      dailyStatusEl.textContent = 'Ya jugaste hoy: ' + state.lastScore + '% match. Vuelve mañana para seguir la racha.';
+      btnDaily.disabled = true;
+    } else {
+      dailyStatusEl.textContent = '';
+      btnDaily.disabled = false;
+    }
+  }
 
   // ---------- Navegación entre pantallas ----------
 
@@ -192,8 +274,9 @@
 
   // ---------- Flujo de ronda ----------
 
-  async function beginRound() {
-    currentFlag = pickRandomFlag();
+  async function beginRound(isDaily) {
+    isDailyRound = !!isDaily && !(loadDailyState().lastPlayedDate === todayKey());
+    currentFlag = isDailyRound ? dailyFlagForToday() : pickRandomFlag();
     await prepareFlag(currentFlag);
     revealNameEl.textContent = currentFlag.nombre;
     showScreen('reveal');
@@ -211,10 +294,12 @@
     stopTimer();
     const userData = dctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
     const result = computeScore(userData, flagImageData);
-    showResult(result);
+    const wasDailyRound = isDailyRound;
+    isDailyRound = false;
+    showResult(result, wasDailyRound);
   }
 
-  function showResult(result) {
+  function showResult(result, wasDailyRound) {
     yoursCanvas.width = DRAW_SIZE;
     yoursCanvas.height = DRAW_SIZE;
     flagCanvas.width = DRAW_SIZE;
@@ -234,6 +319,14 @@
     countryNameResultEl.textContent = currentFlag.nombre;
     verdictEl.textContent = result.label;
     percentEl.textContent = result.displayed + '% match';
+
+    if (wasDailyRound) {
+      const state = recordDailyResult(result.displayed);
+      streakNoteEl.textContent = '🔥 racha: ' + state.streak + (state.streak === 1 ? ' día' : ' días');
+      refreshStartScreen();
+    } else {
+      streakNoteEl.textContent = '';
+    }
 
     showScreen('result');
   }
@@ -299,6 +392,12 @@
     ctx.fillText(percentEl.textContent, 0, 0);
     ctx.restore();
 
+    if (streakNoteEl.textContent) {
+      ctx.fillStyle = '#7a7761';
+      ctx.font = '700 30px Arial, sans-serif';
+      ctx.fillText(streakNoteEl.textContent, cardX + cardW / 2, verdictY + 110);
+    }
+
     ctx.fillStyle = '#7a7761';
     ctx.font = '600 24px Arial, sans-serif';
     ctx.fillText('DIBUJA LA BANDERA', cardX + cardW / 2, cardY + cardH - 40);
@@ -341,8 +440,11 @@
 
   // ---------- Botones ----------
 
-  document.getElementById('btnEmpezar').addEventListener('click', beginRound);
+  btnDaily.addEventListener('click', () => beginRound(true));
+  document.getElementById('btnLibre').addEventListener('click', () => beginRound(false));
   document.getElementById('btnListo').addEventListener('click', finishDrawing);
-  document.getElementById('btnOtro').addEventListener('click', beginRound);
+  document.getElementById('btnOtro').addEventListener('click', () => beginRound(false));
   document.getElementById('btnCompartir').addEventListener('click', shareResult);
+
+  refreshStartScreen();
 })();

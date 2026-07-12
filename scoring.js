@@ -16,23 +16,17 @@ function labelFor(pct) {
   return 'SOOO GOOD...';
 }
 
-// Por debajo de este número de píxeles de tinta se considera que no hubo
-// un intento real de dibujar (lienzo en blanco o un simple toque accidental).
-// En ese caso no se aplica el suelo de 65: el score cae a un valor bajo de verdad.
-const MIN_INK_PIXELS = 40;
-
 // tolerance: distancia euclídea máxima en RGB (0-441) para considerar "mismo color"
 function computeScore(userPixels, targetPixels, tolerance) {
   tolerance = tolerance == null ? 90 : tolerance;
   const n = Math.min(userPixels.length, targetPixels.length) / 4;
-  let inter = 0, union = 0, colorMatch = 0, userInk = 0;
+  let inter = 0, union = 0, colorMatch = 0;
 
   for (let i = 0; i < n; i++) {
     const o = i * 4;
     const uInk = userPixels[o + 3] > 10;
     const tInk = targetPixels[o + 3] > 10;
 
-    if (uInk) userInk++;
     if (uInk || tInk) union++;
     if (uInk && tInk) {
       inter++;
@@ -47,11 +41,9 @@ function computeScore(userPixels, targetPixels, tolerance) {
   const iou = union === 0 ? 0 : inter / union;
   const colorScore = inter === 0 ? 0 : colorMatch / inter;
   const raw = 0.7 * iou + 0.3 * colorScore;
+  const displayed = Math.round(raw * 100);
 
-  const attempted = userInk >= MIN_INK_PIXELS;
-  const displayed = attempted ? Math.round(65 + raw * 35) : Math.round(raw * 40);
-
-  return { iou, colorScore, raw, displayed, label: labelFor(displayed), attempted };
+  return { iou, colorScore, raw, displayed, label: labelFor(displayed) };
 }
 
 if (typeof module !== 'undefined' && module.exports) {
