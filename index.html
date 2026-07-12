@@ -73,8 +73,9 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .login .wordmark{font-size:56px;align-self:flex-start}
 .login h1{font-size:40px;max-width:12ch}
 .login p{color:var(--dim);margin:0;max-width:34ch}
-.swatchrow{display:flex;gap:6px;margin:6px 0 2px}
-.swatchrow i{flex:1;height:44px;border-radius:8px;display:block}
+.swatchrow{display:flex;gap:7px;margin:6px 0 2px}
+.swatchrow i{flex:1;aspect-ratio:1/1;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:9px;background:#fff}
+.swatchrow i svg{width:100%;height:100%}
 .authbtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;background:var(--text);color:var(--void);border-radius:14px;padding:16px;font-weight:600}
 .authbtn.alt{background:transparent;color:var(--text);border:1px solid var(--edge)}
 .authbtn:active{transform:scale(.985)}
@@ -113,16 +114,18 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .packs{display:flex;flex-direction:column;gap:10px}
 .pack{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:12px}
 .pack:active{transform:scale(.985)}
-.pack .chips{display:flex;flex-direction:column;gap:3px;width:52px;flex-shrink:0}
-.pack .chips i{height:11px;border-radius:3px;display:block;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}
+.pack .cover{width:60px;height:60px;flex-shrink:0;background:#fff;border-radius:10px;padding:5px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:3px;align-content:center}
+.pack .cover svg{width:100%;display:block}
 .pack h4{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px}
 .pack .meta{color:var(--dim);font-size:13px;line-height:1.35}
 .pack .arrow{margin-left:auto;color:var(--dim);font-size:20px}
 
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.tile{position:relative;overflow:hidden;border-radius:14px;padding:14px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;border:1px solid rgba(255,255,255,.08)}
+.tile{position:relative;overflow:hidden;border-radius:14px;padding:14px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:1px solid rgba(255,255,255,.08)}
 .tile:active{transform:scale(.97)}
-.tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px;line-height:1.15}
+.tile .ico{width:36%;align-self:flex-start;opacity:.95}
+.tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:16px;line-height:1.15}
 .tile .hex{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;opacity:.72;margin-top:2px}
 .tile .dif{position:absolute;top:10px;right:11px;font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:.72}
 .search{width:100%;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;color:var(--text);margin-bottom:14px}
@@ -431,7 +434,7 @@ function pintar(){
 
 /* ═══ LOGIN ═══════════════════════════════════════════════════════ */
 function vistaLogin(){
-  const muestras = ['spotify','ferrari','bitcoin','nvidia','ikea','netflix'].filter(s => ICON[s]).slice(0,6);
+  const muestras = ['nike','spotify','ferrari','playstation','netflix','android'].filter(s => ICON[s]).slice(0,6);
   pantalla(`
     <section class="login">
       ${LOGO('56px')}
@@ -439,7 +442,7 @@ function vistaLogin(){
         <h1>Dibuja el logo. De memoria.</h1>
         <p style="margin-top:12px">Un logo nuevo cada día para todo el mundo. Tú, tu dedo y lo poco que recuerdas.</p>
       </div>
-      <div class="swatchrow">${muestras.map(s => `<i style="background:${color(s)}"></i>`).join('')}</div>
+      <div class="swatchrow">${muestras.map(s => `<i>${svgLogo(s)}</i>`).join('')}</div>
       <div>
         <button class="authbtn" id="g">
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3c1.9 3.8 5.8 6.3 10.2 6.3"/><path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 0 1 0-4.6v-3H1.8a12 12 0 0 0 0 10.6z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.6 0 3.7 2.5 1.8 6.2l3.8 3a7.1 7.1 0 0 1 6.4-4.4"/></svg>
@@ -497,20 +500,10 @@ function vistaHoy(){
   engancharPacks();
 }
 
-const tresColores = p => {
-  const vistos = new Set();
-  const out = [];
-  for(const s of p.logos){
-    const c = color(s);
-    if(vistos.has(c)) continue;
-    vistos.add(c); out.push(c);
-    if(out.length === 3) break;
-  }
-  return out;
-};
+const portada = logos => `<div class="cover">${logos.slice(0,6).map(s => svgLogo(s)).join('')}</div>`;
 
 const tarjetaPack = p => `<button class="pack" data-pack="${p.id}">
-    <div class="chips">${tresColores(p).map(c => `<i style="background:${c}"></i>`).join('')}</div>
+    ${portada(p.logos)}
     <div><h4>${p.nombre}</h4><div class="meta">${p.logos.length} logos · ${p.desc}</div></div>
     <div class="arrow">→</div>
   </button>`;
@@ -531,7 +524,7 @@ function vistaPacks(){
     <div class="packs">
       ${PACKS.map(p => ({p, v: filtrar(p.logos, nivel)})).filter(o => o.v.length)
         .map(({p,v}) => `<button class="pack" data-pack="${p.id}">
-          <div class="chips">${tresColores({logos:v}).map(c => `<i style="background:${c}"></i>`).join('')}</div>
+          ${portada(v)}
           <div><h4>${p.nombre}</h4><div class="meta">${v.length} logos · ${p.desc}</div></div>
           <div class="arrow">→</div></button>`).join('')}
     </div>
@@ -568,6 +561,7 @@ function vistaBuscar(){
 const chip = s => {
   const c = color(s), t = sobre(c);
   return `<button class="tile" data-s="${s}" style="background:${c};color:${t}">
+    <div class="ico">${svgLogo(s, t)}</div>
     <div class="mono dif">${dif(s)}/10</div>
     <div><div class="name">${nombre(s)}</div><div class="hex">${c}</div></div>
   </button>`;
