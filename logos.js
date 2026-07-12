@@ -1,6 +1,22 @@
 // Logos: siluetas simples inline (SVG), sin wordmarks ni letras, sin peticiones de red.
 // Cada logo: { nombre, svg, colores: [] } -- colores son los únicos disponibles en la paleta.
 
+// Arco redondeado tipo "puerta" (usado para formar las arcos dorados de McDonald's).
+function archPath(cx, yBase, r, lw) {
+  const ySpring = yBase - r;
+  return `M${cx - r},${yBase} L${cx - r},${ySpring} A${r},${r} 0 0,1 ${cx + r},${ySpring}
+    L${cx + r},${yBase} L${cx + r - lw},${yBase} L${cx + r - lw},${ySpring}
+    A${r - lw},${r - lw} 0 0,0 ${cx - r + lw},${ySpring} L${cx - r + lw},${yBase} Z`;
+}
+
+// Pétalo (hoja) para el abanico de Shell, apuntando hacia arriba antes de rotar.
+function shellPetal(angleDeg, length, width) {
+  return `<g transform="translate(100,168) rotate(${angleDeg})">
+    <path fill="#FFCE00" stroke="#ED1C24" stroke-width="4" stroke-linejoin="round"
+      d="M0,0 Q${-width / 2},${-length / 2} 0,${-length} Q${width / 2},${-length / 2} 0,0 Z"/>
+  </g>`;
+}
+
 const LOGOS = [
   {
     nombre: 'NIKE',
@@ -43,9 +59,8 @@ const LOGOS = [
     nombre: "MCDONALD'S",
     colores: ['#FFC72C'],
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-      <path fill="#FFC72C" d="M40,175 L40,90 a24,24 0 0,1 48,0 L88,140 L112,140
-        L112,90 a24,24 0 0,1 48,0 L160,175 L136,175 L136,110 L120,150 L80,150
-        L64,110 L64,175 Z"/>
+      <path fill="#FFC72C" d="${archPath(70, 178, 34, 20)}"/>
+      <path fill="#FFC72C" d="${archPath(130, 178, 34, 20)}"/>
     </svg>`
   },
   {
@@ -67,31 +82,24 @@ const LOGOS = [
     nombre: 'SHELL',
     colores: ['#FFCE00', '#ED1C24'],
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-      <path fill="#FFCE00" stroke="#ED1C24" stroke-width="5" stroke-linejoin="round" d="
-        M100,22
-        C68,22 50,50 52,80
-        C36,90 26,108 28,128
-        C40,120 50,118 58,126
-        C62,112 74,104 88,106
-        C86,94 92,84 100,80
-        C108,84 114,94 112,106
-        C126,104 138,112 142,126
-        C150,118 160,120 172,128
-        C174,108 164,90 148,80
-        C150,50 132,22 100,22 Z"/>
+      ${shellPetal(-64, 76, 44)}
+      ${shellPetal(-32, 102, 48)}
+      ${shellPetal(0, 118, 50)}
+      ${shellPetal(32, 102, 48)}
+      ${shellPetal(64, 76, 44)}
     </svg>`
   },
   {
     nombre: 'PLAYSTATION',
-    colores: ['#003791'],
+    colores: ['#3AA655', '#E5507E', '#4F9FE0', '#B25FCB'],
     svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-      <path fill="#003791" fill-rule="evenodd" d="
-        M40,80 a30,30 0 0,1 30,-28 L130,52 a30,30 0 0,1 30,28
-        L166,140 a20,20 0 0,1 -36,10 L120,120 L80,120 L70,150 a20,20 0 0,1 -36,-10 Z
-        M72,74 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 Z
-        M116,74 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 Z
-        M94,70 h12 v10 h10 v12 h-10 v10 h-12 v-10 h-10 v-12 h10 Z
-      "/>
+      <polygon fill="#3AA655" points="100,26 124,68 76,68"/>
+      <circle cx="164" cy="100" r="21" fill="#E5507E"/>
+      <g stroke="#4F9FE0" stroke-width="11" stroke-linecap="round">
+        <line x1="84" y1="140" x2="116" y2="172"/>
+        <line x1="116" y1="140" x2="84" y2="172"/>
+      </g>
+      <rect x="18" y="80" width="40" height="40" fill="#B25FCB"/>
     </svg>`
   },
   {
