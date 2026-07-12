@@ -120,10 +120,9 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .pack .arrow{margin-left:auto;color:var(--dim);font-size:20px}
 
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.tile{position:relative;overflow:hidden;border-radius:14px;padding:12px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:1px solid rgba(255,255,255,.08)}
+.tile{position:relative;overflow:hidden;border-radius:14px;padding:14px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:flex-end;text-align:left;border:1px solid rgba(255,255,255,.08)}
 .tile:active{transform:scale(.97)}
-.tile .ico{width:38%;align-self:flex-start;opacity:.92}
-.tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:15px;line-height:1.15}
+.tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px;line-height:1.15}
 .tile .hex{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;opacity:.72;margin-top:2px}
 .tile .dif{position:absolute;top:10px;right:11px;font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:.72}
 .search{width:100%;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;color:var(--text);margin-bottom:14px}
@@ -140,8 +139,7 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 
 .stage{position:relative;background:var(--paper);border-radius:var(--r);overflow:hidden;aspect-ratio:1/1;width:100%;
   box-shadow:0 0 0 1px var(--edge), 0 22px 50px -30px var(--spark);transition:box-shadow .5s}
-#pad,#ghost,#guides{position:absolute;inset:0;width:100%;height:100%;display:block}
-#guides{z-index:0;opacity:.5;pointer-events:none}
+#pad,#ghost{position:absolute;inset:0;width:100%;height:100%;display:block}
 #ghost{z-index:1;opacity:0;transition:opacity .4s}
 #ghost.on{opacity:.16}
 #pad{z-index:2;touch-action:none}
@@ -504,8 +502,11 @@ const tarjetaPack = p => {
     <div class="arrow">→</div>
   </button>`;
 };
-const engancharPacks = () => root.querySelectorAll('[data-pack]').forEach(b =>
-  b.onclick = () => vistaPack(PACKS.find(p => p.id === b.dataset.pack)));
+const engancharPacks = () => root.querySelectorAll('[data-pack]').forEach(b => b.onclick = () => {
+  const p = PACKS.find(x => x.id === b.dataset.pack);
+  const cola = filtrar(p.logos, nivel).slice().sort(() => Math.random() - .5);
+  dibujar(cola[0], p.nombre, {cola, i:0, pack:p}, false);   // ronda al azar, sin spoiler
+});
 
 /* ═══ COLECCIONES ═════════════════════════════════════════════════ */
 let nivel = store.get('nivel') || 'todo';
@@ -529,37 +530,17 @@ function vistaPacks(){
   engancharPacks();
 }
 
-function vistaPack(p){
-  const v = filtrar(p.logos, nivel);
-  pantalla(`
-    <button class="back" id="volver">← Colecciones</button>
-    <div class="brief"><div class="mono dim">Colección</div><h2>${p.nombre}</h2>
-      <div class="line">${v.length} logos · ${p.desc}</div></div>
-    <div class="grid">${v.map(chip).join('')}</div>`);
-  document.getElementById('volver').onclick = () => { tab='packs'; teñir('#F5D90A'); pintar(); };
-  engancharChips(p, v);
-}
-
-const chip = s => {
-  const c = color(s), t = sobre(c);
-  return `<button class="tile" data-s="${s}" style="background:${c};color:${t}">
-    <div class="ico">${svgLogo(s, t)}</div>
-    <div class="mono dif">${dif(s)}/10</div>
-    <div><div class="name">${nombre(s)}</div><div class="hex">${c}</div></div>
-  </button>`;
-};
-const engancharChips = (p, lista) => root.querySelectorAll('.tile').forEach(b => b.onclick = () => {
-  const i = lista.indexOf(b.dataset.s);
-  dibujar(b.dataset.s, p ? p.nombre : 'Catálogo', p ? {cola: lista, i, pack: p} : null, false);
-});
-
+/* Nunca se enseña el logo antes de dibujarlo. Solo su color, su nombre
+   y su dificultad: si lo ves, ya no es de memoria. */
 function vistaBuscar(){
   pantalla(`
     <button class="back" id="volver">← Colecciones</button>
-    <div class="brief"><div class="mono dim">Catálogo completo</div><h2>${Object.keys(ICON).length} logos</h2></div>
+    <div class="brief"><div class="mono dim">Catálogo completo</div><h2>${Object.keys(ICON).length} logos</h2>
+      <div class="line">Busca una marca y dibújala. No verás el logo hasta el final.</div></div>
     <input id="q" class="search" placeholder="Busca una marca…" autocomplete="off">
     <div class="grid" id="res"></div>`);
   document.getElementById('volver').onclick = () => { tab='packs'; pintar(); };
+
   const q = document.getElementById('q'), res = document.getElementById('res');
   const pinta = () => {
     const t = q.value.trim().toLowerCase();
@@ -571,6 +552,14 @@ function vistaBuscar(){
   };
   q.oninput = pinta; pinta();
 }
+
+const chip = s => {
+  const c = color(s), t = sobre(c);
+  return `<button class="tile" data-s="${s}" style="background:${c};color:${t}">
+    <div class="mono dif">${dif(s)}/10</div>
+    <div><div class="name">${nombre(s)}</div><div class="hex">${c}</div></div>
+  </button>`;
+};
 
 /* ═══ DIBUJAR ═════════════════════════════════════════════════════ */
 function dibujar(slug, etiqueta, sesion, esDiario){
@@ -591,7 +580,6 @@ function dibujar(slug, etiqueta, sesion, esDiario){
     </div>
 
     <div class="stage">
-      <canvas id="guides" width="600" height="600"></canvas>
       <canvas id="ghost"  width="600" height="600"></canvas>
       <canvas id="pad"    width="600" height="600"></canvas>
     </div>
@@ -628,16 +616,6 @@ function dibujar(slug, etiqueta, sesion, esDiario){
     <button class="primary" id="revelar">Revelar y comparar</button>`);
 
   document.getElementById('volver').onclick = () => { teñir('#F5D90A'); pintar(); };
-
-  /* rejilla de construcción, como una hoja de normas de marca */
-  const g = document.getElementById('guides').getContext('2d');
-  g.strokeStyle = '#EDECE8'; g.lineWidth = 1;
-  for(let i = 1; i < 6; i++){
-    const p = i*100 + .5;
-    g.beginPath(); g.moveTo(p,0); g.lineTo(p,600); g.stroke();
-    g.beginPath(); g.moveTo(0,p); g.lineTo(600,p); g.stroke();
-  }
-  g.strokeStyle = '#E3E1DC'; g.strokeRect(72.5, 72.5, 455, 455);   // área segura
 
   /* pistas */
   const out = document.getElementById('hintout');
