@@ -1,94 +1,692 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>¿Cuánto sabes de banderas?</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>MARCA · el juego diario de logos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F2F1EC; --card:#FFF; --ink:#141414; --muted:#8A877E; --line:#E2E0D8;
+    --good:#1F7A4C; --bad:#B23A2E; --gold:#C79A21; --r:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,sans-serif;
+    font-size:16px;line-height:1.45;padding:0 18px calc(48px + env(safe-area-inset-bottom));
+    max-width:560px;margin:0 auto;overscroll-behavior:none}
+  h1,h2,h3{margin:0}
+  button{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;cursor:pointer}
+
+  header{display:flex;align-items:flex-start;justify-content:space-between;padding:22px 0 14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+  .brand{font-family:'Archivo Black',sans-serif;font-size:26px;letter-spacing:.22em;line-height:1}
+  .brand small{display:block;font-family:'Archivo',sans-serif;font-weight:400;font-size:13px;letter-spacing:0;color:var(--muted);margin-top:6px}
+  .chips{display:flex;gap:8px;margin-top:4px;flex-shrink:0}
+  .chip{display:flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);border-radius:999px;height:36px;padding:0 13px;font-weight:600;font-size:14px}
+  .chip.icon{width:36px;padding:0;justify-content:center}
+  .chip:active{transform:scale(.94)}
+
+  .eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .daily{position:relative;overflow:hidden;background:var(--ink);color:#fff;border-radius:var(--r);padding:20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+  .daily .eyebrow{color:var(--gold)}
+  .daily h2{font-family:'Archivo Black',sans-serif;font-size:24px;margin-top:4px;line-height:1.1}
+  .daily p{margin:4px 0 0;font-size:13px;color:#A9A69C}
+  .daily .go{background:#fff;color:var(--ink);border-radius:10px;padding:11px 15px;font-weight:700;font-size:14px;white-space:nowrap}
+  .daily .ghost{position:absolute;right:-30px;top:50%;transform:translateY(-50%);width:150px;opacity:.09;pointer-events:none}
+  .daily .ghost svg{width:100%;fill:#fff}
+
+  .levels{display:flex;gap:6px;overflow-x:auto;margin:10px -18px 26px;padding:0 18px 4px;scrollbar-width:none}
+  .levels::-webkit-scrollbar{display:none}
+  .lv{flex-shrink:0;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:600;white-space:nowrap}
+  .lv[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .packs{display:flex;flex-direction:column;gap:12px}
+  .pack{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+  .pack:active{transform:scale(.985)}
+  .pack .marks{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:56px;flex-shrink:0}
+  .pack .marks svg{width:100%;display:block}
+  .pack h3{font-size:17px;font-weight:700;line-height:1.2}
+  .pack span{font-size:13px;color:var(--muted)}
+  .pack .arrow{margin-left:auto;font-size:20px;color:var(--muted)}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted);font-size:14px}
+
+  .prompt{margin-bottom:14px}
+  .prompt h2{font-family:'Archivo Black',sans-serif;font-size:36px;line-height:1;margin-top:5px;letter-spacing:-.01em}
+  .prompt .meta{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:8px}
+  .dots{display:inline-flex;gap:3px;vertical-align:middle;margin-left:8px}
+  .dots i{width:5px;height:5px;border-radius:50%;background:var(--line)}
+  .dots i.on{background:var(--ink)}
+
+  .stage{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;aspect-ratio:1/1;width:100%}
+  #pad,#ghost{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #pad{touch-action:none;z-index:2}
+  #ghost{z-index:1;opacity:0;transition:opacity .4s}
+  #ghost.on{opacity:.14}
+
+  .hintbar{display:flex;gap:7px;margin:12px 0 4px}
+  .hint{flex:1;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 6px;font-size:12px;font-weight:600;line-height:1.25}
+  .hint b{display:block;font-size:11px;color:var(--bad);font-weight:700;margin-top:2px}
+  .hint:disabled{opacity:.38}
+  .hintout{font-size:13px;color:var(--muted);min-height:20px;margin-bottom:6px}
+
+  .swatches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .sw{width:38px;height:38px;border-radius:9px;border:2px solid var(--line);position:relative}
+  .sw[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:2px}
+  .sw.rainbow{background:conic-gradient(#e33,#e83,#ec3,#3c6,#39c,#63c,#e33)}
+  .sw input{position:absolute;inset:0;opacity:0;width:100%;height:100%;border:none;padding:0}
+
+  .tools{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+  .tool{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;justify-content:center}
+  .tool svg{width:20px;height:20px;stroke:var(--ink);stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .tool[aria-pressed="true"]{background:var(--ink);border-color:var(--ink)}
+  .tool[aria-pressed="true"] svg{stroke:#fff}
+  .tool.sep{margin-left:auto}
+  .tool:disabled{opacity:.35}
+
+  .size{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+  .size label{font-size:13px;font-weight:600;color:var(--muted)}
+  .size input{flex:1;accent-color:var(--ink)}
+  .size b{width:28px;text-align:right;font-variant-numeric:tabular-nums}
+
+  .primary{width:100%;background:var(--ink);color:#fff;border-radius:12px;padding:17px;font-weight:700;font-size:17px}
+  .secondary{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px;font-weight:600;margin-top:10px}
+
+  .result{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px 20px;text-align:center}
+  .verdict{font-family:'Archivo Black',sans-serif;font-size:25px;line-height:1.15;margin-bottom:22px;min-height:29px}
+  .versus{display:flex;justify-content:center;gap:18px;margin-bottom:18px}
+  .versus figure{margin:0;flex:1;max-width:150px}
+  .versus canvas,.versus .real{width:100%;aspect-ratio:1/1;background:#fff;border:1px solid var(--line);border-radius:10px;display:block}
+  .versus .real{display:flex;align-items:center;justify-content:center;padding:12%}
+  .versus .real svg{width:100%;height:100%}
+  .versus figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+  .score{font-family:'Archivo Black',sans-serif;font-size:52px;line-height:1;margin-bottom:6px}
+  .score span{font-family:'Archivo',sans-serif;font-weight:500;font-size:16px;color:var(--muted)}
+  .breakdown,.judging{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6}
+  .breakdown em{font-style:normal;color:var(--bad)}
+
+  .loading,.error{text-align:center;color:var(--muted);padding:70px 20px;font-size:15px;line-height:1.6}
+  .error{color:var(--bad)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
 </head>
 <body>
 
-<!-- Pantalla 1: inicio -->
-<section id="screen-start" class="screen active">
-  <div class="stage">
-    <h1 class="app-title">DIBUJA<br>LA BANDERA</h1>
-    <p class="app-sub">¿Cuánto te acuerdas de verdad?</p>
-
-    <div class="mode-buttons">
-      <button id="btnDaily" class="btn btn-primary btn-big">
-        RETO DIARIO <span class="streak-badge" id="streakBadge">🔥 0</span>
-      </button>
-      <button id="btnLibre" class="btn btn-ghost btn-big">MODO LIBRE</button>
-    </div>
-    <p class="daily-status" id="dailyStatus"></p>
+<header>
+  <div class="brand">MARCA<small>el juego diario de logos</small></div>
+  <div class="chips">
+    <div class="chip">🔥 <span id="streakN">0</span></div>
+    <button class="chip icon" id="helpBtn" aria-label="Cómo se juega">?</button>
   </div>
-</section>
+</header>
 
-<!-- Pantalla 2: reveal de país -->
-<section id="screen-reveal" class="screen">
-  <div class="stage stage-center">
-    <p class="reveal-label">EL PAÍS ES</p>
-    <h2 id="revealName" class="reveal-name">ESPAÑA</h2>
-  </div>
-</section>
+<main id="app"><div class="loading">Cargando el catálogo de logos…</div></main>
 
-<!-- Pantalla 3: dibujo -->
-<section id="screen-draw" class="screen">
-  <div class="draw-wrap">
-    <div class="draw-header">
-      <div class="timer" id="timerDisplay">30</div>
-      <button id="btnListo" class="btn btn-primary">LISTO</button>
+<script type="module">
+/* ═══════════════════════════════════════════════════════════════
+   MARCA · dibuja logos de memoria
+   Los logos son los paths vectoriales REALES de Simple Icons
+   (~3.000 marcas, con su color oficial). Aquí no se dibuja nada a mano.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── COLECCIONES ─────────────────────────────────────────────────
+   Solo slugs. La dificultad 1-10 se calcula sola a partir de la
+   complejidad del path SVG (ver difAuto). Un slug que no exista en
+   Simple Icons se cae solo y te lo dice la consola.
+   OJO: Simple Icons NO tiene marcas como Chanel, Pepsi, Oreo, Xbox o
+   Microsoft. Su catálogo es tech/dev y han ido retirando logos por
+   peticiones legales. Lo que no está aquí, no está en ningún sitio.  */
+const PACKS = [
+  {id:'iconicos', nombre:'Icónicos', desc:'Los que juras que sabes de memoria.', logos:[
+    'nike','apple','adidas','mcdonalds','puma','playstation','x','spotify','whatsapp',
+    'youtube','instagram','netflix','amazon','google','facebook','tiktok','snapchat','pinterest'
+  ]},
+  {id:'motor', nombre:'Motor', desc:'Estrellas, aros y caballos. Cuenta bien los aros.', logos:[
+    'tesla','mercedes','bmw','audi','volkswagen','toyota','honda','ford','ferrari',
+    'lamborghini','porsche','jeep','nissan','hyundai','kia','mazda','renault','peugeot',
+    'fiat','volvo','subaru','mitsubishi','chevrolet','jaguar','mini','bugatti','maserati',
+    'alfaromeo','seat','skoda','opel','dacia','suzuki','ducati','mclaren','landrover','lexus'
+  ]},
+  {id:'comer', nombre:'De comer', desc:'Arcos, coronas y una sirena con dos colas.', logos:[
+    'mcdonalds','burgerking','kfc','starbucks','tacobell','cocacola','redbull','dunkin',
+    'deliveroo','ubereats','justeat','glovo','doordash','grubhub','wendys','chipotle',
+    'monster','carrefour','lidl','mercadona'
+  ]},
+  {id:'gaming', nombre:'Mando en mano', desc:'Cruces, esferas y una espiral que nadie recuerda.', logos:[
+    'playstation','nintendo','nintendoswitch','steam','twitch','discord','epicgames',
+    'ubisoft','ea','rockstargames','riotgames','roblox','unity','unrealengine','sega',
+    'activision','itchdotio','godotengine'
+  ]},
+  {id:'moda', nombre:'Moda y deporte', desc:'Rayas, felinos y una montaña con tres picos.', logos:[
+    'nike','adidas','puma','underarmour','newbalance','reebok','fila','thenorthface',
+    'zara','uniqlo','shein','zalando','aliexpress','decathlon','crocs','timberland'
+  ]},
+  {id:'pantallas', nombre:'Pantallas', desc:'Los que miras cien veces al día sin mirarlos nunca.', logos:[
+    'android','linux','firefoxbrowser','googlechrome','safari','reddit','telegram','linkedin',
+    'dropbox','slack','zoom','github','gitlab','figma','canva','adobe','openai','anthropic',
+    'samsung','xiaomi','huawei','sony','lg','intel','nvidia','amd','oracle','cisco','dell','asus'
+  ]},
+  {id:'dinero', nombre:'Dinero', desc:'Círculos que se solapan y una uve muy famosa.', logos:[
+    'visa','mastercard','paypal','revolut','stripe','americanexpress','klarna','bitcoin',
+    'ethereum','westernunion','wise','coinbase','binance','n26','monzo'
+  ]},
+  {id:'volar', nombre:'Volar', desc:'Colas, coronas y una grulla que casi nadie recuerda.', logos:[
+    'ryanair','easyjet','iberia','lufthansa','emirates','qatarairways','airfrance','klm',
+    'britishairways','americanairlines','delta','airbnb','tripadvisor','uber','vueling',
+    'turkishairlines','bookingdotcom','skyscanner'
+  ]}
+];
+
+/* Ajustes a mano cuando la fórmula se equivoca (opcional) */
+const MANUAL = { x:1, apple:2, nike:2, adidas:3, mcdonalds:4, playstation:5 };
+
+const PALETA = ['#141414','#FFFFFF','#E4322B','#1C4FD8','#F5C518','#1F9D55','#F07021','#7B4BC9'];
+const NIVELES = [['todo','Todos'],['1-3','Fácil · 1-3'],['4-6','Medio · 4-6'],['7-8','Difícil · 7-8'],['9-10','Infierno · 9-10']];
+const VEREDICTOS = [
+  [0,'El lienzo en blanco también es arte.'],
+  [1,'Valiente. Equivocado, pero valiente.'],
+  [30,'Vale, esto era más difícil de lo que parecía.'],
+  [50,'Se intuye. Poco, pero se intuye.'],
+  [65,'Oye, no está nada mal.'],
+  [75,'Reconocible, la verdad.'],
+  [85,'Esto ya es tener buen ojo.'],
+  [93,'Esto no es memoria, es brujería.']
+];
+
+/* ── ALMACENAMIENTO (localStorage en Netlify, memoria si no lo hay) ── */
+const mem = {};
+const store = {
+  get:k => { try{ return localStorage.getItem(k) }catch(e){ return mem[k] ?? null } },
+  set:(k,v) => { try{ localStorage.setItem(k,v) }catch(e){ mem[k]=v } }
+};
+
+/* ── CATÁLOGO REAL + DIFICULTAD AUTOMÁTICA ─────────────────────────
+   La dificultad sale de la complejidad del trazo: cuántos comandos
+   de curva tiene el path. Nike ~10, Starbucks ~300. Escala log a 1-10.
+   Así funciona para los 3.000 logos sin puntuarlos a mano.          */
+const ICON = {};
+const difAuto = path => {
+  const n = Math.max(8, (path.match(/[MmLlHhVvCcSsQqTtAaZz]/g) || []).length);
+  const d = 1 + 9 * (Math.log(n) - Math.log(8)) / (Math.log(600) - Math.log(8));
+  return Math.max(1, Math.min(10, Math.round(d)));
+};
+
+async function cargarCatalogo(){
+  const si = await import('https://cdn.jsdelivr.net/npm/simple-icons@13/+esm');
+  for(const k in si){
+    const i = si[k];
+    if(i && i.slug && i.path)
+      ICON[i.slug] = {titulo:i.title, path:i.path, hex:'#'+i.hex, dif: MANUAL[i.slug] ?? difAuto(i.path)};
+  }
+  const faltan = [];
+  for(const p of PACKS) p.logos = p.logos.filter(s => ICON[s] || (faltan.push(s), false));
+  if(faltan.length) console.warn('No están en Simple Icons:', [...new Set(faltan)]);
+  console.info('Catálogo:', Object.keys(ICON).length, 'logos jugables en total.');
+}
+
+const nombre = s => ICON[s].titulo;
+const color  = s => ICON[s].hex;
+const dif    = s => ICON[s].dif;
+const filtrar = (logos, nivel) => {
+  if(nivel === 'todo') return logos;
+  const [a,b] = nivel.split('-').map(Number);
+  return logos.filter(s => dif(s) >= a && dif(s) <= b);
+};
+const todos = () => [...new Set(PACKS.flatMap(p => p.logos))];
+
+/* ── PINTAR EL LOGO REAL ───────────────────────────────────────── */
+const svgLogo = s => `<svg viewBox="0 0 24 24" width="100%" height="100%" aria-hidden="true"><path fill="${color(s)}" d="${ICON[s].path}"/></svg>`;
+function pintarLogo(ctx, s, S){
+  const pad = .12*S, esc = (S - pad*2)/24;
+  ctx.save(); ctx.translate(pad,pad); ctx.scale(esc,esc);
+  ctx.fillStyle = color(s); ctx.fill(new Path2D(ICON[s].path)); ctx.restore();
+}
+
+/* ── JUEZ 1 · GEOMETRÍA (instantáneo, offline, determinista) ───── */
+const N = 64;
+function mascara(cv){
+  const c = document.createElement('canvas'); c.width = c.height = N;
+  const x = c.getContext('2d',{willReadFrequently:true});
+  x.fillStyle='#fff'; x.fillRect(0,0,N,N); x.drawImage(cv,0,0,N,N);
+  const d = x.getImageData(0,0,N,N).data, m = new Uint8Array(N*N);
+  for(let i=0;i<N*N;i++) m[i] = (d[i*4]+d[i*4+1]+d[i*4+2]) < 720 ? 1 : 0;
+  return m;
+}
+const iou = (a,b) => { let i=0,u=0; for(let k=0;k<a.length;k++){ if(a[k]&&b[k])i++; if(a[k]||b[k])u++; } return u?i/u:0; };
+function recortar(m){
+  let x0=N,y0=N,x1=-1,y1=-1;
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++) if(m[y*N+x]){ x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y); }
+  if(x1<0) return m;
+  const w=x1-x0+1, h=y1-y0+1, o=new Uint8Array(N*N);
+  for(let y=0;y<N;y++)for(let x=0;x<N;x++) o[y*N+x] = m[(y0+((y*h/N)|0))*N + x0+((x*w/N)|0)];
+  return o;
+}
+function notaGeometrica(dibujo, objetivo){
+  const md = mascara(dibujo), mo = mascara(objetivo);
+  let tinta = 0; for(let i=0;i<md.length;i++) tinta += md[i];
+  if(tinta < 12) return 0;                                    // lienzo vacío = 0, sin regalos
+  const bruto = Math.max(iou(md,mo), iou(recortar(md),recortar(mo)) * .95);
+  return Math.min(99, Math.round(100 * Math.pow(bruto, .45)));
+}
+
+/* ── JUEZ 2 · IA CON VISIÓN (la nota final) ────────────────────────
+   ⚠ En Netlify: cambia API por tu propia Function que reenvíe a la
+     API de Anthropic con la clave en el servidor, nunca en el cliente. */
+const API = 'https://api.anthropic.com/v1/messages';
+const b64 = cv => cv.toDataURL('image/png').split(',')[1];
+
+async function juezIA(dibujo, slug, geo){
+  const chico = Object.assign(document.createElement('canvas'), {width:384, height:384});
+  const cx = chico.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,384,384);
+  cx.drawImage(dibujo, 0, 0, 384, 384);
+
+  const real = Object.assign(document.createElement('canvas'), {width:384, height:384});
+  const rx = real.getContext('2d'); rx.fillStyle='#fff'; rx.fillRect(0,0,384,384);
+  pintarLogo(rx, slug, 384);
+
+  const prompt =
+`Eres el juez de un juego en el que la gente dibuja logos de memoria, con el dedo, en un móvil.
+
+Imagen 1: el dibujo del jugador.
+Imagen 2: el logo real de ${nombre(slug)}.
+
+Puntúa de 0 a 100 lo bien que lo ha reproducido. Criterios por orden de peso:
+- Silueta y forma general: ¿se reconoce el logo?
+- Proporciones y orientación.
+- Colores.
+- Los detalles finos casi no cuentan: es un dedo sobre un cristal, no un vector.
+
+Calibración: 0 = lienzo vacío o nada que ver. 40 = se adivina la intención. 70 = reconocible. 90 = clavado, para estar hecho a mano.
+Una referencia geométrica automática ha dado ${geo}. Tenla en cuenta, pero manda tu criterio.
+
+Devuelve SOLO este JSON, sin markdown ni texto alrededor:
+{"nota": <0-100>, "veredicto": "<frase corta en español, con guasa, máximo 8 palabras>"}`;
+
+  const res = await fetch(API, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-6', max_tokens:1000,
+      messages:[{role:'user', content:[
+        {type:'image', source:{type:'base64', media_type:'image/png', data:b64(chico)}},
+        {type:'image', source:{type:'base64', media_type:'image/png', data:b64(real)}},
+        {type:'text', text:prompt}
+      ]}]
+    })
+  });
+  const data = await res.json();
+  const txt = data.content.filter(c => c.type === 'text').map(c => c.text).join('');
+  const j = JSON.parse(txt.replace(/```json|```/g,'').trim());
+  return {nota: Math.max(0, Math.min(100, Math.round(j.nota))), veredicto: j.veredicto};
+}
+
+const veredictoLocal = n => VEREDICTOS.filter(v => n >= v[0]).pop()[1];
+const tono = n => n >= 65 ? 'var(--good)' : 'var(--bad)';
+
+/* ── RACHA ─────────────────────────────────────────────────────── */
+const hoy = () => new Date().toISOString().slice(0,10);
+const pintarRacha = () => document.getElementById('streakN').textContent = +(store.get('racha')||0);
+function sumarRacha(){
+  if(store.get('ultimoDia') === hoy()) return;
+  const ayer = new Date(Date.now()-864e5).toISOString().slice(0,10);
+  store.set('racha', store.get('ultimoDia') === ayer ? +(store.get('racha')||0)+1 : 1);
+  store.set('ultimoDia', hoy()); pintarRacha();
+}
+
+/* ═══ PANTALLAS ═══════════════════════════════════════════════════ */
+const app = document.getElementById('app');
+const ir = v => { window.scrollTo(0,0); v(); };
+let nivel = store.get('nivel') || 'todo';
+
+function home(){
+  const lista = todos();
+  const slugDia = lista[Math.floor(Date.now()/864e5) % lista.length];
+
+  const packsHTML = PACKS.map(p => {
+    const v = filtrar(p.logos, nivel);
+    if(!v.length) return '';
+    return `<button class="pack" data-pack="${p.id}">
+      <div class="marks">${v.slice(0,6).map(s => svgLogo(s)).join('')}</div>
+      <div><h3>${p.nombre}</h3><span>${v.length} logos · ${p.desc}</span></div>
+      <div class="arrow">→</div>
+    </button>`;
+  }).join('') + `<button class="pack" id="explorar">
+      <div class="marks">${['github','figma','bitcoin','nvidia','reddit','ferrari'].filter(s => ICON[s]).slice(0,6).map(s => svgLogo(s)).join('')}</div>
+      <div><h3>Todo el catálogo</h3><span>${Object.keys(ICON).length} logos · Busca cualquier marca y dibújala.</span></div>
+      <div class="arrow">→</div>
+    </button>`;
+
+  app.innerHTML = `
+    <section class="daily">
+      <div class="ghost">${svgLogo(slugDia)}</div>
+      <div>
+        <div class="eyebrow">Logo del día</div>
+        <h2>Uno al día,<br>de memoria.</h2>
+        <p>Fallar mantiene la racha. Rendirse no.</p>
+      </div>
+      <button class="go" id="jugarDiario">Dibujar →</button>
+    </section>
+
+    <div class="eyebrow">Dificultad</div>
+    <div class="levels" id="lvs">
+      ${NIVELES.map(([k,t]) => `<button class="lv" data-lv="${k}" aria-pressed="${k===nivel}">${t}</button>`).join('')}
     </div>
 
-    <p class="draw-hint">el cuadrado ENTERO es la bandera — pinta hasta el borde</p>
-    <div class="canvas-holder">
-      <canvas id="drawCanvas"></canvas>
-    </div>
+    <div class="eyebrow" style="margin-bottom:12px">Colecciones</div>
+    ${packsHTML ? `<div class="packs">${packsHTML}</div>` : `<div class="empty">Ninguna colección tiene logos de este nivel.<br>Prueba otra dificultad.</div>`}`;
 
-    <div class="tools">
-      <div class="palette" id="palette"></div>
+  document.getElementById('jugarDiario').onclick = () => ir(() => dibujar(slugDia, 'Reto del día', null));
+  document.getElementById('explorar').onclick = () => ir(explorar);
+  document.getElementById('lvs').querySelectorAll('.lv').forEach(b => b.onclick = () => {
+    nivel = b.dataset.lv; store.set('nivel', nivel); home();
+  });
+  app.querySelectorAll('[data-pack]').forEach(b => b.onclick = () => {
+    const p = PACKS.find(x => x.id === b.dataset.pack);
+    const cola = filtrar(p.logos, nivel).slice().sort(() => Math.random()-.5);
+    ir(() => dibujar(cola[0], p.nombre, {cola, i:0, pack:p}));
+  });
+}
 
-      <div class="tool-row">
-        <label class="brush-label" for="brushSize">grosor</label>
-        <input type="range" id="brushSize" min="2" max="28" value="10">
-        <button id="btnUndo" class="btn btn-ghost" title="Deshacer">DESHACER</button>
-        <button id="btnClear" class="btn btn-ghost" title="Borrar todo">BORRAR TODO</button>
+/* ── EXPLORAR TODO EL CATÁLOGO ─────────────────────────────────── */
+function explorar(){
+  app.innerHTML = `
+    <button class="chip" id="volver" style="margin-bottom:18px">← Inicio</button>
+    <div class="prompt"><div class="eyebrow">Todo el catálogo</div>
+      <h2 style="font-size:30px">${Object.keys(ICON).length} logos</h2></div>
+    <input id="q" class="search" placeholder="Busca una marca…" autocomplete="off">
+    <div class="grid" id="res"></div>`;
+
+  document.getElementById('volver').onclick = () => ir(home);
+  const res = document.getElementById('res'), q = document.getElementById('q');
+
+  const pintar = () => {
+    const t = q.value.trim().toLowerCase();
+    const hit = Object.keys(ICON)
+      .filter(s => !t || ICON[s].titulo.toLowerCase().includes(t))
+      .sort((a,b) => ICON[a].titulo.localeCompare(ICON[b].titulo))
+      .slice(0, 60);
+    res.innerHTML = hit.length
+      ? hit.map(s => `<button class="tile" data-s="${s}">
+          <div class="ico">${svgLogo(s)}</div>
+          <span>${ICON[s].titulo}</span><small>Dif. ${dif(s)}</small>
+        </button>`).join('')
+      : `<div class="empty" style="grid-column:1/-1">Ninguna marca con ese nombre.</div>`;
+    res.querySelectorAll('.tile').forEach(b => b.onclick = () => ir(() => dibujar(b.dataset.s, 'Catálogo', null)));
+  };
+  q.oninput = pintar;
+  pintar();
+}
+
+/* ── DIBUJAR ───────────────────────────────────────────────────── */
+function dibujar(slug, etiqueta, sesion){
+  const marca = color(slug);
+  const dif = sesion ? sesion.cola[sesion.i][1] : (todos().find(l => l[0] === slug)?.[1] || 5);
+  const paleta = [marca, ...PALETA.filter(c => c.toLowerCase() !== marca.toLowerCase())];
+  let castigo = 0;
+
+  app.innerHTML = `
+    <button class="chip" id="volver" style="margin-bottom:18px">← Salir</button>
+    <div class="prompt">
+      <div class="eyebrow">Dibuja el logo de</div>
+      <h2>${nombre(slug)}</h2>
+      <div class="meta">${etiqueta}${sesion ? ` · ${sesion.i+1} de ${sesion.cola.length}` : ''} · Dificultad ${dif}
+        <span class="dots">${Array.from({length:10},(_,i) => `<i class="${i<dif?'on':''}"></i>`).join('')}</span>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- Pantalla 4: resultado -->
-<section id="screen-result" class="screen">
-  <div class="result-card">
-    <div class="result-compare">
-      <div class="result-col">
-        <canvas id="yoursCanvas" class="result-canvas"></canvas>
-        <span class="result-caption">TUYO</span>
+    <div class="stage">
+      <canvas id="ghost" width="600" height="600"></canvas>
+      <canvas id="pad" width="600" height="600"></canvas>
+    </div>
+
+    <div class="hintbar">
+      <button class="hint" data-h="1">Categoría<b>−5%</b></button>
+      <button class="hint" data-h="2">Paleta real<b>−10%</b></button>
+      <button class="hint" data-h="3">Silueta<b>−20%</b></button>
+    </div>
+    <div class="hintout" id="hintout"></div>
+
+    <div class="swatches" id="sw">
+      ${paleta.map((c,i) => `<button class="sw" data-c="${c}" aria-pressed="${i===0}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')}
+      <button class="sw rainbow" id="custom" aria-label="Color personalizado"><input type="color" value="${marca}"></button>
+    </div>
+
+    <div class="tools" id="tools">
+      ${[['brush','Pincel','M3 21c3 .5 5-1 6-3M8 17 18 6a2.1 2.1 0 0 1 3 3L10 19'],
+         ['fill','Relleno','M4 12 12 4l8 8-8 8zM20 15c1.5 2 1.5 4 0 4s-1.5-2 0-4'],
+         ['eraser','Goma','M4 16 12 8l6 6-4 4H6zM9 21h11'],
+         ['rect','Rectángulo','M4 7h16v10H4z'],
+         ['circle','Círculo','M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16'],
+         ['line','Línea','M5 19 19 5']
+        ].map(([id,t,d],i) => `<button class="tool" data-t="${id}" aria-pressed="${i===0}" aria-label="${t}"><svg viewBox="0 0 24 24"><path d="${d}"/></svg></button>`).join('')}
+      <button class="tool sep" id="undo" aria-label="Deshacer" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+      <button class="tool" id="clear" aria-label="Borrar todo"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg></button>
+    </div>
+
+    <div class="size">
+      <label for="sz">Grosor</label><input id="sz" type="range" min="4" max="90" value="34"><b id="szN">34</b>
+    </div>
+
+    <button class="primary" id="revelar">Revelar y comparar</button>`;
+
+  document.getElementById('volver').onclick = () => ir(home);
+
+  /* pistas */
+  const out = document.getElementById('hintout');
+  const gh = document.getElementById('ghost');
+  document.querySelectorAll('.hint').forEach(b => b.onclick = () => {
+    const h = +b.dataset.h; b.disabled = true;
+    if(h === 1){ castigo += 5;  out.textContent = `Colección: ${etiqueta}. Símbolo, sin letras.`; }
+    if(h === 2){ castigo += 10; out.textContent = `Color de marca: ${marca}. Ya lo tienes seleccionado.`; }
+    if(h === 3){
+      castigo += 20;
+      pintarLogo(gh.getContext('2d'), slug, 600);
+      gh.classList.add('on');
+      out.textContent = 'Silueta fantasma activada. Calca sin vergüenza.';
+    }
+  });
+
+  /* lienzo */
+  const cv = document.getElementById('pad'), ctx = cv.getContext('2d',{willReadFrequently:true}), S = 600;
+  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,S,S);
+  ctx.lineCap = ctx.lineJoin = 'round';
+
+  let c = marca, herr = 'brush', grosor = 34, pintando = false, x0 = 0, y0 = 0, antes = null;
+  const pila = [], undoBtn = document.getElementById('undo');
+  const guardar = () => { pila.push(ctx.getImageData(0,0,S,S)); if(pila.length > 12) pila.shift(); undoBtn.disabled = false; };
+  undoBtn.onclick = () => { if(pila.length){ ctx.putImageData(pila.pop(),0,0); undoBtn.disabled = !pila.length; } };
+  document.getElementById('clear').onclick = () => { guardar(); ctx.fillStyle='#fff'; ctx.fillRect(0,0,S,S); };
+
+  const swBox = document.getElementById('sw');
+  swBox.querySelectorAll('.sw[data-c]').forEach(b => b.onclick = () => {
+    swBox.querySelectorAll('.sw').forEach(o => o.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true'); c = b.dataset.c;
+  });
+  document.querySelector('#custom input').oninput = e => {
+    swBox.querySelectorAll('.sw').forEach(o => o.setAttribute('aria-pressed','false'));
+    document.getElementById('custom').setAttribute('aria-pressed','true'); c = e.target.value;
+  };
+  const toolBox = document.getElementById('tools');
+  toolBox.querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+    toolBox.querySelectorAll('[data-t]').forEach(o => o.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true'); herr = b.dataset.t;
+  });
+  const sz = document.getElementById('sz');
+  sz.oninput = () => { grosor = +sz.value; document.getElementById('szN').textContent = grosor; };
+
+  const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX-r.left)*S/r.width, (e.clientY-r.top)*S/r.height]; };
+
+  function relleno(px, py, hex){
+    const img = ctx.getImageData(0,0,S,S), d = img.data;
+    const p0 = (py|0)*S + (px|0), i0 = p0*4;
+    const dst = [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+    const src = [d[i0], d[i0+1], d[i0+2]];
+    if(Math.abs(src[0]-dst[0]) + Math.abs(src[1]-dst[1]) + Math.abs(src[2]-dst[2]) < 12) return;
+    const st = [p0], visto = new Uint8Array(S*S);
+    while(st.length){
+      const p = st.pop(); if(visto[p]) continue; visto[p] = 1;
+      const i = p*4;
+      if(Math.abs(d[i]-src[0]) + Math.abs(d[i+1]-src[1]) + Math.abs(d[i+2]-src[2]) > 60) continue;
+      d[i] = dst[0]; d[i+1] = dst[1]; d[i+2] = dst[2]; d[i+3] = 255;
+      const x = p % S, y = (p - x)/S;
+      if(x > 0) st.push(p-1);
+      if(x < S-1) st.push(p+1);
+      if(y > 0) st.push(p-S);
+      if(y < S-1) st.push(p+S);
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  cv.addEventListener('pointerdown', e => {
+    e.preventDefault(); cv.setPointerCapture(e.pointerId);
+    const [x,y] = pos(e); guardar();
+    if(herr === 'fill'){ relleno(x, y, c); return; }
+    pintando = true; x0 = x; y0 = y;
+    if(herr === 'brush' || herr === 'eraser'){
+      ctx.strokeStyle = ctx.fillStyle = herr === 'eraser' ? '#fff' : c;
+      ctx.lineWidth = grosor;
+      ctx.beginPath(); ctx.arc(x, y, grosor/2, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(x, y);
+    } else antes = ctx.getImageData(0,0,S,S);
+  });
+  cv.addEventListener('pointermove', e => {
+    if(!pintando) return;
+    const [x,y] = pos(e);
+    if(herr === 'brush' || herr === 'eraser'){ ctx.lineTo(x,y); ctx.stroke(); return; }
+    ctx.putImageData(antes, 0, 0);
+    ctx.strokeStyle = ctx.fillStyle = c; ctx.lineWidth = grosor;
+    if(herr === 'rect') ctx.fillRect(Math.min(x0,x), Math.min(y0,y), Math.abs(x-x0), Math.abs(y-y0));
+    if(herr === 'circle'){ ctx.beginPath(); ctx.ellipse((x0+x)/2, (y0+y)/2, Math.abs(x-x0)/2, Math.abs(y-y0)/2, 0, 0, 7); ctx.fill(); }
+    if(herr === 'line'){ ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x,y); ctx.stroke(); }
+  });
+  const soltar = () => { pintando = false; antes = null; };
+  cv.addEventListener('pointerup', soltar);
+  cv.addEventListener('pointercancel', soltar);
+
+  document.getElementById('revelar').onclick = () => {
+    const obj = Object.assign(document.createElement('canvas'), {width:S, height:S});
+    const oc = obj.getContext('2d'); oc.fillStyle = '#fff'; oc.fillRect(0,0,S,S);
+    pintarLogo(oc, slug, S);
+    const geo = notaGeometrica(cv, obj);
+    if(!sesion) sumarRacha();
+    ir(() => resultado(slug, geo, castigo, cv, sesion));
+  };
+}
+
+/* ── RESULTADO ─────────────────────────────────────────────────── */
+function resultado(slug, geo, castigo, dibujo, sesion){
+  const hay = sesion && sesion.i + 1 < sesion.cola.length;
+  const inicial = Math.max(0, geo - castigo);
+
+  app.innerHTML = `
+    <section class="result">
+      <div class="verdict" id="vd" style="color:${tono(inicial)}">${veredictoLocal(inicial)}</div>
+      <div class="versus">
+        <figure><canvas id="tuyo" width="300" height="300"></canvas><figcaption>El tuyo</figcaption></figure>
+        <figure><div class="real">${svgLogo(slug)}</div><figcaption>${nombre(slug)}</figcaption></figure>
       </div>
-      <div class="result-col">
-        <canvas id="flagCanvas" class="result-canvas"></canvas>
-        <span class="result-caption" id="countryNameResult">ESPAÑA</span>
-      </div>
-    </div>
+      <div class="score" id="sc" style="color:${tono(inicial)}">${inicial} <span>% de acierto</span></div>
+      <div class="judging" id="jd">El juez está mirando tu dibujo…</div>
+      <button class="primary" id="sig">${hay ? 'Siguiente logo' : 'Volver al inicio'}</button>
+      <button class="secondary" id="share">Compartir resultado</button>
+    </section>`;
 
-    <div class="verdict-block">
-      <div class="verdict" id="verdictText">SOOO GOOD...</div>
-      <div class="percent" id="percentText">98% match</div>
-      <p class="streak-note" id="streakNote"></p>
-    </div>
+  document.getElementById('tuyo').getContext('2d').drawImage(dibujo, 0, 0, 300, 300);
+  let nota = inicial, frase = veredictoLocal(inicial);
 
-    <div class="result-actions">
-      <button id="btnOtro" class="btn btn-primary">OTRA BANDERA</button>
-      <button id="btnCompartir" class="btn btn-ghost">COMPARTIR</button>
-    </div>
-  </div>
-</section>
+  document.getElementById('sig').onclick = () => {
+    if(hay){ const s = {...sesion, i:sesion.i+1}; ir(() => dibujar(s.cola[s.i][0], s.pack.nombre, s)); }
+    else ir(home);
+  };
+  document.getElementById('share').onclick = () => compartir(slug, nota, frase, dibujo);
 
-<canvas id="hiddenFlagCanvas" style="display:none"></canvas>
+  /* el juez IA da la nota final; la geometría queda de red de seguridad */
+  (async () => {
+    const jd = document.getElementById('jd');
+    if(geo === 0){ jd.className = 'breakdown'; jd.innerHTML = 'Geometría <b>0</b> · el juez no tiene nada que mirar.'; return; }
+    try{
+      const r = await juezIA(dibujo, slug, geo);
+      nota = Math.max(0, r.nota - castigo);
+      frase = r.veredicto;
+      const sc = document.getElementById('sc'), vd = document.getElementById('vd');
+      sc.innerHTML = `${nota} <span>% de acierto</span>`; sc.style.color = tono(nota);
+      vd.textContent = frase; vd.style.color = tono(nota);
+      jd.className = 'breakdown';
+      jd.innerHTML = `Juez IA <b>${r.nota}</b> · geometría <b>${geo}</b>${castigo ? ` · pistas <em>−${castigo}</em>` : ''}`;
+    }catch(e){
+      jd.className = 'breakdown';
+      jd.innerHTML = `Solo geometría <b>${geo}</b>${castigo ? ` · pistas <em>−${castigo}</em>` : ''} · el juez IA no ha respondido.`;
+    }
+  })();
+}
 
-<script src="flags.js"></script>
-<script src="scoring.js"></script>
-<script src="app.js"></script>
+/* ── TARJETA PARA COMPARTIR ────────────────────────────────────── */
+async function compartir(slug, nota, frase, dibujo){
+  const W = 1080, H = 1350;
+  const cnv = Object.assign(document.createElement('canvas'), {width:W, height:H});
+  const x = cnv.getContext('2d');
+
+  x.fillStyle = '#F2F1EC'; x.fillRect(0,0,W,H);
+  x.fillStyle = '#141414'; x.font = '900 42px "Archivo Black",sans-serif';
+  x.letterSpacing = '10px'; x.fillText('MARCA', 80, 110); x.letterSpacing = '0px';
+  x.fillStyle = '#8A877E'; x.font = '400 28px Archivo,sans-serif';
+  x.fillText('el juego diario de logos', 80, 155);
+
+  x.fillStyle = '#fff'; x.beginPath(); x.roundRect(60, 240, W-120, H-360, 32); x.fill();
+
+  x.textAlign = 'center';
+  x.fillStyle = nota >= 65 ? '#1F7A4C' : '#B23A2E';
+  x.font = '900 44px "Archivo Black",sans-serif';
+  x.fillText(frase, W/2, 340);
+
+  const S = 340, gap = 60, L = (W - S*2 - gap)/2, T = 410;
+  x.fillStyle = '#fff'; x.strokeStyle = '#E2E0D8'; x.lineWidth = 2;
+  [0,1].forEach(i => { x.beginPath(); x.roundRect(L + i*(S+gap), T, S, S, 18); x.fill(); x.stroke(); });
+  x.drawImage(dibujo, L, T, S, S);
+  x.save(); x.translate(L + S + gap, T); pintarLogo(x, slug, S); x.restore();
+
+  x.fillStyle = '#8A877E'; x.font = '400 26px Archivo,sans-serif';
+  x.fillText('El tuyo', L + S/2, T + S + 44);
+  x.fillText(nombre(slug), L + S + gap + S/2, T + S + 44);
+
+  x.fillStyle = nota >= 65 ? '#1F7A4C' : '#B23A2E';
+  x.font = '900 130px "Archivo Black",sans-serif';
+  x.fillText(nota + '%', W/2, T + S + 190);
+  x.fillStyle = '#8A877E'; x.font = '400 30px Archivo,sans-serif';
+  x.fillText('dibujando de memoria, con el dedo', W/2, T + S + 235);
+
+  const blob = await new Promise(r => cnv.toBlob(r, 'image/png'));
+  const file = new File([blob], 'marca.png', {type:'image/png'});
+  const texto = `${nota}% dibujando el logo de ${nombre(slug)} de memoria. ¿Puedes hacerlo mejor?`;
+  try{
+    if(navigator.canShare?.({files:[file]})){ await navigator.share({files:[file], text:texto}); return; }
+  }catch(e){ return; }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'marca.png'; a.click();
+}
+
+/* ── AYUDA ─────────────────────────────────────────────────────── */
+document.getElementById('helpBtn').onclick = () => alert(
+  'MARCA\n\n' +
+  '1. Te decimos una marca. Dibujas su logo de memoria, sin mirarlo.\n' +
+  '2. Revelas: comparamos tu trazo con el logo real.\n' +
+  '3. Puntúan dos jueces. La geometría mide cuánto solapa tu dibujo con el logo (instantáneo). El juez IA lo mira como lo miraría una persona: perdona el pulso, castiga los errores de concepto. Manda el segundo.\n\n' +
+  'Las pistas ayudan, pero cuestan puntos.\n' +
+  'Un logo al día mantiene la racha.'
+);
+
+/* ── ARRANQUE ──────────────────────────────────────────────────── */
+(async () => {
+  pintarRacha();
+  try{
+    await cargarCatalogo();
+    home();
+  }catch(e){
+    console.error(e);
+    app.innerHTML = '<div class="error">No se ha podido cargar el catálogo de logos.<br>Revisa la conexión y recarga.</div>';
+  }
+})();
+</script>
 </body>
 </html>
