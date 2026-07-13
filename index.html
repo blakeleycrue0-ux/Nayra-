@@ -385,9 +385,27 @@ Devuelve SOLO este JSON, sin markdown:
 }
 const veredictoLocal = n => VEREDICTOS.filter(v => n >= v[0]).pop()[1];
 
+/* ── SUPABASE ──────────────────────────────────────────────────────
+   La anon key es PÚBLICA por diseño: puede ir en el cliente. Lo que
+   protege los datos es RLS, no esconder esta clave.                 */
+const SUPABASE_URL  = 'https://gdisbjqfaqtljdycxsuv.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaXNianFmYXF0bGpkeWN4c3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTY4ODgsImV4cCI6MjA5OTQ3Mjg4OH0.KjO2evw-9ePDsrCJ_OGhve7zZRFRN2PmpV6EYNBiFCQ';
+
+let sb = null, USER = null;
+if(SUPABASE_URL && SUPABASE_ANON){
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+}
+
+const perfilDe = u => {
+  const n = u.user_metadata?.full_name || u.user_metadata?.name || u.email?.split('@')[0] || 'Jugador';
+  return {id: u.id, nombre: n, inicial: n[0].toUpperCase()};
+};
+const usuario  = () => USER;
+const invitado = () => store.get('invitado') === '1';
+
 /* ── sesión y racha ────────────────────────────────────────────── */
 const hoy = () => new Date().toISOString().slice(0,10);
-const usuario = () => { try{ return JSON.parse(store.get('user')) }catch(e){ return null } };
 const racha = () => +(store.get('racha') || 0);
 function sumarRacha(){
   if(store.get('ultimoDia') === hoy()) return;
@@ -448,22 +466,35 @@ function vistaLogin(){
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3c1.9 3.8 5.8 6.3 10.2 6.3"/><path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 0 1 0-4.6v-3H1.8a12 12 0 0 0 0 10.6z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.6 0 3.7 2.5 1.8 6.2l3.8 3a7.1 7.1 0 0 1 6.4-4.4"/></svg>
           Continuar con Google
         </button>
-        <button class="authbtn alt" id="a" style="margin-top:10px">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.5c0-2.6 2.1-3.8 2.2-3.9-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9s-2-.9-3.3-.9c-1.7 0-3.3 1-4.1 2.5-1.8 3-.5 7.5 1.3 10 .9 1.2 1.9 2.5 3.2 2.5 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8 2.2-1.2 3.1-2.4c1-1.4 1.4-2.7 1.4-2.8-.1 0-2.7-1-2.7-4zM14.6 4.6c.7-.9 1.2-2.1 1-3.3-1 0-2.3.7-3 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3.1-1.5z"/></svg>
-          Continuar con Apple
-        </button>
+        <input id="mail" class="search" type="email" inputmode="email" autocomplete="email"
+               placeholder="o tu email…" style="margin:10px 0 0">
+        <button class="authbtn alt" id="magic" style="margin-top:10px">Enviarme un enlace de acceso</button>
+        <div id="aviso" class="legal" style="min-height:18px;margin-top:10px"></div>
         <button class="guest" id="inv">Entrar sin cuenta</button>
       </div>
       <p class="legal">Con una cuenta guardas tu racha, tu galería y entras en el ranking diario.</p>
     </section>`);
 
-  const entrar = quien => {
-    store.set('user', JSON.stringify({nombre: quien, inicial: quien[0].toUpperCase()}));
-    tab = 'hoy'; pintar();
+  const aviso = t => document.getElementById('aviso').textContent = t;
+
+  document.getElementById('g').onclick = async () => {
+    if(!sb) return aviso('Falta configurar Supabase (SUPABASE_URL y SUPABASE_ANON).');
+    const {error} = await sb.auth.signInWithOAuth({provider:'google', options:{redirectTo: location.origin}});
+    if(error) aviso(error.message);
   };
-  document.getElementById('g').onclick = () => entrar('Tú');
-  document.getElementById('a').onclick = () => entrar('Tú');
-  document.getElementById('inv').onclick = () => { tab = 'hoy'; pintar(); };
+
+  document.getElementById('magic').onclick = async () => {
+    if(!sb) return aviso('Falta configurar Supabase (SUPABASE_URL y SUPABASE_ANON).');
+    const email = document.getElementById('mail').value.trim();
+    if(!email) return aviso('Escribe tu email.');
+    aviso('Enviando…');
+    const {error} = await sb.auth.signInWithOtp({email, options:{emailRedirectTo: location.origin}});
+    aviso(error ? error.message : 'Revisa tu correo: te hemos mandado el enlace.');
+  };
+
+  document.getElementById('inv').onclick = () => {
+    store.set('invitado','1'); tab = 'hoy'; pintar();
+  };
 }
 
 /* ═══ HOY ═════════════════════════════════════════════════════════ */
@@ -860,16 +891,30 @@ function vistaPerfil(){
     <div class="gallery">${Array.from({length:6},()=>'<div class="slot">+</div>').join('')}</div>
     <button class="ghostbtn" id="salir" style="margin-top:20px">Cerrar sesión</button>`);
 
-  document.getElementById('salir').onclick = () => { store.set('user',''); vistaPerfil(); };
+  document.getElementById('salir').onclick = async () => {
+    if(sb) await sb.auth.signOut();
+    USER = null; store.set('invitado',''); vistaLogin();
+  };
 }
 
 /* ═══ ARRANQUE ════════════════════════════════════════════════════ */
 (async () => {
   try{
     await cargarCatalogo();
-    if(usuario()) pintar(); else vistaLogin();
+
+    if(sb){
+      const {data:{session}} = await sb.auth.getSession();
+      if(session) USER = perfilDe(session.user);
+      sb.auth.onAuthStateChange((_e, s) => {
+        USER = s ? perfilDe(s.user) : null;
+        if(USER) store.set('invitado','');
+        if(USER || invitado()) pintar(); else vistaLogin();
+      });
+    }
+
+    if(USER || invitado()) pintar(); else vistaLogin();
   }catch(e){
-    console.error(e);
+    console.log(e);
     root.innerHTML = '<div class="center">No se ha podido cargar el catálogo de logos.<br>Revisa la conexión y recarga.</div>';
   }
 })();
