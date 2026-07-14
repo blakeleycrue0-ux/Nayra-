@@ -5,6 +5,11 @@
   const ROUND_SECONDS = 30;
   const MAX_UNDO = 40;
 
+  const baseCanvas = document.getElementById('baseCanvas');
+  const bctx = baseCanvas.getContext('2d', { willReadFrequently: true });
+  baseCanvas.width = DRAW_SIZE;
+  baseCanvas.height = DRAW_SIZE;
+
   const drawCanvas = document.getElementById('drawCanvas');
   const dctx = drawCanvas.getContext('2d', { willReadFrequently: true });
   drawCanvas.width = DRAW_SIZE;
@@ -20,7 +25,9 @@
   const paletteEl = document.getElementById('palette');
   const brushSizeEl = document.getElementById('brushSize');
   const timerEl = document.getElementById('timerDisplay');
+  const revealLabelEl = document.getElementById('revealLabel');
   const revealNameEl = document.getElementById('revealName');
+  const drawHintEl = document.getElementById('drawHint');
   const verdictEl = document.getElementById('verdictText');
   const percentEl = document.getElementById('percentText');
   const countryNameResultEl = document.getElementById('countryNameResult');
@@ -30,10 +37,19 @@
   const dailyStatusEl = document.getElementById('dailyStatus');
   const streakNoteEl = document.getElementById('streakNote');
   const btnDaily = document.getElementById('btnDaily');
+  const btnOtroEl = document.getElementById('btnOtro');
 
+  const HINT_BANDERA = 'el cuadrado ENTERO es la bandera — pinta hasta el borde';
+  const HINT_COMPLETAR = 'dibuja SOLO la pieza que falta';
+
+  let mode = 'libre'; // 'daily' | 'libre' | 'completar'
   let currentFlag = null;
   let flagImage = null;
   let flagImageData = null;
+  let currentCompletar = null;
+  let baseImage = null;
+  let missingImage = null;
+  let missingImageData = null;
   let currentColor = '#000000';
   let brushSize = parseInt(brushSizeEl.value, 10);
   let drawing = false;
@@ -149,6 +165,24 @@
     let pool = FLAGS;
     if (currentFlag && FLAGS.length > 1) {
       pool = FLAGS.filter(f => f !== currentFlag);
+    }
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  // ---------- Carga y rasterizado de "completa el logo" ----------
+
+  async function prepareCompletar(entry) {
+    baseImage = await svgToImage(entry.baseSvg);
+    missingImage = await svgToImage(entry.missingSvg);
+    hctx.clearRect(0, 0, DRAW_SIZE, DRAW_SIZE);
+    hctx.drawImage(missingImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+    missingImageData = hctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
+  }
+
+  function pickRandomCompletar() {
+    let pool = COMPLETAR;
+    if (currentCompletar && COMPLETAR.length > 1) {
+      pool = COMPLETAR.filter(c => c !== currentCompletar);
     }
     return pool[Math.floor(Math.random() * pool.length)];
   }
@@ -274,18 +308,45 @@
 
   // ---------- Flujo de ronda ----------
 
-  async function beginRound(isDaily) {
-    isDailyRound = !!isDaily && !(loadDailyState().lastPlayedDate === todayKey());
-    currentFlag = isDailyRound ? dailyFlagForToday() : pickRandomFlag();
-    await prepareFlag(currentFlag);
-    revealNameEl.textContent = currentFlag.nombre;
+  async function beginRound(newMode) {
+    mode = newMode;
+    isDailyRound = false;
+
+    if (mode === 'daily') {
+      isDailyRound = loadDailyState().lastPlayedDate !== todayKey();
+      currentFlag = dailyFlagForToday();
+      await prepareFlag(currentFlag);
+      revealLabelEl.textContent = 'EL PAÍS ES';
+      revealNameEl.textContent = currentFlag.nombre;
+    } else if (mode === 'completar') {
+      currentCompletar = pickRandomCompletar();
+      await prepareCompletar(currentCompletar);
+      revealLabelEl.textContent = 'COMPLETA EL LOGO DE';
+      revealNameEl.textContent = currentCompletar.nombre;
+    } else {
+      currentFlag = pickRandomFlag();
+      await prepareFlag(currentFlag);
+      revealLabelEl.textContent = 'EL PAÍS ES';
+      revealNameEl.textContent = currentFlag.nombre;
+    }
+
     showScreen('reveal');
     setTimeout(beginDrawPhase, 2000);
   }
 
   function beginDrawPhase() {
     resetCanvas();
-    setupPalette(currentFlag.colores);
+    bctx.clearRect(0, 0, DRAW_SIZE, DRAW_SIZE);
+
+    if (mode === 'completar') {
+      bctx.drawImage(baseImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+      setupPalette(currentCompletar.colores);
+      drawHintEl.textContent = HINT_COMPLETAR;
+    } else {
+      setupPalette(currentFlag.colores);
+      drawHintEl.textContent = HINT_BANDERA;
+    }
+
     showScreen('draw');
     startTimer();
   }
@@ -293,7 +354,8 @@
   function finishDrawing() {
     stopTimer();
     const userData = dctx.getImageData(0, 0, DRAW_SIZE, DRAW_SIZE).data;
-    const result = computeScore(userData, flagImageData);
+    const targetData = mode === 'completar' ? missingImageData : flagImageData;
+    const result = computeScore(userData, targetData);
     const wasDailyRound = isDailyRound;
     isDailyRound = false;
     showResult(result, wasDailyRound);
@@ -310,13 +372,23 @@
 
     yctx.fillStyle = '#ffffff';
     yctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
-    yctx.drawImage(drawCanvas, 0, 0);
-
     fctx.fillStyle = '#ffffff';
     fctx.fillRect(0, 0, DRAW_SIZE, DRAW_SIZE);
-    fctx.drawImage(flagImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
 
-    countryNameResultEl.textContent = currentFlag.nombre;
+    if (mode === 'completar') {
+      yctx.drawImage(baseImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+      yctx.drawImage(drawCanvas, 0, 0);
+      fctx.drawImage(baseImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+      fctx.drawImage(missingImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+      countryNameResultEl.textContent = currentCompletar.nombre;
+      btnOtroEl.textContent = 'OTRO LOGO';
+    } else {
+      yctx.drawImage(drawCanvas, 0, 0);
+      fctx.drawImage(flagImage, 0, 0, DRAW_SIZE, DRAW_SIZE);
+      countryNameResultEl.textContent = currentFlag.nombre;
+      btnOtroEl.textContent = 'OTRA BANDERA';
+    }
+
     verdictEl.textContent = result.label;
     percentEl.textContent = result.displayed + '% match';
 

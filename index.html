@@ -19,6 +19,7 @@
         RETO DIARIO <span class="streak-badge" id="streakBadge">🔥 0</span>
       </button>
       <button id="btnLibre" class="btn btn-ghost btn-big">MODO LIBRE</button>
+      <button id="btnCompletar" class="btn btn-ghost btn-big">COMPLETA EL LOGO</button>
     </div>
     <p class="daily-status" id="dailyStatus"></p>
   </div>
@@ -27,7 +28,7 @@
 <!-- Pantalla 2: reveal de país -->
 <section id="screen-reveal" class="screen">
   <div class="stage stage-center">
-    <p class="reveal-label">EL PAÍS ES</p>
+    <p class="reveal-label" id="revealLabel">EL PAÍS ES</p>
     <h2 id="revealName" class="reveal-name">ESPAÑA</h2>
   </div>
 </section>
@@ -40,8 +41,9 @@
       <button id="btnListo" class="btn btn-primary">LISTO</button>
     </div>
 
-    <p class="draw-hint">el cuadrado ENTERO es la bandera — pinta hasta el borde</p>
+    <p class="draw-hint" id="drawHint">el cuadrado ENTERO es la bandera — pinta hasta el borde</p>
     <div class="canvas-holder">
+      <canvas id="baseCanvas"></canvas>
       <canvas id="drawCanvas"></canvas>
     </div>
 
@@ -88,6 +90,7 @@
 <canvas id="hiddenFlagCanvas" style="display:none"></canvas>
 
 <script src="flags.js"></script>
+<script src="completa.js"></script>
 <script src="scoring.js"></script>
 <script src="app.js"></script>
 </body>
