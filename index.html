@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>TRAZO — Completa el logo</title>
-<meta name="description" content="Cada día un logo al que le falta una pieza. Dibújala hasta que encaje.">
+<title>TRAZO — Pinta la bandera</title>
+<meta name="description" content="Cada día una bandera. Píntala de memoria hasta que encaje.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -15,82 +15,89 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:Inter,system-ui,sans-serif;overflow:hidden}
 .screen{position:fixed;inset:0;display:none;flex-direction:column;padding:env(safe-area-inset-top) 20px calc(env(safe-area-inset-bottom) + 20px);overflow-y:auto}
 .screen.on{display:flex}
-.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:2px}
+.wrap{max-width:460px;width:100%;margin:0 auto}
 
-/* AUTH */
-#auth{align-items:center;justify-content:center;gap:0;text-align:center}
+/* ─ AUTH ─ */
+#auth{align-items:center;justify-content:center;text-align:center}
 #auth h1{font-family:'Bebas Neue';font-size:76px;letter-spacing:8px;line-height:1}
-#auth .sub{color:var(--dim);font-size:14px;margin-top:6px;margin-bottom:44px;max-width:280px}
+#auth .sub{color:var(--dim);font-size:14px;margin:6px 0 44px;max-width:290px}
 .btn{width:100%;max-width:340px;border:0;border-radius:14px;padding:16px;font-family:'Bebas Neue';font-size:20px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
 .btn.w{background:#fff;color:#000}
 .btn.o{background:transparent;color:#fff;border:1px solid var(--line)}
-.btn.g{background:transparent;color:var(--dim);border:0;font-size:13px;font-family:Inter;letter-spacing:0;text-decoration:underline}
+.btn.g{background:none;color:var(--dim);font-size:13px;font-family:Inter;letter-spacing:0;text-decoration:underline;padding:10px}
 .stack{display:flex;flex-direction:column;gap:10px;align-items:center;width:100%}
-input{width:100%;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;color:#fff;font-size:16px;font-family:Inter;outline:none}
+input{width:100%;max-width:340px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;color:#fff;font-size:16px;outline:none}
 input:focus{border-color:#444}
-.msg{font-size:13px;color:var(--dim);min-height:18px;margin-top:4px}
-.sep{color:#3a3a3a;font-size:11px;letter-spacing:2px;margin:16px 0 6px}
+.msg{font-size:13px;color:var(--dim);min-height:18px}
+.sep{color:#3a3a3a;font-size:11px;letter-spacing:2px;margin:14px 0 4px}
 
-/* HOME */
-.hdr{display:flex;justify-content:space-between;align-items:center;padding:16px 0 22px;flex:0 0 auto}
+/* ─ HOME ─ */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:16px 0 22px}
 .hdr .logo{font-family:'Bebas Neue';font-size:30px;letter-spacing:4px}
 .who{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:10px}
 .who b{color:#fff;font-weight:600}
-.link{color:var(--dim);font-size:12px;background:none;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.link{color:var(--dim);font-size:12px;background:none;border:0;text-decoration:underline;cursor:pointer}
 .daily{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:14px}
 .daily .tag{font-size:10px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
 .daily h2{font-family:'Bebas Neue';font-size:40px;letter-spacing:2px;margin:6px 0 2px;line-height:1}
 .daily p{font-size:13px;color:var(--dim);margin-bottom:18px}
-.daily .done{display:flex;gap:22px;margin-bottom:18px}
-.daily .done div{font-size:11px;color:var(--dim);letter-spacing:1px}
-.daily .done div b{display:block;font-family:'Bebas Neue';font-size:26px;color:#fff;letter-spacing:1px}
+.done{display:flex;gap:24px;margin-bottom:18px}
+.done div{font-size:11px;color:var(--dim);letter-spacing:1px}
+.done div b{display:block;font-family:'Bebas Neue';font-size:26px;color:#fff}
 .strip{display:flex;gap:10px;margin-bottom:26px}
 .stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-.stat b{display:block;font-family:'Bebas Neue';font-size:28px;letter-spacing:1px}
+.stat b{display:block;font-family:'Bebas Neue';font-size:28px}
 .stat span{font-size:10px;color:var(--dim);letter-spacing:2px;text-transform:uppercase}
 .h3{font-size:11px;letter-spacing:3px;color:var(--dim);text-transform:uppercase;margin-bottom:12px}
-.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:20px}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:24px}
 .cat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:left;cursor:pointer;color:#fff}
-.cat b{font-family:'Bebas Neue';font-size:24px;letter-spacing:1px;display:block}
+.cat b{font-family:'Bebas Neue';font-size:24px;display:block}
 .cat span{font-size:11px;color:var(--dim)}
 .bar{height:3px;background:#242424;border-radius:3px;margin-top:10px;overflow:hidden}
 .bar i{display:block;height:100%;background:#fff;width:0}
-.wrap{max-width:460px;width:100%;margin:0 auto}
 
-/* GAME */
-#game{padding:env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px);justify-content:center}
+/* ─ GAME ─ */
+#game{justify-content:center;padding-left:16px;padding-right:16px}
 .gtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .gtop .mid{font-size:11px;letter-spacing:3px;color:var(--dim);text-transform:uppercase}
-.gtop .t{font-family:'Bebas Neue';font-size:22px;letter-spacing:1px;min-width:56px;text-align:right}
-.stage{position:relative;width:100%;aspect-ratio:1;background:#fff;border-radius:22px;overflow:hidden;touch-action:none;user-select:none}
-.stage.bad{animation:sh .3s}
-.stage.bad::after{content:'';position:absolute;inset:0;background:#ff3b30;opacity:.16;pointer-events:none}
-@keyframes sh{20%{transform:translateX(-8px)}60%{transform:translateX(8px)}}
+.gtop .t{font-family:'Bebas Neue';font-size:22px;min-width:56px;text-align:right}
+.back{background:none;border:0;color:var(--dim);font-size:13px;cursor:pointer}
+.stage{position:relative;width:100%;aspect-ratio:3/2;border-radius:12px;overflow:hidden;background:#fff;
+       border:6px solid #fff;box-shadow:0 0 0 1px #2a2a2a;touch-action:none;user-select:none}
 canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-#full{opacity:0;transition:opacity .5s ease}
-#full.show{opacity:1}
+#blur{opacity:0;transition:opacity .4s;filter:blur(15px);transform:scale(1.12)}
+#blur.on{opacity:.5}
+#real{opacity:0;transition:opacity .55s ease}
+#real.on{opacity:1}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
-#flash.go{animation:fl .55s ease-out}
-@keyframes fl{0%{opacity:.95}100%{opacity:0}}
-.won{position:absolute;inset:auto 0 0 0;padding:26px 20px 22px;background:linear-gradient(transparent,rgba(0,0,0,.8));opacity:0;transition:opacity .5s;pointer-events:none;text-align:center}
-.won.show{opacity:1}
-.won b{font-family:'Bebas Neue';font-size:44px;letter-spacing:3px;display:block;line-height:1}
+#flash.go{animation:fl .6s ease-out}
+@keyframes fl{0%{opacity:.9}100%{opacity:0}}
+.won{position:absolute;left:0;right:0;bottom:0;padding:26px 16px 16px;text-align:center;
+     background:linear-gradient(transparent,rgba(0,0,0,.8));opacity:0;transition:opacity .5s;pointer-events:none}
+.won.on{opacity:1}
+.won b{font-family:'Bebas Neue';font-size:42px;letter-spacing:3px;display:block;line-height:1}
 .won span{font-size:12px;color:#bbb;letter-spacing:2px}
+.pal{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.sw{width:44px;height:44px;border-radius:50%;border:3px solid #222;cursor:pointer;transition:transform .12s}
+.sw.on{border-color:#fff;transform:scale(1.14)}
+.tools{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.sz{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:#777;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sz.on{border-color:#fff;color:#fff}
+.sz i{background:currentColor;border-radius:50%;display:block}
 .hint{text-align:center;font-size:12px;color:#4a4a4a;padding:14px 0;min-height:40px}
-.gbar{display:flex;gap:10px}
-.gbar button{flex:1;border-radius:14px;padding:15px;font-family:'Bebas Neue';font-size:19px;letter-spacing:2px;cursor:pointer;border:0}
+.gbar{display:flex;gap:8px}
+.gbar button{flex:1;border:0;border-radius:13px;padding:14px;font-family:'Bebas Neue';font-size:18px;letter-spacing:2px;cursor:pointer}
 .gbar .p{background:#fff;color:#000}
 .gbar .s{background:transparent;color:var(--dim);border:1px solid var(--line)}
 
-/* RANK */
+/* ─ RANK ─ */
 .row{display:flex;align-items:center;gap:14px;padding:14px 4px;border-bottom:1px solid #191919}
 .row .n{font-family:'Bebas Neue';font-size:20px;color:var(--dim);width:26px}
 .row .nm{flex:1;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .ms{font-family:'Bebas Neue';font-size:20px;letter-spacing:1px}
-.row.me{background:#161616;border-radius:10px;padding-left:10px;padding-right:10px}
+.row .ms{font-family:'Bebas Neue';font-size:20px}
+.row.me{background:#161616;border-radius:10px;padding:14px 10px}
 .row.me .n{color:#fff}
-.empty{color:var(--dim);font-size:13px;text-align:center;padding:50px 0}
-.back{background:none;border:0;color:var(--dim);font-size:13px;cursor:pointer;padding:0}
+.empty{color:var(--dim);font-size:13px;text-align:center;padding:50px 0;line-height:1.7}
 </style>
 </head>
 <body>
@@ -98,7 +105,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 <!-- ══ AUTH ══ -->
 <section class="screen on" id="auth">
   <h1>TRAZO</h1>
-  <div class="sub">Cada día un logo al que le falta una pieza. Dibújala hasta que encaje.</div>
+  <div class="sub">Cada día una bandera. Píntala de memoria hasta que encaje.</div>
   <div class="stack">
     <button class="btn w" id="bGoogle">
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.6 30.2 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.8 6.1C12.3 13.2 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.9 24.5c0-1.6-.1-3.2-.4-4.7H24v9h12.9c-.6 3-2.3 5.6-4.9 7.3l7.6 5.9c4.4-4.1 7.3-10.2 7.3-17.5z"/><path fill="#FBBC05" d="M10.4 28.7c-.5-1.5-.8-3-.8-4.7s.3-3.2.8-4.7l-7.8-6.1C1 16.4 0 20.1 0 24s1 7.6 2.6 10.8l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.8 2.3-8.3 2.3-6.4 0-11.7-3.7-13.6-9.8l-7.8 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
@@ -120,24 +127,24 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <div class="who"><b id="uName">—</b><button class="link" id="bOut">Salir</button></div>
     </div>
 
-    <div class="daily" id="dailyCard">
+    <div class="daily">
       <div class="tag">Reto de hoy</div>
-      <h2 id="dailyTitle">Logo del día</h2>
-      <p id="dailyDesc">Mismo logo para todos. Solo cuenta el primer intento.</p>
+      <h2>Bandera del día</h2>
+      <p>La misma para todos. Solo cuenta el primer intento.</p>
       <div class="done" id="dailyDone" style="display:none">
         <div>Tiempo<b id="dMs">—</b></div>
-        <div>Fallos<b id="dFails">—</b></div>
+        <div>Pistas<b id="dHints">—</b></div>
       </div>
       <button class="btn w" id="bDaily" style="max-width:none">Jugar</button>
     </div>
 
     <div class="strip">
       <div class="stat"><b id="sStreak">0</b><span>Racha</span></div>
-      <div class="stat"><b id="sSolved">0</b><span>Resueltos</span></div>
+      <div class="stat"><b id="sSolved">0</b><span>Banderas</span></div>
       <div class="stat" id="sRankBox" style="cursor:pointer"><b id="sRank">—</b><span>Ranking</span></div>
     </div>
 
-    <div class="h3">Categorías</div>
+    <div class="h3">Continentes</div>
     <div class="cats" id="cats"></div>
   </div>
 </section>
@@ -150,17 +157,29 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
       <div class="mid" id="gCat">—</div>
       <div class="t" id="gTime">0.0</div>
     </div>
+
     <div class="stage" id="stage">
-      <canvas id="base"></canvas>
+      <canvas id="blur"></canvas>
       <canvas id="ink"></canvas>
-      <canvas id="full"></canvas>
+      <canvas id="real"></canvas>
       <div id="flash"></div>
       <div class="won" id="won"><b id="wonName"></b><span id="wonSub"></span></div>
     </div>
-    <div class="hint" id="hint">Dibuja la pieza que falta</div>
+
+    <div class="pal" id="pal"></div>
+
+    <div class="tools">
+      <div class="sz" data-s="30"><i style="width:8px;height:8px"></i></div>
+      <div class="sz on" data-s="60"><i style="width:14px;height:14px"></i></div>
+      <div class="sz" data-s="110"><i style="width:22px;height:22px"></i></div>
+    </div>
+
+    <div class="hint" id="hint">Pinta la bandera dentro del marco</div>
+
     <div class="gbar">
-      <button class="s" id="bUndo">Deshacer</button>
-      <button class="p" id="bNext">Siguiente</button>
+      <button class="s" id="bHint">Pista</button>
+      <button class="s" id="bClear">Borrar</button>
+      <button class="p" id="bNext">Saltar</button>
     </div>
   </div>
 </section>
@@ -178,192 +197,118 @@ canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 </section>
 
 <script>
-/* ════════ AJUSTES DE DIFICULTAD ════════ */
-const BRUSH = 26;      // grosor del pincel
-const TOL = 11;        // margen permitido alrededor de la pieza (↑ = más fácil)
-const WIN_COVER = 0.78;// % de la pieza a cubrir para acertar
-const MAX_OUT = 0.35;  // % del trazo fuera de zona antes de borrarlo
-/* ═══════════════════════════════════════ */
+/* ══════ DIFICULTAD ══════ */
+const WIN = 0.85;   // % de acierto necesario (baja a .78 si es duro)
+const TOL = 75;     // margen de color permitido (sube a 95 si es duro)
+/* ═══════════════════════ */
 
 const SUPA_URL = 'https://gdisbjqfaqtljdycxsuv.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaXNianFmYXF0bGpkeWN4c3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTY4ODgsImV4cCI6MjA5OTQ3Mjg4OH0.KjO2evw-9ePDsrCJ_OGhve7zZRFRN2PmpV6EYNBiFCQ';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
-/* ════════ LOGOS ════════ */
 const CATS = [
-  {id:'coches', name:'Coches'},
-  {id:'tech',   name:'Tecnología'},
-  {id:'comida', name:'Comida'},
-  {id:'marcas', name:'Marcas'}
+  {id:'europa',  name:'Europa'},
+  {id:'america', name:'América'},
+  {id:'asia',    name:'Asia'},
+  {id:'africa',  name:'África'}
 ];
 
-const LOGOS = [
-/* ── COCHES ── */
-{id:'bmw', cat:'coches', name:'BMW',
- base:`<circle cx="100" cy="100" r="96" fill="#111"/><circle cx="100" cy="100" r="76" fill="#fff"/><path d="M100 100 L100 176 A76 76 0 0 1 24 100 Z" fill="#0166B1"/>`,
- piece:`<path d="M100 100 L100 24 A76 76 0 0 1 176 100 Z" fill="#0166B1"/>`},
+const FLAGS = [
+ {c:'fr',n:'Francia',k:'europa'},   {c:'de',n:'Alemania',k:'europa'},
+ {c:'it',n:'Italia',k:'europa'},    {c:'es',n:'España',k:'europa'},
+ {c:'pt',n:'Portugal',k:'europa'},  {c:'se',n:'Suecia',k:'europa'},
+ {c:'ch',n:'Suiza',k:'europa'},     {c:'gr',n:'Grecia',k:'europa'},
+ {c:'pl',n:'Polonia',k:'europa'},   {c:'nl',n:'Países Bajos',k:'europa'},
+ {c:'be',n:'Bélgica',k:'europa'},   {c:'ie',n:'Irlanda',k:'europa'},
+ {c:'dk',n:'Dinamarca',k:'europa'}, {c:'no',n:'Noruega',k:'europa'},
+ {c:'fi',n:'Finlandia',k:'europa'}, {c:'at',n:'Austria',k:'europa'},
+ {c:'cz',n:'Chequia',k:'europa'},   {c:'ua',n:'Ucrania',k:'europa'},
+ {c:'ro',n:'Rumanía',k:'europa'},   {c:'hu',n:'Hungría',k:'europa'},
 
-{id:'audi', cat:'coches', name:'Audi',
- base:`<g fill="none" stroke="#1a1a1a" stroke-width="9"><circle cx="42" cy="100" r="36"/><circle cx="80" cy="100" r="36"/><circle cx="118" cy="100" r="36"/></g>`,
- piece:`<circle cx="156" cy="100" r="36" fill="none" stroke="#1a1a1a" stroke-width="9"/>`},
+ {c:'ca',n:'Canadá',k:'america'},   {c:'mx',n:'México',k:'america'},
+ {c:'br',n:'Brasil',k:'america'},   {c:'ar',n:'Argentina',k:'america'},
+ {c:'cl',n:'Chile',k:'america'},    {c:'co',n:'Colombia',k:'america'},
+ {c:'pe',n:'Perú',k:'america'},     {c:'uy',n:'Uruguay',k:'america'},
+ {c:'cu',n:'Cuba',k:'america'},     {c:'jm',n:'Jamaica',k:'america'},
 
-{id:'mercedes', cat:'coches', name:'Mercedes-Benz',
- base:`<circle cx="100" cy="100" r="88" fill="none" stroke="#1a1a1a" stroke-width="9"/><path d="M100 100 L26 143 M100 100 L174 143" stroke="#1a1a1a" stroke-width="11" stroke-linecap="round"/>`,
- piece:`<path d="M100 100 L100 14" stroke="#1a1a1a" stroke-width="11" stroke-linecap="round"/>`},
+ {c:'jp',n:'Japón',k:'asia'},       {c:'cn',n:'China',k:'asia'},
+ {c:'in',n:'India',k:'asia'},       {c:'kr',n:'Corea del Sur',k:'asia'},
+ {c:'th',n:'Tailandia',k:'asia'},   {c:'id',n:'Indonesia',k:'asia'},
+ {c:'vn',n:'Vietnam',k:'asia'},     {c:'tr',n:'Turquía',k:'asia'},
+ {c:'il',n:'Israel',k:'asia'},      {c:'ph',n:'Filipinas',k:'asia'},
 
-{id:'toyota', cat:'coches', name:'Toyota',
- base:`<g fill="none" stroke="#EB0A1E" stroke-width="12"><ellipse cx="100" cy="100" rx="92" ry="54"/><ellipse cx="100" cy="122" rx="56" ry="26"/></g>`,
- piece:`<ellipse cx="100" cy="72" rx="26" ry="42" fill="none" stroke="#EB0A1E" stroke-width="12"/>`},
-
-{id:'mitsubishi', cat:'coches', name:'Mitsubishi',
- base:`<path d="M100 100 L119.5 141 L165 137.5 L145.5 96 Z" fill="#E60012"/><path d="M100 100 L80.5 141 L35 137.5 L54.5 96 Z" fill="#E60012"/>`,
- piece:`<path d="M100 100 L126 62.5 L100 25 L74 62.5 Z" fill="#E60012"/>`},
-
-{id:'vw', cat:'coches', name:'Volkswagen',
- base:`<circle cx="100" cy="100" r="94" fill="#001E50"/><circle cx="100" cy="100" r="80" fill="none" stroke="#fff" stroke-width="9"/><path d="M52 110 L74 158 L100 110 L126 158 L148 110" fill="none" stroke="#fff" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>`,
- piece:`<path d="M62 45 L100 108 L138 45" fill="none" stroke="#fff" stroke-width="13" stroke-linejoin="round" stroke-linecap="round"/>`},
-
-/* ── TECNOLOGÍA ── */
-{id:'windows', cat:'tech', name:'Windows',
- base:`<g fill="#00A4EF"><rect x="22" y="22" width="72" height="72"/><rect x="106" y="22" width="72" height="72"/><rect x="22" y="106" width="72" height="72"/></g>`,
- piece:`<rect x="106" y="106" width="72" height="72" fill="#00A4EF"/>`},
-
-{id:'x', cat:'tech', name:'X',
- base:`<path d="M38 32 L162 168" stroke="#111" stroke-width="26" fill="none"/>`,
- piece:`<path d="M162 32 L38 168" stroke="#111" stroke-width="26" fill="none"/>`},
-
-{id:'instagram', cat:'tech', name:'Instagram',
- base:`<rect x="24" y="24" width="152" height="152" rx="44" fill="none" stroke="#1a1a1a" stroke-width="14"/><circle cx="146" cy="54" r="9" fill="#1a1a1a"/>`,
- piece:`<circle cx="100" cy="100" r="38" fill="none" stroke="#1a1a1a" stroke-width="14"/>`},
-
-{id:'spotify', cat:'tech', name:'Spotify',
- base:`<circle cx="100" cy="100" r="92" fill="#1DB954"/><path d="M42 78 A72 48 0 0 1 158 78" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round"/><path d="M54 106 A56 38 0 0 1 146 106" fill="none" stroke="#fff" stroke-width="13" stroke-linecap="round"/>`,
- piece:`<path d="M66 132 A40 26 0 0 1 134 132" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/>`},
-
-/* ── COMIDA ── */
-{id:'mcdonalds', cat:'comida', name:"McDonald's",
- base:`<path d="M46 174 L46 100 A27 34 0 0 1 100 100 L100 174" fill="none" stroke="#FFC72C" stroke-width="21" stroke-linecap="round"/>`,
- piece:`<path d="M100 174 L100 100 A27 34 0 0 1 154 100 L154 174" fill="none" stroke="#FFC72C" stroke-width="21" stroke-linecap="round"/>`},
-
-{id:'seven', cat:'comida', name:'7-Eleven',
- base:`<rect width="200" height="200" fill="#008061"/><path d="M34 20 L166 20 L148 160 L118 160 L118 174 L82 174 L82 160 L52 160 Z" fill="#fff"/><text x="100" y="152" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="700" fill="#008061" text-anchor="middle">ELEVEN</text>`,
- piece:`<path d="M64 38 L148 38 L148 56 L110 132 L84 132 L120 56 L64 56 Z" fill="#F58220"/>`},
-
-{id:'carrefour', cat:'comida', name:'Carrefour',
- base:`<path d="M22 100 L78 18 L78 58 L52 100 L78 142 L78 182 Z" fill="#004E9F"/>`,
- piece:`<path d="M178 100 L122 18 L122 58 L148 100 L122 142 L122 182 Z" fill="#EE1C25"/>`},
-
-{id:'lidl', cat:'comida', name:'Lidl',
- base:`<rect x="14" y="14" width="172" height="172" rx="12" fill="#0050AA"/><circle cx="100" cy="100" r="56" fill="#FFF000"/>`,
- piece:`<circle cx="100" cy="100" r="68" fill="none" stroke="#E60A14" stroke-width="16"/>`},
-
-/* ── MARCAS ── */
-{id:'nike', cat:'marcas', name:'Nike',
- base:`<text x="100" y="76" font-family="Arial,Helvetica,sans-serif" font-size="46" font-weight="800" fill="#111" text-anchor="middle" letter-spacing="3">NIKE</text>`,
- piece:`<path d="M22 152 C58 186 108 172 178 100 L190 88 C154 116 108 138 74 132 C58 129 55 116 66 100 Z" fill="#111"/>`},
-
-{id:'adidas', cat:'marcas', name:'Adidas',
- base:`<g fill="#111"><path d="M30 170 L52 170 L70 112 L48 112 Z"/><path d="M68 170 L90 170 L108 78 L86 78 Z"/></g>`,
- piece:`<path d="M106 170 L128 170 L146 42 L124 42 Z" fill="#111"/>`},
-
-{id:'amazon', cat:'marcas', name:'Amazon',
- base:`<text x="100" y="102" font-family="Arial,Helvetica,sans-serif" font-size="44" font-weight="700" fill="#111" text-anchor="middle">amazon</text>`,
- piece:`<path d="M44 126 C86 168 136 160 160 122" fill="none" stroke="#FF9900" stroke-width="14" stroke-linecap="round"/>`},
-
-{id:'mastercard', cat:'marcas', name:'Mastercard',
- base:`<circle cx="76" cy="100" r="58" fill="#EB001B"/>`,
- piece:`<circle cx="124" cy="100" r="58" fill="#F79E1B" fill-opacity="0.85"/>`},
-
-{id:'target', cat:'marcas', name:'Target',
- base:`<circle cx="100" cy="100" r="92" fill="#CC0000"/><circle cx="100" cy="100" r="60" fill="#fff"/>`,
- piece:`<circle cx="100" cy="100" r="30" fill="#CC0000"/>`},
-
-{id:'olimpiadas', cat:'marcas', name:'Juegos Olímpicos',
- base:`<g fill="none" stroke-width="8"><circle cx="60" cy="82" r="32" stroke="#0081C8"/><circle cx="100" cy="82" r="32" stroke="#111"/><circle cx="80" cy="112" r="32" stroke="#FCB131"/><circle cx="120" cy="112" r="32" stroke="#00A651"/></g>`,
- piece:`<circle cx="140" cy="82" r="32" fill="none" stroke="#EE334E" stroke-width="8"/>`},
-
-{id:'chanel', cat:'marcas', name:'Chanel',
- base:`<path d="M112 62 A44 44 0 1 0 112 138" fill="none" stroke="#111" stroke-width="13" stroke-linecap="round"/>`,
- piece:`<path d="M88 62 A44 44 0 1 1 88 138" fill="none" stroke="#111" stroke-width="13" stroke-linecap="round"/>`}
+ {c:'ng',n:'Nigeria',k:'africa'},   {c:'za',n:'Sudáfrica',k:'africa'},
+ {c:'eg',n:'Egipto',k:'africa'},    {c:'ke',n:'Kenia',k:'africa'},
+ {c:'ma',n:'Marruecos',k:'africa'}, {c:'gh',n:'Ghana',k:'africa'},
+ {c:'et',n:'Etiopía',k:'africa'},   {c:'sn',n:'Senegal',k:'africa'}
 ];
 
-/* ════════ ESTADO ════════ */
-const M = 300, S = 640;
-let user = null, guest = false;
-let mode = 'cat';           // 'cat' | 'daily'
-let queue = [], qi = 0;
-let target, allowed, drawn, targetCount = 0;
-let strokes = [], cur = null, drawing = false, solved = false;
-let t0 = 0, timer = null, fails = 0;
+/* ══════ ESTADO ══════ */
+const W=900, H=600, GX=60, GY=40;
+const $ = i => document.getElementById(i);
+const stage=$('stage'), cInk=$('ink'), cReal=$('real'), cBlur=$('blur');
+[cInk,cReal,cBlur].forEach(c=>{c.width=W;c.height=H});
 
-const $ = id => document.getElementById(id);
-const stage = $('stage'), cBase = $('base'), cInk = $('ink'), cFull = $('full');
+let user=null, guest=false, mode='cat';
+let queue=[], qi=0, flagImg=null, grid=null;
+let color='#000', size=60, drawing=false, solved=false, last=null;
+let t0=0, timer=null, hints=0;
 
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); }
-function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
-function dailyLogo(){ const k=today(); let h=2166136261; for(let i=0;i<k.length;i++){h^=k.charCodeAt(i);h=Math.imul(h,16777619);} return LOGOS[(h>>>0)%LOGOS.length]; }
-function fmt(ms){ return (ms/1000).toFixed(1)+'s'; }
+const show = id => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on')); $(id).classList.add('on'); };
+const today = () => { const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+const fmt = ms => (ms/1000).toFixed(1)+'s';
 const LS = { get:k=>{try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}, set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)) };
-function doneList(){ return LS.get('trazo_done') || []; }
-function markDone(id){ const d=doneList(); if(!d.includes(id)){ d.push(id); LS.set('trazo_done',d); } }
+const done = () => LS.get('trazo_flags') || [];
+const markDone = c => { const d=done(); if(!d.includes(c)){ d.push(c); LS.set('trazo_flags',d); } };
+function dailyFlag(){ const k=today(); let h=2166136261; for(let i=0;i<k.length;i++){h^=k.charCodeAt(i);h=Math.imul(h,16777619);} return FLAGS[(h>>>0)%FLAGS.length]; }
 
-/* ════════ AUTH ════════ */
+/* ══════ AUTH ══════ */
 $('bGoogle').onclick = async ()=>{
-  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin } });
+  const {error} = await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin}});
   if(error) $('authMsg').textContent = error.message;
 };
 $('bMagic').onclick = async ()=>{
   const email = $('email').value.trim();
-  if(!email) { $('authMsg').textContent='Escribe tu email.'; return; }
-  $('authMsg').textContent = 'Enviando…';
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo: location.origin } });
+  if(!email){ $('authMsg').textContent='Escribe tu email.'; return; }
+  $('authMsg').textContent='Enviando…';
+  const {error} = await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin}});
   $('authMsg').textContent = error ? error.message : 'Revisa tu correo.';
 };
-$('bGuest').onclick = ()=>{ guest = true; user = null; enterHome(); };
-$('bOut').onclick = async ()=>{ await sb.auth.signOut(); guest=false; user=null; show('auth'); };
+$('bGuest').onclick = ()=>{ guest=true; user=null; enterHome(); };
+$('bOut').onclick   = async ()=>{ await sb.auth.signOut(); guest=false; user=null; show('auth'); };
+sb.auth.onAuthStateChange((_e,s)=>{ if(s?.user){ user=s.user; guest=false; enterHome(); } });
+(async()=>{ const {data}=await sb.auth.getSession(); if(data.session?.user){ user=data.session.user; enterHome(); } })();
+const who = () => guest||!user ? 'Invitado' : (user.user_metadata?.full_name || user.user_metadata?.name || (user.email||'').split('@')[0]);
 
-sb.auth.onAuthStateChange((_e, s)=>{ if(s?.user){ user = s.user; guest=false; enterHome(); } });
-(async ()=>{ const { data } = await sb.auth.getSession(); if(data.session?.user){ user = data.session.user; enterHome(); } })();
-
-function displayName(){
-  if(guest || !user) return 'Invitado';
-  return user.user_metadata?.full_name || user.user_metadata?.name || (user.email||'').split('@')[0];
-}
-
-/* ════════ HOME ════════ */
+/* ══════ HOME ══════ */
 async function enterHome(){
   show('home');
-  $('uName').textContent = displayName();
+  clearInterval(timer);
+  $('uName').textContent = who();
   $('bOut').style.display = guest ? 'none' : '';
 
-  const L = dailyLogo();
-  $('dailyTitle').textContent = 'Reto de hoy';
-  $('dailyDesc').textContent = 'Mismo logo para todos. Solo cuenta el primer intento.';
-
-  // categorías
-  $('cats').innerHTML = '';
-  const done = doneList();
+  const d = done();
+  $('cats').innerHTML='';
   CATS.forEach(c=>{
-    const all = LOGOS.filter(l=>l.cat===c.id);
-    const n = all.filter(l=>done.includes(l.id)).length;
+    const all = FLAGS.filter(f=>f.k===c.id);
+    const n = all.filter(f=>d.includes(f.c)).length;
     const el = document.createElement('button');
     el.className='cat';
-    el.innerHTML = `<b>${c.name}</b><span>${n} / ${all.length}</span><div class="bar"><i style="width:${all.length?n/all.length*100:0}%"></i></div>`;
+    el.innerHTML = `<b>${c.name}</b><span>${n} / ${all.length}</span><div class="bar"><i style="width:${n/all.length*100}%"></i></div>`;
     el.onclick = ()=>startCat(c.id);
     $('cats').appendChild(el);
   });
-  $('sSolved').textContent = done.length;
+  $('sSolved').textContent = d.length;
 
-  // reto ya hecho?
-  let myRow = null;
+  let mine=null;
   if(user){
-    const { data } = await sb.from('trazo_daily').select('*').eq('user_id', user.id).eq('day', today()).maybeSingle();
-    myRow = data;
+    const {data} = await sb.from('trazo_daily').select('*').eq('user_id',user.id).eq('day',today()).maybeSingle();
+    mine = data;
   }
-  if(myRow){
+  if(mine){
     $('dailyDone').style.display='flex';
-    $('dMs').textContent = fmt(myRow.ms);
-    $('dFails').textContent = myRow.fails;
+    $('dMs').textContent = fmt(mine.ms);
+    $('dHints').textContent = mine.fails;
     $('bDaily').textContent = 'Ver ranking';
     $('bDaily').onclick = openRank;
   } else {
@@ -372,18 +317,18 @@ async function enterHome(){
     $('bDaily').onclick = startDaily;
   }
 
-  // racha + puesto
   $('sStreak').textContent = user ? await streak() : 0;
   $('sRank').textContent = '—';
-  if(user && myRow){
-    const { data } = await sb.from('trazo_daily').select('user_id,ms').eq('day', today()).order('ms',{ascending:true});
-    if(data){ const i = data.findIndex(r=>r.user_id===user.id); if(i>=0) $('sRank').textContent = '#'+(i+1); }
+  if(user && mine){
+    const {data} = await sb.from('trazo_daily').select('user_id').eq('day',today()).order('ms',{ascending:true});
+    const i = data?.findIndex(r=>r.user_id===user.id);
+    if(i>=0) $('sRank').textContent = '#'+(i+1);
   }
 }
 $('sRankBox').onclick = openRank;
 
 async function streak(){
-  const { data } = await sb.from('trazo_daily').select('day').eq('user_id', user.id).order('day',{ascending:false});
+  const {data} = await sb.from('trazo_daily').select('day').eq('user_id',user.id).order('day',{ascending:false});
   if(!data?.length) return 0;
   const days = data.map(r=>r.day);
   let n=0; const d=new Date();
@@ -396,166 +341,159 @@ async function streak(){
   return n;
 }
 
-/* ════════ MOTOR ════════ */
-function svgURL(inner){
-  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">${inner}</svg>`);
-}
-function load(inner){ return new Promise(r=>{ const i=new Image(); i.onload=()=>r(i); i.src=svgURL(inner); }); }
+/* ══════ MOTOR ══════ */
+const loadFlag = code => new Promise((res,rej)=>{
+  const i=new Image(); i.crossOrigin='anonymous';
+  i.onload=()=>res(i); i.onerror=rej;
+  i.src=`https://flagcdn.com/w1280/${code}.png`;
+});
 
-function dilate(src, rad){
-  const a=new Uint8Array(M*M), b=new Uint8Array(M*M);
-  for(let y=0;y<M;y++)for(let x=0;x<M;x++){let v=0;for(let k=-rad;k<=rad;k++){const xx=x+k;if(xx>=0&&xx<M&&src[y*M+xx]){v=1;break;}}a[y*M+x]=v;}
-  for(let x=0;x<M;x++)for(let y=0;y<M;y++){let v=0;for(let k=-rad;k<=rad;k++){const yy=y+k;if(yy>=0&&yy<M&&a[yy*M+x]){v=1;break;}}b[y*M+x]=v;}
-  return b;
+function buildGrid(img){
+  const c=document.createElement('canvas'); c.width=GX; c.height=GY;
+  const x=c.getContext('2d',{willReadFrequently:true});
+  x.imageSmoothingEnabled=false; x.drawImage(img,0,0,GX,GY);
+  const d=x.getImageData(0,0,GX,GY).data, g=[];
+  for(let i=0;i<GX*GY;i++) g.push([d[i*4],d[i*4+1],d[i*4+2]]);
+  return g;
 }
-function maskImg(img){
-  const c=document.createElement('canvas'); c.width=c.height=M;
-  const x=c.getContext('2d'); x.drawImage(img,0,0,M,M);
-  const d=x.getImageData(0,0,M,M).data, m=new Uint8Array(M*M);
-  for(let i=0;i<M*M;i++) m[i]= d[i*4+3]>100 ? 1:0;
-  return m;
-}
-function maskStroke(pts){
-  const c=document.createElement('canvas'); c.width=c.height=M;
-  const x=c.getContext('2d'), k=M/S;
-  x.lineWidth=BRUSH*k; x.lineCap='round'; x.lineJoin='round'; x.strokeStyle='#000';
-  x.beginPath(); x.moveTo(pts[0].x*k, pts[0].y*k);
-  for(const p of pts) x.lineTo(p.x*k, p.y*k);
-  if(pts.length===1) x.lineTo(pts[0].x*k+.1, pts[0].y*k);
-  x.stroke();
-  const d=x.getImageData(0,0,M,M).data, m=new Uint8Array(M*M);
-  for(let i=0;i<M*M;i++) m[i]= d[i*4+3]>60 ? 1:0;
-  return m;
+function palette(img){
+  const c=document.createElement('canvas'); c.width=100; c.height=66;
+  const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(img,0,0,100,66);
+  const d=x.getImageData(0,0,100,66).data, map={};
+  for(let i=0;i<6600;i++){
+    const k=[0,1,2].map(j=>Math.min(Math.round(d[i*4+j]/40)*40,255)).join(',');
+    map[k]=(map[k]||0)+1;
+  }
+  return Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k])=>`rgb(${k})`);
 }
 function ching(){
   try{
     const a=new (window.AudioContext||window.webkitAudioContext)();
     [784,1175].forEach((f,i)=>{
-      const o=a.createOscillator(), g=a.createGain();
+      const o=a.createOscillator(), g=a.createGain(), t=a.currentTime+i*.09;
       o.type='sine'; o.frequency.value=f;
-      const t=a.currentTime+i*.09;
       g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.22,t+.01);
       g.gain.exponentialRampToValueAtTime(.001,t+.55);
       o.connect(g); g.connect(a.destination); o.start(t); o.stop(t+.6);
     });
   }catch(e){}
 }
-function paintInk(){
-  const x=cInk.getContext('2d'); x.clearRect(0,0,S,S);
-  x.lineWidth=BRUSH; x.lineCap='round'; x.lineJoin='round'; x.strokeStyle='#181818';
-  const all = cur ? strokes.concat([cur]) : strokes;
-  for(const st of all){ x.beginPath(); x.moveTo(st[0].x,st[0].y); for(const p of st) x.lineTo(p.x,p.y); x.stroke(); }
-}
 
-async function loadLogo(){
-  const L = queue[qi];
-  solved=false; strokes=[]; cur=null; fails=0;
-  drawn = new Uint8Array(M*M);
-  $('won').classList.remove('show'); cFull.classList.remove('show');
-  $('hint').textContent='Dibuja la pieza que falta';
-  $('gCat').textContent = mode==='daily' ? 'Reto de hoy' : (CATS.find(c=>c.id===L.cat)||{}).name;
-  $('bNext').style.visibility = 'hidden';
-
-  const [b,p,f] = await Promise.all([ load(L.base), load(L.piece), load(L.base+L.piece) ]);
-  [cBase,cInk,cFull].forEach(c=>{ c.width=S; c.height=S; c.getContext('2d').clearRect(0,0,S,S); });
-  cBase.getContext('2d').drawImage(b,0,0,S,S);
-  cFull.getContext('2d').drawImage(f,0,0,S,S);
-
-  target = maskImg(p);
-  allowed = dilate(target, TOL);
-  targetCount = target.reduce((a,b)=>a+b,0);
-
-  t0 = Date.now();
-  clearInterval(timer);
-  timer = setInterval(()=>{ if(!solved) $('gTime').textContent = ((Date.now()-t0)/1000).toFixed(1); }, 100);
-}
-
-function endStroke(){
-  if(!cur || cur.length<2){ cur=null; paintInk(); return; }
-  const sm = maskStroke(cur);
-  let tot=0, out=0;
-  for(let i=0;i<M*M;i++) if(sm[i]){ tot++; if(!allowed[i]) out++; }
-
-  if(tot===0 || out/tot > MAX_OUT){        // mal → se borra la línea
-    cur=null; paintInk(); fails++;
-    stage.classList.add('bad'); setTimeout(()=>stage.classList.remove('bad'),300);
-    return;
+function check(){
+  const c=document.createElement('canvas'); c.width=GX; c.height=GY;
+  const x=c.getContext('2d',{willReadFrequently:true});
+  x.imageSmoothingEnabled=false; x.drawImage(cInk,0,0,GX,GY);
+  const d=x.getImageData(0,0,GX,GY).data;
+  let ok=0;
+  for(let i=0;i<GX*GY;i++){
+    if(d[i*4+3]<120) continue;
+    const [R,G,B]=grid[i];
+    if(Math.abs(d[i*4]-R)+Math.abs(d[i*4+1]-G)+Math.abs(d[i*4+2]-B) < TOL*3) ok++;
   }
-  strokes.push(cur); cur=null; paintInk();
-  for(let i=0;i<M*M;i++) if(sm[i]) drawn[i]=1;
-
-  const fat = dilate(drawn, 5);
-  let hit=0; for(let i=0;i<M*M;i++) if(target[i] && fat[i]) hit++;
-  if(hit/targetCount >= WIN_COVER) win();
+  if(ok/(GX*GY) >= WIN) win();
 }
 
 async function win(){
-  solved = true; clearInterval(timer);
-  const ms = Date.now()-t0;
-  const L = queue[qi];
+  solved=true; clearInterval(timer);
+  const ms = Date.now()-t0, F = queue[qi];
   ching();
   $('flash').classList.remove('go'); void $('flash').offsetWidth; $('flash').classList.add('go');
-  cFull.classList.add('show');
-  $('wonName').textContent = L.name;
-  $('wonSub').textContent = fmt(ms) + (fails ? ' · ' + fails + ' fallos' : ' · sin fallos');
-  $('won').classList.add('show');
-  $('hint').textContent = '';
-  setTimeout(()=>cInk.getContext('2d').clearRect(0,0,S,S), 550);
-  markDone(L.id);
+  cBlur.classList.remove('on');
+  cReal.getContext('2d').drawImage(flagImg,0,0,W,H);
+  cReal.classList.add('on');
+  $('wonName').textContent = F.n;
+  $('wonSub').textContent  = fmt(ms) + (hints ? ' · con pista' : ' · sin pistas');
+  $('won').classList.add('on');
+  $('hint').textContent='';
+  setTimeout(()=>cInk.getContext('2d').clearRect(0,0,W,H), 600);
+  markDone(F.c);
 
   if(mode==='daily' && user){
-    await sb.from('trazo_daily').insert({
-      user_id:user.id, day:today(), logo:L.id, ms, fails, name:displayName()
-    });
+    await sb.from('trazo_daily').insert({user_id:user.id, day:today(), logo:F.c, ms, fails:hints, name:who()});
     $('bNext').textContent='Ver ranking';
   } else {
-    $('bNext').textContent = (qi < queue.length-1) ? 'Siguiente' : 'Terminar';
+    $('bNext').textContent = qi < queue.length-1 ? 'Siguiente' : 'Terminar';
   }
-  $('bNext').style.visibility='visible';
 }
 
-/* dibujo */
-function pos(e){
-  const r = stage.getBoundingClientRect();
-  return { x:(e.clientX-r.left)*(S/r.width), y:(e.clientY-r.top)*(S/r.height) };
-}
-stage.addEventListener('pointerdown', e=>{ if(solved) return; e.preventDefault(); stage.setPointerCapture(e.pointerId); drawing=true; cur=[pos(e)]; paintInk(); });
-stage.addEventListener('pointermove', e=>{ if(!drawing||solved) return; e.preventDefault(); cur.push(pos(e)); paintInk(); });
-stage.addEventListener('pointerup',   e=>{ if(!drawing||solved) return; e.preventDefault(); drawing=false; endStroke(); });
-stage.addEventListener('pointercancel', ()=>{ if(drawing){ drawing=false; cur=null; paintInk(); } });
+async function loadFlagScreen(){
+  const F = queue[qi];
+  solved=false; last=null; hints=0;
+  cInk.getContext('2d').clearRect(0,0,W,H);
+  cReal.getContext('2d').clearRect(0,0,W,H);
+  cBlur.getContext('2d').clearRect(0,0,W,H);
+  cReal.classList.remove('on'); cBlur.classList.remove('on');
+  $('won').classList.remove('on');
+  $('hint').textContent='Pinta la bandera dentro del marco';
+  $('bNext').textContent='Saltar';
+  $('gCat').textContent = mode==='daily' ? 'Reto de hoy' : CATS.find(c=>c.id===F.k).name;
 
-$('bUndo').onclick = ()=>{ if(solved) return; strokes.pop(); drawn=new Uint8Array(M*M);
-  for(const st of strokes){ const m=maskStroke(st); for(let i=0;i<M*M;i++) if(m[i]) drawn[i]=1; }
-  paintInk(); };
-$('bNext').onclick = ()=>{
-  if(mode==='daily'){ openRank(); return; }
-  if(qi < queue.length-1){ qi++; loadLogo(); } else { clearInterval(timer); enterHome(); }
+  try { flagImg = await loadFlag(F.c); }
+  catch(e){ $('hint').textContent='No se pudo cargar la bandera.'; return; }
+
+  grid = buildGrid(flagImg);
+  cBlur.getContext('2d').drawImage(flagImg,0,0,W,H);
+
+  const cols = palette(flagImg);
+  color = cols[0];
+  $('pal').innerHTML='';
+  cols.forEach((c,i)=>{
+    const s=document.createElement('div');
+    s.className='sw'+(i===0?' on':'');
+    s.style.background=c;
+    s.onclick=()=>{ color=c; document.querySelectorAll('.sw').forEach(e=>e.classList.remove('on')); s.classList.add('on'); };
+    $('pal').appendChild(s);
+  });
+
+  t0=Date.now(); clearInterval(timer);
+  timer=setInterval(()=>{ if(!solved) $('gTime').textContent=((Date.now()-t0)/1000).toFixed(1); },100);
+}
+
+/* ── pincel ── */
+const pos = e => { const r=stage.getBoundingClientRect(); return {x:(e.clientX-r.left)*(W/r.width), y:(e.clientY-r.top)*(H/r.height)}; };
+function draw(a,b){
+  const x=cInk.getContext('2d');
+  x.strokeStyle=color; x.lineWidth=size; x.lineCap='round'; x.lineJoin='round';
+  x.beginPath(); x.moveTo(a.x,a.y); x.lineTo(b.x,b.y); x.stroke();
+}
+stage.addEventListener('pointerdown',e=>{ if(solved) return; e.preventDefault(); stage.setPointerCapture(e.pointerId); drawing=true; last=pos(e); draw(last,{x:last.x+.1,y:last.y}); });
+stage.addEventListener('pointermove',e=>{ if(!drawing||solved) return; e.preventDefault(); const p=pos(e); draw(last,p); last=p; });
+stage.addEventListener('pointerup',  e=>{ if(!drawing||solved) return; e.preventDefault(); drawing=false; check(); });
+stage.addEventListener('pointercancel',()=>{ drawing=false; });
+
+document.querySelectorAll('.sz').forEach(b=>{
+  b.onclick=()=>{ size=+b.dataset.s; document.querySelectorAll('.sz').forEach(e=>e.classList.remove('on')); b.classList.add('on'); };
+});
+$('bClear').onclick = ()=>{ if(!solved) cInk.getContext('2d').clearRect(0,0,W,H); };
+$('bHint').onclick  = ()=>{ if(solved) return; cBlur.classList.toggle('on'); if(cBlur.classList.contains('on')) hints++; };
+$('bNext').onclick  = ()=>{
+  if(mode==='daily' && solved){ openRank(); return; }
+  if(qi < queue.length-1){ qi++; loadFlagScreen(); } else enterHome();
 };
-$('bBack').onclick = ()=>{ clearInterval(timer); enterHome(); };
+$('bBack').onclick  = enterHome;
 $('bBack2').onclick = enterHome;
 
-function startCat(cid){
-  const done = doneList();
-  const all = LOGOS.filter(l=>l.cat===cid);
-  const pend = all.filter(l=>!done.includes(l.id));
+function startCat(k){
+  const d = done();
+  const all = FLAGS.filter(f=>f.k===k);
+  const pend = all.filter(f=>!d.includes(f.c));
   queue = pend.length ? pend : all;
-  qi = 0; mode='cat'; show('game'); loadLogo();
+  qi=0; mode='cat'; show('game'); loadFlagScreen();
 }
-function startDaily(){ queue=[dailyLogo()]; qi=0; mode='daily'; show('game'); loadLogo(); }
+function startDaily(){ queue=[dailyFlag()]; qi=0; mode='daily'; show('game'); loadFlagScreen(); }
 
-/* ════════ RANKING ════════ */
+/* ══════ RANKING ══════ */
 async function openRank(){
   show('rank'); clearInterval(timer);
-  $('rankDay').textContent = 'Hoy — ' + dailyLogo().name;
-  const { data, error } = await sb.from('trazo_daily').select('user_id,name,ms,fails').eq('day', today()).order('ms',{ascending:true}).limit(50);
+  $('rankDay').textContent = 'Hoy — ' + dailyFlag().n;
+  const {data,error} = await sb.from('trazo_daily').select('user_id,name,ms').eq('day',today()).order('ms',{ascending:true}).limit(50);
   const box = $('rankList');
-  if(error || !data?.length){ box.innerHTML = '<div class="empty">Nadie lo ha resuelto todavía hoy.<br>Sé el primero.</div>'; return; }
-  box.innerHTML = '';
+  if(error || !data?.length){ box.innerHTML='<div class="empty">Nadie la ha pintado todavía hoy.<br>Sé el primero.</div>'; return; }
+  box.innerHTML='';
   data.forEach((r,i)=>{
-    const d = document.createElement('div');
-    d.className = 'row' + (user && r.user_id===user.id ? ' me' : '');
-    d.innerHTML = `<div class="n">${i+1}</div><div class="nm">${(r.name||'Anónimo')}</div><div class="ms">${fmt(r.ms)}</div>`;
+    const d=document.createElement('div');
+    d.className='row'+(user && r.user_id===user.id ? ' me' : '');
+    d.innerHTML=`<div class="n">${i+1}</div><div class="nm">${r.name||'Anónimo'}</div><div class="ms">${fmt(r.ms)}</div>`;
     box.appendChild(d);
   });
 }
