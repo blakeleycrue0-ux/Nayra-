@@ -9,57 +9,35 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ══ TOKENS ═══════════════════════════════════════════════════════
-   Dirección: un muestrario de color (swatch book) hecho juego.
-   Cada país es un chip con su color dominante y su hex en mono.
-   FIRMA: la app se tiñe del color de la bandera que estás pintando. */
 :root{
-  --void:#101014;      /* fondo */
-  --surface:#191921;   /* tarjetas */
-  --raise:#22222C;     /* controles */
-  --edge:#2E2E3A;      /* bordes */
-  --text:#F3F2EF;
-  --dim:#8B8998;
-  --paper:#FFFFFF;     /* lienzo */
-  --spark:#F5D90A;     /* acento por defecto: lo sustituye el color del país */
-  --ink-on-spark:#101014;
-  --ok:#3DD68C;
-  --no:#FF6B5A;
-  --r:18px;
-  --nav:74px;
+  --void:#101014; --surface:#191921; --raise:#22222C; --edge:#2E2E3A;
+  --text:#F3F2EF; --dim:#8B8998; --paper:#FFFFFF;
+  --spark:#F5D90A; --ink-on-spark:#101014;
+  --ok:#3DD68C; --no:#FF6B5A;
+  --r:18px; --nav:74px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;background:var(--void)}
-body{
-  color:var(--text);
-  font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:16px;line-height:1.45;
+body{color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:16px;line-height:1.45;
   max-width:560px;margin:0 auto;overscroll-behavior:none;
-  padding:0 18px calc(var(--nav) + 28px + env(safe-area-inset-bottom));
-}
+  padding:0 18px calc(var(--nav) + 28px + env(safe-area-inset-bottom))}
 h1,h2,h3{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.02}
 button{font:inherit;color:inherit;border:none;background:none;cursor:pointer}
 input{font:inherit}
 .mono{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
 .dim{color:var(--dim)}
 
-/* ══ IDENTIDAD ════════════════════════════════════════════════════ */
 .wordmark{display:inline-flex;align-items:center;gap:1px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1}
 .wordmark .ring{display:block;color:var(--spark);transition:color .5s}
 
-/* ══ CABECERA ═════════════════════════════════════════════════════ */
 header{display:flex;align-items:center;justify-content:space-between;padding:20px 0 18px}
 header .wordmark{font-size:27px}
 .streak{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--edge);border-radius:999px;padding:8px 14px;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
 .streak b{color:var(--spark);transition:color .5s}
 
-/* ══ NAV INFERIOR ═════════════════════════════════════════════════ */
-nav{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;
-  display:flex;justify-content:center;gap:4px;
-  background:rgba(16,16,20,.86);backdrop-filter:blur(18px);
-  border-top:1px solid var(--edge);
-  padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;
+  background:rgba(16,16,20,.86);backdrop-filter:blur(18px);border-top:1px solid var(--edge);
+  padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
 nav .inner{display:flex;width:100%;max-width:560px}
 nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--dim);border-radius:12px}
 nav button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
@@ -67,13 +45,13 @@ nav button span{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spac
 nav button[aria-current="page"]{color:var(--text)}
 nav button[aria-current="page"] svg{stroke:var(--spark)}
 
-/* ══ LOGIN ════════════════════════════════════════════════════════ */
+/* ══ LOGIN ══ */
 .login{min-height:100svh;display:flex;flex-direction:column;justify-content:center;gap:26px;padding:40px 0}
 .login .wordmark{font-size:56px;align-self:flex-start}
 .login h1{font-size:40px;max-width:12ch}
 .login p{color:var(--dim);margin:0;max-width:34ch}
 .swatchrow{display:flex;gap:7px;margin:6px 0 2px}
-.swatchrow i{flex:1;aspect-ratio:3/2;border-radius:8px;display:block}
+.swatchrow img{flex:1;width:0;aspect-ratio:3/2;border-radius:8px;object-fit:cover;filter:blur(2px)}
 .authbtn{display:flex;align-items:center;justify-content:center;gap:11px;width:100%;background:var(--text);color:var(--void);border-radius:14px;padding:16px;font-weight:600}
 .authbtn.alt{background:transparent;color:var(--text);border:1px solid var(--edge)}
 .authbtn:active{transform:scale(.985)}
@@ -81,11 +59,23 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .guest{width:100%;text-align:center;color:var(--dim);padding:10px;font-size:14px;text-decoration:underline;text-underline-offset:3px}
 .legal{color:#5D5B69;font-size:12px;text-align:center;line-height:1.5}
 
-/* ══ HOY ══════════════════════════════════════════════════════════ */
-.hero{
-  position:relative;overflow:hidden;border-radius:var(--r);padding:22px;
-  background:var(--spark);color:var(--ink-on-spark);margin-bottom:14px;transition:background .5s,color .5s;
-}
+/* ══ EVENTO ══ */
+.event{background:#fff;color:#101014;border-radius:var(--r);overflow:hidden;margin-bottom:14px;border:1px solid var(--edge)}
+.event .strip{display:flex;height:56px;overflow:hidden}
+.event .strip img{flex:1;width:0;height:100%;object-fit:cover;filter:blur(3.5px)}
+.event .body{display:flex;align-items:center;gap:12px;padding:16px 18px 18px}
+.event .txt{flex:1;min-width:0}
+.event .kick{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#B58900;font-weight:500}
+.event h3{font-size:25px;margin:3px 0 3px}
+.event .sub{color:#6C6A78;font-size:13px}
+.event .go{background:#F1EFEA;color:#101014;border-radius:11px;padding:12px 16px;font-weight:600;white-space:nowrap;display:flex;gap:7px;align-items:center}
+.event .go:active{transform:scale(.96)}
+.evbar{height:4px;background:#E7E5E0}
+.evbar i{display:block;height:100%;background:#101014}
+
+/* ══ HOY ══ */
+.hero{position:relative;overflow:hidden;border-radius:var(--r);padding:22px;
+  background:var(--spark);color:var(--ink-on-spark);margin-bottom:14px;transition:background .5s,color .5s}
 .hero .grid-bg{position:absolute;inset:0;opacity:.14;
   background-image:linear-gradient(currentColor 1px,transparent 1px),linear-gradient(90deg,currentColor 1px,transparent 1px);
   background-size:26px 26px;pointer-events:none}
@@ -99,25 +89,35 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .stat b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:26px;font-weight:800}
 .stat span{color:var(--dim);font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
 
-/* ══ FILTRO DE NIVEL ══════════════════════════════════════════════ */
+/* ══ MODOS ══ */
+.modes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.mode{background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:15px;text-align:left;position:relative;overflow:hidden}
+.mode:active{transform:scale(.97)}
+.mode .mi{width:22px;height:22px;stroke:var(--spark);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke .5s}
+.mode b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px;margin-top:10px}
+.mode span{color:var(--dim);font-size:12px;line-height:1.35;display:block;margin-top:2px}
+.mode .rec{position:absolute;top:13px;right:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim)}
+
+/* ══ NIVELES ══ */
 .levels{display:flex;gap:6px;overflow-x:auto;margin:0 -18px 20px;padding:0 18px 4px;scrollbar-width:none}
 .levels::-webkit-scrollbar{display:none}
 .lv{flex-shrink:0;background:var(--surface);border:1px solid var(--edge);border-radius:999px;padding:9px 15px;
   font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--dim)}
 .lv[aria-pressed="true"]{background:var(--text);color:var(--void);border-color:var(--text)}
 
-/* ══ COLECCIONES · muestrario ═════════════════════════════════════ */
+/* ══ COLECCIONES ══ */
 .section-title{display:flex;align-items:baseline;justify-content:space-between;margin:26px 0 12px}
 .section-title h3{font-size:22px}
 .packs{display:flex;flex-direction:column;gap:10px}
 .pack{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:12px}
 .pack:active{transform:scale(.985)}
-.pack .cover{width:60px;height:60px;flex-shrink:0;background:#0E0E13;border-radius:10px;padding:5px;
-  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:3px}
-.pack .cover i{display:block;border-radius:3px}
+.pack .cover{width:62px;height:62px;flex-shrink:0;border-radius:10px;overflow:hidden;
+  display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);background:#0E0E13}
+.pack .cover img{width:100%;height:100%;object-fit:cover;filter:blur(2.6px);display:block}
 .pack h4{margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:17px}
 .pack .meta{color:var(--dim);font-size:13px;line-height:1.35}
 .pack .arrow{margin-left:auto;color:var(--dim);font-size:20px}
+.pack .pill{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--dim);text-align:right;line-height:1.6}
 
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .tile{position:relative;overflow:hidden;border-radius:14px;padding:14px;aspect-ratio:1/1;display:flex;flex-direction:column;justify-content:space-between;text-align:left;border:1px solid rgba(255,255,255,.08)}
@@ -127,10 +127,11 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .tile .name{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:16px;line-height:1.15}
 .tile .hex{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;opacity:.72;margin-top:2px}
 .tile .dif{position:absolute;top:10px;right:11px;font-family:'IBM Plex Mono',monospace;font-size:10px;opacity:.72}
+.tile .best{position:absolute;bottom:12px;right:12px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:15px;opacity:.9}
 .search{width:100%;background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:14px 16px;color:var(--text);margin-bottom:14px}
 .search::placeholder{color:var(--dim)}
 
-/* ══ PINTAR ═══════════════════════════════════════════════════════ */
+/* ══ PINTAR ══ */
 .back{display:inline-flex;align-items:center;gap:7px;color:var(--dim);padding:6px 0;margin-bottom:12px;font-size:14px}
 .brief{margin-bottom:14px}
 .brief h2{font-size:40px;margin-top:6px}
@@ -138,8 +139,9 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .gauge{display:inline-flex;gap:3px}
 .gauge i{width:6px;height:6px;border-radius:50%;background:var(--edge)}
 .gauge i.on{background:var(--spark);transition:background .5s}
+.clock{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:500;color:var(--text)}
+.clock.hot{color:var(--no)}
 
-/* el marco de la bandera ya está puesto: solo hay que rellenarlo */
 .stage{position:relative;background:var(--paper);border-radius:10px;overflow:hidden;aspect-ratio:3/2;width:100%;
   box-shadow:0 0 0 6px #fff, 0 0 0 7px var(--edge), 0 22px 50px -30px var(--spark);transition:box-shadow .5s}
 #pad,#ghost{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -153,6 +155,7 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .hint span{font-size:12px;font-weight:500}
 .hint:disabled{opacity:.35}
 .hintout{color:var(--dim);font-size:13px;min-height:20px;margin-bottom:10px}
+.locked{background:var(--surface);border:1px dashed var(--edge);border-radius:12px;padding:11px;text-align:center;color:var(--dim);font-size:12px;margin:20px 0 10px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.06em}
 
 .swatches{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .sw{width:38px;height:38px;border-radius:10px;border:2px solid var(--edge);position:relative}
@@ -169,13 +172,13 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .tool:disabled{opacity:.35}
 .size{display:flex;align-items:center;gap:12px;margin-bottom:16px}
 .size input{flex:1;accent-color:var(--spark)}
-.size b{width:26px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px}
+.size b{width:32px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px}
 
 .primary{width:100%;background:var(--text);color:var(--void);border-radius:14px;padding:17px;font-weight:600;font-size:17px}
 .primary:active{transform:scale(.99)}
 .ghostbtn{width:100%;background:transparent;border:1px solid var(--edge);border-radius:14px;padding:15px;font-weight:500;margin-top:10px;color:var(--text)}
 
-/* ══ RESULTADO ════════════════════════════════════════════════════ */
+/* ══ RESULTADO ══ */
 .result{background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:24px 18px;text-align:center}
 .verdict{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;line-height:1.1;margin-bottom:20px;min-height:30px}
 .versus{display:flex;flex-direction:column;gap:14px;margin-bottom:18px}
@@ -186,8 +189,10 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .score small{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--dim);display:block;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
 .judge{color:var(--dim);font-size:12px;font-family:'IBM Plex Mono',monospace;margin:14px 0 20px;letter-spacing:.04em}
 .judge em{font-style:normal;color:var(--no)}
+.tally{display:flex;justify-content:center;gap:20px;margin-bottom:18px;color:var(--dim);font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.tally b{display:block;font-family:'Bricolage Grotesque',sans-serif;font-size:24px;color:var(--text);letter-spacing:0}
 
-/* ══ RANKING ══════════════════════════════════════════════════════ */
+/* ══ RANKING ══ */
 .notice{background:var(--surface);border:1px dashed var(--edge);border-radius:14px;padding:14px;color:var(--dim);font-size:13px;margin-bottom:16px;line-height:1.5}
 .rank{display:flex;flex-direction:column;gap:8px}
 .row{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:13px 15px}
@@ -197,13 +202,15 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 .row .who{font-weight:500;flex:1}
 .row .pct{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px}
 
-/* ══ PERFIL ═══════════════════════════════════════════════════════ */
+/* ══ PERFIL ══ */
 .avatar{width:62px;height:62px;border-radius:50%;background:var(--spark);color:var(--ink-on-spark);display:flex;align-items:center;justify-content:center;
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:25px;transition:background .5s}
 .me-row{display:flex;align-items:center;gap:16px;margin-bottom:24px}
 .me-row h2{font-size:26px}
 .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.slot{aspect-ratio:3/2;border-radius:10px;border:1px dashed var(--edge);display:flex;align-items:center;justify-content:center;color:#4A4856;font-size:22px}
+.slot{aspect-ratio:3/2;border-radius:10px;border:1px dashed var(--edge);display:flex;align-items:center;justify-content:center;color:#4A4856;font-size:22px;overflow:hidden;position:relative}
+.slot img{width:100%;height:100%;object-fit:cover}
+.slot .p{position:absolute;right:5px;bottom:4px;background:rgba(16,16,20,.8);color:#fff;border-radius:5px;padding:1px 5px;font-family:'IBM Plex Mono',monospace;font-size:10px}
 
 .center{text-align:center;color:var(--dim);padding:60px 20px;line-height:1.6}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
@@ -215,20 +222,15 @@ nav button[aria-current="page"] svg{stroke:var(--spark)}
 <script type="module">
 /* ═══════════════════════════════════════════════════════════════════
    TRAZO · el juego diario de banderas
-   Las banderas son imágenes REALES (flagcdn.com). Aquí no se dibuja
-   ninguna a mano: se cargan, se juzgan y se revelan tal cual son.
+   Banderas reales de flagcdn.com. Aquí no se dibuja ninguna a mano.
    ═══════════════════════════════════════════════════════════════════ */
 
 const RING = `<svg viewBox="0 0 100 100" width="1em" height="1em" class="ring" aria-hidden="true"><path d="M71 23C59 13 37 12 25 26 11 42 14 70 32 80c18 10 44 4 50-14 5-15-2-32-16-38-6-3-13-4-19-3" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round"/></svg>`;
-const LOGO = tam => `<span class="wordmark" style="font-size:${tam}">TRAZ${RING}</span>`;
+const LOGO = t => `<span class="wordmark" style="font-size:${t}">TRAZ${RING}</span>`;
 const BANDERITA = `<svg viewBox="0 0 24 24"><path d="M5 21V4M5 5h13l-2.5 4L18 13H5"/></svg>`;
 
-/* ── catálogo ───────────────────────────────────────────────────────
-   c: código ISO · n: nombre · k: continente · d: dificultad 1-10
-   hex: color dominante (solo para teñir la app y el chip; la paleta
-   real de la bandera se extrae de la imagen al pedir la pista).      */
+/* ── catálogo ─────────────────────────────────────────────────── */
 const FLAGS = [
- /* EUROPA */
  {c:'pl',n:'Polonia',k:'europa',d:1,hex:'#DC143C'},
  {c:'ua',n:'Ucrania',k:'europa',d:1,hex:'#005BBB'},
  {c:'fr',n:'Francia',k:'europa',d:2,hex:'#0055A4'},
@@ -238,11 +240,15 @@ const FLAGS = [
  {c:'at',n:'Austria',k:'europa',d:2,hex:'#ED2939'},
  {c:'ro',n:'Rumanía',k:'europa',d:2,hex:'#002B7F'},
  {c:'hu',n:'Hungría',k:'europa',d:2,hex:'#436F4D'},
+ {c:'lv',n:'Letonia',k:'europa',d:2,hex:'#9E3039'},
  {c:'de',n:'Alemania',k:'europa',d:3,hex:'#DD0000'},
  {c:'be',n:'Bélgica',k:'europa',d:3,hex:'#FDDA24'},
  {c:'ch',n:'Suiza',k:'europa',d:3,hex:'#DA291C'},
  {c:'dk',n:'Dinamarca',k:'europa',d:3,hex:'#C8102E'},
  {c:'fi',n:'Finlandia',k:'europa',d:3,hex:'#003580'},
+ {c:'ee',n:'Estonia',k:'europa',d:3,hex:'#0072CE'},
+ {c:'lt',n:'Lituania',k:'europa',d:3,hex:'#FDB913'},
+ {c:'bg',n:'Bulgaria',k:'europa',d:3,hex:'#00966E'},
  {c:'se',n:'Suecia',k:'europa',d:4,hex:'#006AA7'},
  {c:'cz',n:'Chequia',k:'europa',d:4,hex:'#11457E'},
  {c:'no',n:'Noruega',k:'europa',d:5,hex:'#BA0C2F'},
@@ -250,83 +256,122 @@ const FLAGS = [
  {c:'gr',n:'Grecia',k:'europa',d:5,hex:'#0D5EAF'},
  {c:'gb',n:'Reino Unido',k:'europa',d:8,hex:'#012169'},
  {c:'sk',n:'Eslovaquia',k:'europa',d:8,hex:'#0B4EA2'},
+ {c:'si',n:'Eslovenia',k:'europa',d:8,hex:'#005DA4'},
  {c:'hr',n:'Croacia',k:'europa',d:9,hex:'#FF0000'},
  {c:'rs',n:'Serbia',k:'europa',d:9,hex:'#C6363C'},
  {c:'es',n:'España',k:'europa',d:9,hex:'#C60B1E'},
  {c:'pt',n:'Portugal',k:'europa',d:9,hex:'#046A38'},
 
- /* AMÉRICA */
  {c:'co',n:'Colombia',k:'america',d:3,hex:'#FCD116'},
  {c:'pe',n:'Perú',k:'america',d:3,hex:'#D91023'},
  {c:'cl',n:'Chile',k:'america',d:4,hex:'#D52B1E'},
  {c:'ca',n:'Canadá',k:'america',d:5,hex:'#FF0000'},
  {c:'jm',n:'Jamaica',k:'america',d:5,hex:'#009B3A'},
+ {c:'hn',n:'Honduras',k:'america',d:5,hex:'#0073CF'},
  {c:'cu',n:'Cuba',k:'america',d:6,hex:'#002A8F'},
  {c:'pa',n:'Panamá',k:'america',d:6,hex:'#005293'},
+ {c:'cr',n:'Costa Rica',k:'america',d:6,hex:'#CE1126'},
  {c:'ar',n:'Argentina',k:'america',d:7,hex:'#74ACDF'},
  {c:'ve',n:'Venezuela',k:'america',d:7,hex:'#FFCC00'},
+ {c:'py',n:'Paraguay',k:'america',d:7,hex:'#D52B1E'},
+ {c:'bo',n:'Bolivia',k:'america',d:7,hex:'#007934'},
  {c:'br',n:'Brasil',k:'america',d:8,hex:'#009C3B'},
  {c:'uy',n:'Uruguay',k:'america',d:8,hex:'#0038A8'},
  {c:'us',n:'Estados Unidos',k:'america',d:9,hex:'#B22234'},
  {c:'ec',n:'Ecuador',k:'america',d:9,hex:'#FFDD00'},
  {c:'mx',n:'México',k:'america',d:10,hex:'#006847'},
 
- /* ASIA */
  {c:'id',n:'Indonesia',k:'asia',d:1,hex:'#FF0000'},
  {c:'jp',n:'Japón',k:'asia',d:2,hex:'#BC002D'},
  {c:'th',n:'Tailandia',k:'asia',d:4,hex:'#A51931'},
  {c:'vn',n:'Vietnam',k:'asia',d:4,hex:'#DA251D'},
  {c:'tr',n:'Turquía',k:'asia',d:5,hex:'#E30A17'},
  {c:'il',n:'Israel',k:'asia',d:5,hex:'#0038B8'},
+ {c:'qa',n:'Catar',k:'asia',d:5,hex:'#8A1538'},
  {c:'cn',n:'China',k:'asia',d:6,hex:'#EE1C25'},
  {c:'in',n:'India',k:'asia',d:6,hex:'#FF9933'},
  {c:'pk',n:'Pakistán',k:'asia',d:6,hex:'#01411C'},
+ {c:'ae',n:'Emiratos Árabes',k:'asia',d:6,hex:'#00732F'},
+ {c:'ir',n:'Irán',k:'asia',d:7,hex:'#239F40'},
+ {c:'uz',n:'Uzbekistán',k:'asia',d:7,hex:'#0099B5'},
  {c:'ph',n:'Filipinas',k:'asia',d:8,hex:'#0038A8'},
  {c:'my',n:'Malasia',k:'asia',d:8,hex:'#CC0001'},
+ {c:'jo',n:'Jordania',k:'asia',d:8,hex:'#007A3D'},
  {c:'kr',n:'Corea del Sur',k:'asia',d:9,hex:'#0047A0'},
  {c:'sa',n:'Arabia Saudí',k:'asia',d:9,hex:'#006C35'},
  {c:'np',n:'Nepal',k:'asia',d:9,hex:'#DC143C'},
  {c:'lk',n:'Sri Lanka',k:'asia',d:10,hex:'#8D2029'},
  {c:'bt',n:'Bután',k:'asia',d:10,hex:'#FFD520'},
 
- /* ÁFRICA */
  {c:'ml',n:'Malí',k:'africa',d:1,hex:'#14B53A'},
  {c:'ng',n:'Nigeria',k:'africa',d:1,hex:'#008751'},
  {c:'ci',n:'Costa de Marfil',k:'africa',d:2,hex:'#F77F00'},
  {c:'gh',n:'Ghana',k:'africa',d:4,hex:'#006B3F'},
  {c:'sn',n:'Senegal',k:'africa',d:5,hex:'#00853F'},
+ {c:'cm',n:'Camerún',k:'africa',d:5,hex:'#007A5E'},
  {c:'ma',n:'Marruecos',k:'africa',d:6,hex:'#C1272D'},
  {c:'et',n:'Etiopía',k:'africa',d:6,hex:'#078930'},
  {c:'dz',n:'Argelia',k:'africa',d:6,hex:'#006233'},
  {c:'tn',n:'Túnez',k:'africa',d:6,hex:'#E70013'},
  {c:'eg',n:'Egipto',k:'africa',d:7,hex:'#CE1126'},
+ {c:'cd',n:'Rep. Dem. Congo',k:'africa',d:7,hex:'#007FFF'},
  {c:'ke',n:'Kenia',k:'africa',d:8,hex:'#BB0000'},
+ {c:'cv',n:'Cabo Verde',k:'africa',d:8,hex:'#003893'},
  {c:'za',n:'Sudáfrica',k:'africa',d:9,hex:'#007A4D'},
 
- /* OCEANÍA */
  {c:'au',n:'Australia',k:'oceania',d:8,hex:'#012169'},
  {c:'nz',n:'Nueva Zelanda',k:'oceania',d:8,hex:'#00247D'},
  {c:'pg',n:'Papúa Nueva Guinea',k:'oceania',d:9,hex:'#CE1126'},
  {c:'fj',n:'Fiyi',k:'oceania',d:10,hex:'#68BFE5'}
 ];
 const FLAG = Object.fromEntries(FLAGS.map(f => [f.c, f]));
-
 const CONTINENTES = {europa:'Europa', america:'América', asia:'Asia', africa:'África', oceania:'Oceanía'};
 
+/* ── EVENTO ───────────────────────────────────────────────────────
+   48 selecciones. Si alguna cambia, edita este array y ya está.    */
+const EVENTO = {
+  id:'mundial26',
+  kick:'Evento limitado',
+  nombre:'Mundial 2026',
+  sub:'Píntalas todas antes de que acabe',
+  fin:'2026-07-19T23:59:59',
+  codes:['us','mx','ca','ar','br','uy','co','ec','py','pe','cl','bo','cr','pa','hn','jm',
+         'es','fr','de','it','pt','nl','be','hr','rs','ch','at','dk','no','pl','sk','si',
+         'ma','sn','ci','gh','cm','dz','tn','eg','za','cv',
+         'jp','kr','ir','sa','au','qa'].filter(c => FLAG[c])
+};
+
 const PACKS = [
-  {id:'europa',  nombre:'Europa',            desc:'Tricolores, cruces y algún escudo traicionero.', k:'europa'},
-  {id:'america', nombre:'América',           desc:'Estrellas, soles y un águila comiéndose una serpiente.', k:'america'},
-  {id:'asia',    nombre:'Asia',              desc:'Círculos, medias lunas y el dragón de Bután.', k:'asia'},
-  {id:'africa',  nombre:'África',            desc:'Verde, amarillo y rojo. Y luego, el orden.', k:'africa'},
-  {id:'oceania', nombre:'Oceanía',           desc:'Cruces del Sur en la esquina de arriba.', k:'oceania'},
-  {id:'cruces',  nombre:'Cruces del norte',  desc:'La misma idea cinco veces. Suerte con los colores.',
+  {id:'europa',  nombre:'Europa',           desc:'Tricolores, cruces y algún escudo traicionero.', k:'europa'},
+  {id:'america', nombre:'América',          desc:'Estrellas, soles y un águila comiéndose una serpiente.', k:'america'},
+  {id:'asia',    nombre:'Asia',             desc:'Círculos, medias lunas y el dragón de Bután.', k:'asia'},
+  {id:'africa',  nombre:'África',           desc:'Verde, amarillo y rojo. Y luego, el orden.', k:'africa'},
+  {id:'oceania', nombre:'Oceanía',          desc:'Cruces del Sur en la esquina de arriba.', k:'oceania'},
+  {id:'cruces',  nombre:'Cruces del norte', desc:'La misma idea cinco veces. Suerte con los colores.',
     codes:['se','no','dk','fi','is']},
-  {id:'tricolor',nombre:'Tricolores',        desc:'Tres franjas. Fácil, hasta que confundes el orden.',
-    codes:['fr','it','ie','be','ro','ml','ci','de','nl','hu','at']},
-  {id:'infierno',nombre:'Infierno',          desc:'Escudos, dragones y una bandera que no es rectangular.',
-    codes:['mx','es','pt','lk','bt','fj','ec','hr','rs','kr','za','np','sa','my','us']}
+  {id:'tricolor',nombre:'Tricolores',       desc:'Tres franjas. Fácil, hasta que confundes el orden.',
+    codes:['fr','it','ie','be','ro','ml','ci','de','nl','hu','at','bg','lt','ee','lv']},
+  {id:'infierno',nombre:'Infierno',         desc:'Escudos, dragones y una bandera que no es rectangular.',
+    codes:['mx','es','pt','lk','bt','fj','ec','hr','rs','kr','za','np','sa','my','us','pg']}
 ];
 const deLaPack = p => p.codes ? p.codes.filter(c => FLAG[c]) : FLAGS.filter(f => f.k === p.k).map(f => f.c);
+
+/* ── MODOS ───────────────────────────────────────────────────────
+   libre  · sin prisa, con pistas
+   crono  · 120 s, todas las que puedas, nota media
+   vida   · sigue mientras saques 55 o más
+   duro   · sin pistas, la nota vale ×1.25                          */
+const MODOS = [
+  {id:'crono', nombre:'Contrarreloj', desc:'120 segundos. Las que puedas.', seg:120,
+   svg:'M12 8v5l3 2M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18'},
+  {id:'vida',  nombre:'Supervivencia', desc:'Un fallo por debajo de 55 y fuera.', corte:55,
+   svg:'M12 20s-7-4.3-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7c0 5-7 9.3-7 9.3'},
+  {id:'duro',  nombre:'Estricto', desc:'Sin pistas. La nota vale ×1.25.', mult:1.25,
+   svg:'M12 3 4 7v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V7z'},
+  {id:'libre', nombre:'Entrenar', desc:'Sin prisa, con pistas. No cuenta.',
+   svg:'M4 19V6a2 2 0 0 1 2-2h11M6 4v16h14V8H8'}
+];
+const MODO = Object.fromEntries(MODOS.map(m => [m.id, m]));
 
 const PALETA = ['#FFFFFF','#111111','#E4322B','#1C4FD8','#F5C518','#1F9D55','#F07021','#0B4EA2'];
 const NIVELES = [['todo','Todas'],['1-3','Fácil'],['4-6','Medio'],['7-8','Difícil'],['9-10','Infierno']];
@@ -341,18 +386,33 @@ const VEREDICTOS = [
   [93,'Esto no es memoria, es brujería.']
 ];
 
-/* ── almacenamiento ────────────────────────────────────────────── */
+/* ── almacenamiento ──────────────────────────────────────────── */
 const mem = {};
 const store = {
   get: k => { try{ return localStorage.getItem(k) }catch(e){ return mem[k] ?? null } },
   set: (k,v) => { try{ localStorage.setItem(k,v) }catch(e){ mem[k]=v } }
 };
+const J = {
+  get: (k,d) => { try{ return JSON.parse(store.get(k)) ?? d }catch(e){ return d } },
+  set: (k,v) => store.set(k, JSON.stringify(v))
+};
+/* récord por bandera: {es:88, fr:91, …} */
+const records = () => J.get('records', {});
+function guardarRecord(code, n){
+  const r = records();
+  if(n > (r[code] || 0)){ r[code] = n; J.set('records', r); }
+  if(n > +(store.get('mejor')||0)) store.set('mejor', n);
+}
+const record = c => records()[c] || 0;
+const hechas = () => Object.keys(records()).length;
+const eventoHechas = () => EVENTO.codes.filter(c => record(c) >= 60).length;
 
 const nombre = c => FLAG[c].n;
 const color  = c => FLAG[c].hex;
 const dif    = c => FLAG[c].d;
 const todas  = () => FLAGS.map(f => f.c);
 const filtrar = (l, n) => n === 'todo' ? l : (([a,b]) => l.filter(c => dif(c) >= a && dif(c) <= b))(n.split('-').map(Number));
+const barajar = l => l.slice().sort(() => Math.random() - .5);
 
 const lum = hex => { const v = i => parseInt(hex.slice(i,i+2),16)/255; return .2126*v(1) + .7152*v(3) + .0722*v(5); };
 const sobre = hex => lum(hex) > .58 ? '#101014' : '#FFFFFF';
@@ -361,18 +421,17 @@ function teñir(hex){
   r.setProperty('--spark', hex);
   r.setProperty('--ink-on-spark', sobre(hex));
 }
+const url = (c, w = 'w1280') => `https://flagcdn.com/${w}/${c}.png`;
 
-/* ── imágenes reales ───────────────────────────────────────────── */
+/* ── imágenes reales ─────────────────────────────────────────── */
 const CACHE = {};
 const cargarBandera = c => CACHE[c] ? Promise.resolve(CACHE[c]) : new Promise((res,rej) => {
   const i = new Image(); i.crossOrigin = 'anonymous';
   i.onload = () => { CACHE[c] = i; res(i); };
   i.onerror = () => rej(new Error('flag ' + c));
-  i.src = `https://flagcdn.com/w1280/${c}.png`;
+  i.src = url(c);
 });
-const pintarBandera = (ctx, img, W, H) => ctx.drawImage(img, 0, 0, W, H);
 
-/* paleta real, sacada de la propia imagen */
 function paletaReal(img, n = 6){
   const c = Object.assign(document.createElement('canvas'), {width:120, height:80});
   const x = c.getContext('2d', {willReadFrequently:true});
@@ -388,9 +447,9 @@ function paletaReal(img, n = 6){
 }
 const nColores = img => paletaReal(img, 12).length;
 
-/* ── juez 1 · color, celda a celda ─────────────────────────────── */
+/* ── juez 1 · color, celda a celda ────────────────────────────── */
 const GX = 72, GY = 48;
-function rejilla(src, W, H, blanco){
+function aRejilla(src, blanco){
   const c = Object.assign(document.createElement('canvas'), {width:GX, height:GY});
   const x = c.getContext('2d', {willReadFrequently:true});
   x.imageSmoothingEnabled = false;
@@ -398,33 +457,40 @@ function rejilla(src, W, H, blanco){
   x.drawImage(src, 0, 0, GX, GY);
   return x.getImageData(0,0,GX,GY).data;
 }
-function notaGeo(dibujoCrudo, img){
-  const mio  = rejilla(dibujoCrudo, 0,0, false);   // con transparencia: mide cobertura
-  const suyo = rejilla(img, 0,0, true);
+function notaGeo(crudo, img){
   const T = GX*GY;
-  let pintado = 0, ok = 0;
+  const tinta = aRejilla(crudo, false);   // alfa: dónde has pintado de verdad
+  const mio   = aRejilla(crudo, true);    // tu bandera, ya sobre el papel blanco
+  const real  = aRejilla(img,  true);
+
+  let hay = 0, ok = 0, debe = 0, hecho = 0;
   for(let i = 0; i < T; i++){
-    if(mio[i*4+3] < 60) continue;                   // sin pintar
-    pintado++;
-    const dd = Math.abs(mio[i*4]-suyo[i*4]) + Math.abs(mio[i*4+1]-suyo[i*4+1]) + Math.abs(mio[i*4+2]-suyo[i*4+2]);
-    if(dd < 150) ok++;                              // margen de color
+    const j = i*4;
+    if(tinta[j+3] > 60) hay++;
+
+    /* el blanco del papel YA cuenta como blanco */
+    const dd = Math.abs(mio[j]-real[j]) + Math.abs(mio[j+1]-real[j+1]) + Math.abs(mio[j+2]-real[j+2]);
+    if(dd < 150) ok++;
+
+    /* lo que en la bandera real NO es blanco, hay que pintarlo sí o sí */
+    const claro = real[j] > 215 && real[j+1] > 215 && real[j+2] > 215;
+    if(!claro){ debe++; if(tinta[j+3] > 60) hecho++; }
   }
-  const cobertura = pintado / T;
-  if(cobertura < .06) return 0;                     // lienzo vacío = 0, sin regalos
-  const acierto = ok / T;                           // sobre TODA la bandera, no solo lo pintado
-  const penal = Math.min(1, cobertura / .88);       // rellena el marco entero o no cuenta
-  return Math.min(99, Math.round(100 * Math.pow(acierto * penal, .78)));
+  if(hay / T < .04) return 0;                       // lienzo vacío = 0, sin regalos
+  const acierto   = ok / T;
+  const cobertura = debe ? Math.min(1, (hecho / debe) / .85) : 1;
+  return Math.min(99, Math.round(100 * Math.pow(acierto, 1.3) * cobertura));
 }
 
-/* ── juez 2 · IA con visión (solo en el reto diario) ────────────────
-   ⚠ En Netlify: mueve esta llamada a una Function con la clave en
-     el servidor. Nunca expongas la API key en el cliente.           */
+/* ── juez 2 · IA con visión (solo en el reto diario) ──────────────
+   ⚠ En producción: mueve esto a una Netlify Function con la clave
+     en el servidor. Nunca expongas una API key en el cliente.      */
 const API = 'https://api.anthropic.com/v1/messages';
 async function juezIA(dibujo, code, geo, img){
-  const W = 480, H = 320;
-  const mk = () => Object.assign(document.createElement('canvas'), {width:W, height:H});
-  const a = mk(), ax = a.getContext('2d'); ax.fillStyle='#fff'; ax.fillRect(0,0,W,H); ax.drawImage(dibujo,0,0,W,H);
-  const b = mk(), bx = b.getContext('2d'); bx.drawImage(img,0,0,W,H);
+  const W2 = 480, H2 = 320;
+  const mk = () => Object.assign(document.createElement('canvas'), {width:W2, height:H2});
+  const a = mk(), ax = a.getContext('2d'); ax.fillStyle='#fff'; ax.fillRect(0,0,W2,H2); ax.drawImage(dibujo,0,0,W2,H2);
+  const b = mk(); b.getContext('2d').drawImage(img,0,0,W2,H2);
   const png = cv => ({type:'image', source:{type:'base64', media_type:'image/png', data: cv.toDataURL('image/png').split(',')[1]}});
 
   const res = await fetch(API, {
@@ -441,7 +507,7 @@ Puntúa de 0 a 100. Criterios por orden de peso:
 - Proporciones de las bandas.
 - Escudos y símbolos finos casi no cuentan: es un dedo sobre un cristal, no Illustrator.
 
-Calibración: 0 = vacío o nada que ver. 40 = colores correctos, composición equivocada. 70 = se reconoce el país. 90 = clavada, para estar hecha a mano.
+Calibración: 0 = vacío. 40 = colores bien, composición mal. 70 = se reconoce el país. 90 = clavada, para estar hecha a mano.
 Referencia automática de color: ${geo}. Tenla en cuenta, pero manda tu criterio.
 
 Devuelve SOLO este JSON, sin markdown:
@@ -455,10 +521,9 @@ Devuelve SOLO este JSON, sin markdown:
 }
 const veredictoLocal = n => VEREDICTOS.filter(v => n >= v[0]).pop()[1];
 
-/* ── SUPABASE ────────────────────────────────────────────────────── */
+/* ── SUPABASE ────────────────────────────────────────────────── */
 const SUPABASE_URL  = 'https://gdisbjqfaqtljdycxsuv.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkaXNianFmYXF0bGpkeWN4c3V2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM4OTY4ODgsImV4cCI6MjA5OTQ3Mjg4OH0.KjO2evw-9ePDsrCJ_OGhve7zZRFRN2PmpV6EYNBiFCQ';
-
 let sb = null, USER = null;
 if(SUPABASE_URL && SUPABASE_ANON){
   const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
@@ -471,7 +536,7 @@ const perfilDe = u => {
 const usuario  = () => USER;
 const invitado = () => store.get('invitado') === '1';
 
-/* ── sesión y racha ────────────────────────────────────────────── */
+/* ── racha ───────────────────────────────────────────────────── */
 const hoy = () => new Date().toISOString().slice(0,10);
 const racha = () => +(store.get('racha') || 0);
 function sumarRacha(){
@@ -479,11 +544,17 @@ function sumarRacha(){
   const ayer = new Date(Date.now()-864e5).toISOString().slice(0,10);
   store.set('racha', store.get('ultimoDia') === ayer ? racha()+1 : 1);
   store.set('ultimoDia', hoy());
-  store.set('jugados', +(store.get('jugados')||0) + 1);
 }
 const banderaDelDia = () => { const l = todas(); return l[Math.floor(Date.now()/864e5) % l.length]; };
 
-/* ═══ NAVEGACIÓN ══════════════════════════════════════════════════ */
+function restante(){
+  const ms = new Date(EVENTO.fin) - Date.now();
+  if(ms <= 0) return null;
+  const d = Math.floor(ms/864e5), h = Math.floor(ms/36e5) % 24;
+  return `${d}d ${h}h`;
+}
+
+/* ═══ NAVEGACIÓN ══════════════════════════════════════════════ */
 const root = document.getElementById('root');
 let tab = 'hoy';
 const ICONOS = {
@@ -496,10 +567,7 @@ const TABS = [['hoy','Hoy'],['packs','Colecciones'],['rank','Ranking'],['perfil'
 
 function marco(html){
   root.innerHTML = `
-    <header>
-      ${LOGO('27px')}
-      <div class="streak">🔥 <b>${racha()}</b></div>
-    </header>
+    <header>${LOGO('27px')}<div class="streak">🔥 <b>${racha()}</b></div></header>
     <main>${html}</main>
     <nav><div class="inner">
       ${TABS.map(([k,t]) => `<button data-tab="${k}" ${k===tab?'aria-current="page"':''}>
@@ -516,9 +584,9 @@ function pintar(){
   if(tab === 'perfil') return vistaPerfil();
 }
 
-/* ═══ LOGIN ═══════════════════════════════════════════════════════ */
+/* ═══ LOGIN ═══════════════════════════════════════════════════ */
 function vistaLogin(){
-  const chips = ['fr','jp','br','se','mx','ng'].map(c => color(c));
+  const muestra = ['fr','jp','br','se','mx','ng'];
   pantalla(`
     <section class="login">
       ${LOGO('56px')}
@@ -526,14 +594,13 @@ function vistaLogin(){
         <h1>Pinta la bandera. De memoria.</h1>
         <p style="margin-top:12px">Un país nuevo cada día para todo el mundo. Tú, tu dedo y lo poco que recuerdas.</p>
       </div>
-      <div class="swatchrow">${chips.map(c => `<i style="background:${c}"></i>`).join('')}</div>
+      <div class="swatchrow">${muestra.map(c => `<img src="${url(c,'w80')}" alt="">`).join('')}</div>
       <div>
         <button class="authbtn" id="g">
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 0 1-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6"/><path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3c1.9 3.8 5.8 6.3 10.2 6.3"/><path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 0 1 0-4.6v-3H1.8a12 12 0 0 0 0 10.6z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.6 0 3.7 2.5 1.8 6.2l3.8 3a7.1 7.1 0 0 1 6.4-4.4"/></svg>
           Continuar con Google
         </button>
-        <input id="mail" class="search" type="email" inputmode="email" autocomplete="email"
-               placeholder="o tu email…" style="margin:10px 0 0">
+        <input id="mail" class="search" type="email" inputmode="email" autocomplete="email" placeholder="o tu email…" style="margin:10px 0 0">
         <button class="authbtn alt" id="magic" style="margin-top:10px">Enviarme un enlace de acceso</button>
         <div id="aviso" class="legal" style="min-height:18px;margin-top:10px"></div>
         <button class="guest" id="inv">Entrar sin cuenta</button>
@@ -555,16 +622,32 @@ function vistaLogin(){
     const {error} = await sb.auth.signInWithOtp({email, options:{emailRedirectTo: location.origin}});
     aviso(error ? error.message : 'Revisa tu correo: te hemos mandado el enlace.');
   };
-  document.getElementById('inv').onclick = () => { store.set('invitado','1'); tab = 'hoy'; pintar(); };
+  document.getElementById('inv').onclick = () => { store.set('invitado','1'); tab='hoy'; pintar(); };
 }
 
-/* ═══ HOY ═════════════════════════════════════════════════════════ */
+/* ═══ HOY ═════════════════════════════════════════════════════ */
 function vistaHoy(){
   const c = banderaDelDia();
   teñir(color(c));
   const hecho = store.get('ultimoDia') === hoy();
+  const queda = restante();
+  const ev = eventoHechas(), evT = EVENTO.codes.length;
 
   marco(`
+    ${queda ? `
+    <div class="event">
+      <div class="strip">${EVENTO.codes.slice(0,11).map(x => `<img src="${url(x,'w160')}" alt="">`).join('')}</div>
+      <div class="body">
+        <div class="txt">
+          <div class="kick">${EVENTO.kick} · quedan ${queda}</div>
+          <h3>${EVENTO.nombre}</h3>
+          <div class="sub">${EVENTO.sub} · ${ev}/${evT}</div>
+        </div>
+        <button class="go" id="evGo">Pintar <span>→</span></button>
+      </div>
+      <div class="evbar"><i style="width:${ev/evT*100}%"></i></div>
+    </div>` : ''}
+
     <section class="hero">
       <div class="grid-bg"></div>
       <div class="mono tag">Bandera del día · ${hoy().split('-').reverse().join('.')}</div>
@@ -577,52 +660,77 @@ function vistaHoy(){
 
     <div class="stats">
       <div class="stat"><b>${racha()}</b><span>Racha</span></div>
-      <div class="stat"><b>${+(store.get('jugados')||0)}</b><span>Pintadas</span></div>
+      <div class="stat"><b>${hechas()}</b><span>Pintadas</span></div>
       <div class="stat"><b>${+(store.get('mejor')||0)}%</b><span>Tu récord</span></div>
     </div>
 
-    <div class="section-title"><h3>Entrenar</h3><span class="mono dim">Sin racha</span></div>
+    <div class="section-title" style="margin-top:0"><h3>Modos</h3></div>
+    <div class="modes">
+      ${MODOS.map(m => `<button class="mode" data-modo="${m.id}">
+        ${m.id==='crono' ? `<div class="rec">${+(store.get('rec_crono')||0)}</div>` : ''}
+        ${m.id==='vida'  ? `<div class="rec">${+(store.get('rec_vida')||0)}</div>` : ''}
+        <svg class="mi" viewBox="0 0 24 24"><path d="${m.svg}"/></svg>
+        <b>${m.nombre}</b><span>${m.desc}</span>
+      </button>`).join('')}
+    </div>
+
+    <div class="section-title"><h3>Colecciones</h3><span class="mono dim">${PACKS.length}</span></div>
     <div class="packs">${PACKS.slice(0,3).map(tarjetaPack).join('')}</div>
-    <button class="ghostbtn" id="mas" style="margin-top:12px">Ver las ${PACKS.length} colecciones</button>`);
+    <button class="ghostbtn" id="mas" style="margin-top:12px">Ver todas las colecciones</button>`);
 
   document.getElementById('jugar').onclick = () => dibujar(c, 'Reto del día', null, true);
-  document.getElementById('mas').onclick = () => { tab = 'packs'; pintar(); };
+  document.getElementById('mas').onclick = () => { tab='packs'; pintar(); };
+  const eg = document.getElementById('evGo');
+  if(eg) eg.onclick = () => {
+    const pend = EVENTO.codes.filter(x => record(x) < 60);
+    const cola = barajar(pend.length ? pend : EVENTO.codes);
+    arrancar(cola, EVENTO.nombre, 'libre');
+  };
+  root.querySelectorAll('[data-modo]').forEach(b => b.onclick = () => {
+    const m = b.dataset.modo;
+    const cola = barajar(filtrar(todas(), nivel));
+    arrancar(cola, MODO[m].nombre, m);
+  });
   engancharPacks();
 }
 
-/* La portada es un muestrario de color: no enseñamos la bandera.
-   Si la ves antes de pintarla, ya no es de memoria. */
-const portada = codes => `<div class="cover">${codes.slice(0,6).map(c => `<i style="background:${color(c)}"></i>`).join('')}</div>`;
+/* Portada: banderas reales, pero borrosas. Se intuyen, no se copian. */
+const portada = codes => `<div class="cover">${
+  codes.slice(0,6).map(c => `<img src="${url(c,'w80')}" alt="">`).join('')
+}</div>`;
 
 const tarjetaPack = p => {
-  const v = deLaPack(p);
+  const v = deLaPack(p), n = v.filter(c => record(c) >= 60).length;
   return `<button class="pack" data-pack="${p.id}">
-    ${portada(v)}
+    ${portada(barajar(v))}
     <div><h4>${p.nombre}</h4><div class="meta">${v.length} banderas · ${p.desc}</div></div>
-    <div class="arrow">→</div>
+    <div class="pill">${n}/${v.length}<br>→</div>
   </button>`;
 };
 const engancharPacks = () => root.querySelectorAll('[data-pack]').forEach(b => b.onclick = () => {
   const p = PACKS.find(x => x.id === b.dataset.pack);
-  const cola = filtrar(deLaPack(p), nivel).slice().sort(() => Math.random() - .5);
+  const cola = barajar(filtrar(deLaPack(p), nivel));
   if(!cola.length) return;
-  dibujar(cola[0], p.nombre, {cola, i:0, pack:p}, false);
+  arrancar(cola, p.nombre, 'libre');
 });
 
-/* ═══ COLECCIONES ═════════════════════════════════════════════════ */
+/* ═══ COLECCIONES ═════════════════════════════════════════════ */
 let nivel = store.get('nivel') || 'todo';
 function vistaPacks(){
   marco(`
     <div class="section-title" style="margin-top:0"><h3>Colecciones</h3></div>
-    <div class="levels" id="lvs">
+    <div class="levels">
       ${NIVELES.map(([k,t]) => `<button class="lv" data-lv="${k}" aria-pressed="${k===nivel}">${t}</button>`).join('')}
     </div>
     <div class="packs">
       ${PACKS.map(p => ({p, v: filtrar(deLaPack(p), nivel)})).filter(o => o.v.length)
-        .map(({p,v}) => `<button class="pack" data-pack="${p.id}">
-          ${portada(v)}
-          <div><h4>${p.nombre}</h4><div class="meta">${v.length} banderas · ${p.desc}</div></div>
-          <div class="arrow">→</div></button>`).join('')}
+        .map(({p,v}) => {
+          const n = v.filter(c => record(c) >= 60).length;
+          return `<button class="pack" data-pack="${p.id}">
+            ${portada(barajar(v))}
+            <div><h4>${p.nombre}</h4><div class="meta">${v.length} banderas · ${p.desc}</div></div>
+            <div class="pill">${n}/${v.length}<br>→</div></button>`;
+        }).join('')}
     </div>
     <button class="ghostbtn" id="explorar" style="margin-top:12px">Buscar entre las ${FLAGS.length} banderas</button>`);
 
@@ -643,31 +751,41 @@ function vistaBuscar(){
   const q = document.getElementById('q'), res = document.getElementById('res');
   const pinta = () => {
     const t = q.value.trim().toLowerCase();
-    const hit = FLAGS.filter(f => !t || f.n.toLowerCase().includes(t))
-      .sort((a,b) => a.n.localeCompare(b.n));
+    const hit = FLAGS.filter(f => !t || f.n.toLowerCase().includes(t)).sort((a,b) => a.n.localeCompare(b.n));
     res.innerHTML = hit.length ? hit.map(f => chip(f.c)).join('')
       : `<div class="center" style="grid-column:1/-1">Ningún país con ese nombre.</div>`;
-    res.querySelectorAll('.tile').forEach(b => b.onclick = () => dibujar(b.dataset.c, 'Catálogo', null, false));
+    res.querySelectorAll('.tile').forEach(b => b.onclick = () => arrancar([b.dataset.c], 'Catálogo', 'libre'));
   };
   q.oninput = pinta; pinta();
 }
 
 const chip = c => {
-  const col = color(c), t = sobre(col);
+  const col = color(c), t = sobre(col), r = record(c);
   return `<button class="tile" data-c="${c}" style="background:${col};color:${t}">
     <div class="ico">${BANDERITA}</div>
     <div class="mono dif">${dif(c)}/10</div>
+    ${r ? `<div class="best">${r}%</div>` : ''}
     <div><div class="name">${nombre(c)}</div><div class="hex">${col.toUpperCase()}</div></div>
   </button>`;
 };
 
-/* ═══ PINTAR ══════════════════════════════════════════════════════ */
+/* ═══ SESIÓN ══════════════════════════════════════════════════ */
 const W = 900, H = 600;
+let ses = null, relojGlobal = null;
 
+function arrancar(cola, etiqueta, modo){
+  ses = {cola, i:0, etiqueta, modo, notas:[], fin: MODO[modo].seg ? Date.now() + MODO[modo].seg*1000 : null};
+  dibujar(cola[0], etiqueta, ses, false);
+}
+
+/* ═══ PINTAR ══════════════════════════════════════════════════ */
 function dibujar(code, etiqueta, sesion, esDiario){
+  clearInterval(relojGlobal);
   const marca = color(code);
   teñir(marca);
-  const paleta = [marca, ...PALETA.filter(c => c.toLowerCase() !== marca.toLowerCase())].slice(0,8);
+  const modo = sesion ? sesion.modo : 'libre';
+  const sinPistas = modo === 'duro';
+  const paleta = [marca, ...PALETA.filter(x => x.toLowerCase() !== marca.toLowerCase())].slice(0,8);
   let castigo = 0, img = null;
 
   pantalla(`
@@ -676,8 +794,9 @@ function dibujar(code, etiqueta, sesion, esDiario){
       <div class="mono dim">Pinta la bandera de</div>
       <h2>${nombre(code)}</h2>
       <div class="line">
-        <span class="mono">${etiqueta}${sesion ? ` · ${sesion.i+1}/${sesion.cola.length}` : ''}</span>
+        <span class="mono">${etiqueta}${sesion && sesion.cola.length > 1 ? ` · ${sesion.i+1}/${sesion.cola.length}` : ''}</span>
         <span class="gauge">${Array.from({length:10},(_,i)=>`<i class="${i<dif(code)?'on':''}"></i>`).join('')}</span>
+        ${sesion?.fin ? '<span class="clock" id="clk">—</span>' : ''}
       </div>
     </div>
 
@@ -686,15 +805,16 @@ function dibujar(code, etiqueta, sesion, esDiario){
       <canvas id="pad"   width="${W}" height="${H}"></canvas>
     </div>
 
+    ${sinPistas ? '<div class="locked">Modo estricto · sin pistas</div>' : `
     <div class="hints">
       <button class="hint" data-h="1"><span>Datos</span><b>−5%</b></button>
       <button class="hint" data-h="2"><span>Colores reales</span><b>−10%</b></button>
       <button class="hint" data-h="3"><span>Bandera borrosa</span><b>−20%</b></button>
-    </div>
+    </div>`}
     <div class="hintout" id="hintout"></div>
 
     <div class="swatches" id="sw">
-      ${paleta.map((c,i) => `<button class="sw" data-c="${c}" aria-pressed="${i===0}" style="background:${c}" aria-label="Color ${c}"></button>`).join('')}
+      ${paleta.map((x,i) => `<button class="sw" data-c="${x}" aria-pressed="${i===0}" style="background:${x}" aria-label="Color ${x}"></button>`).join('')}
       <button class="sw rainbow" id="custom" aria-label="Color libre"><input type="color" value="${marca}"></button>
     </div>
 
@@ -712,19 +832,29 @@ function dibujar(code, etiqueta, sesion, esDiario){
 
     <div class="size">
       <span class="mono dim">Grosor</span>
-      <input id="sz" type="range" min="6" max="140" value="60"><b id="szN">60</b>
+      <input id="sz" type="range" min="6" max="180" value="70"><b id="szN">70</b>
     </div>
 
     <button class="primary" id="revelar">Revelar y comparar</button>`);
 
-  document.getElementById('volver').onclick = () => { teñir('#F5D90A'); pintar(); };
+  document.getElementById('volver').onclick = () => { clearInterval(relojGlobal); ses = null; teñir('#F5D90A'); pintar(); };
 
-  /* la bandera real se carga en silencio: hace falta para juzgar */
+  /* reloj de contrarreloj */
+  if(sesion?.fin){
+    const clk = document.getElementById('clk');
+    const tic = () => {
+      const s = Math.max(0, Math.ceil((sesion.fin - Date.now())/1000));
+      clk.textContent = `${String((s/60)|0).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+      clk.classList.toggle('hot', s <= 15);
+      if(s <= 0){ clearInterval(relojGlobal); resumen(); }
+    };
+    tic(); relojGlobal = setInterval(tic, 250);
+  }
+
   cargarBandera(code).then(i => { img = i; }).catch(() => {
     document.getElementById('hintout').textContent = 'No se ha podido cargar la bandera. Revisa la conexión.';
   });
 
-  /* pistas */
   const out = document.getElementById('hintout');
   const gh = document.getElementById('ghost');
   const swBox = document.getElementById('sw');
@@ -755,7 +885,7 @@ function dibujar(code, etiqueta, sesion, esDiario){
     }
     if(h === 3){
       castigo += 20;
-      pintarBandera(gh.getContext('2d'), img, W, H);
+      gh.getContext('2d').drawImage(img, 0, 0, W, H);
       gh.classList.add('on');
       out.textContent = 'Bandera borrosa activada. Calca sin vergüenza.';
     }
@@ -764,7 +894,7 @@ function dibujar(code, etiqueta, sesion, esDiario){
   /* lienzo */
   const cv = document.getElementById('pad'), ctx = cv.getContext('2d',{willReadFrequently:true});
   ctx.lineCap = ctx.lineJoin = 'round';
-  let herr = 'brush', grosor = 60, pintando = false, x0 = 0, y0 = 0, antes = null;
+  let herr = 'brush', grosor = 70, pintando = false, x0 = 0, y0 = 0, antes = null;
   const pila = [], undo = document.getElementById('undo');
   const snap = () => { pila.push(ctx.getImageData(0,0,W,H)); if(pila.length>12) pila.shift(); undo.disabled = false; };
   undo.onclick = () => { if(pila.length){ ctx.putImageData(pila.pop(),0,0); undo.disabled = !pila.length; } };
@@ -833,7 +963,8 @@ function dibujar(code, etiqueta, sesion, esDiario){
 
   document.getElementById('revelar').onclick = () => {
     if(!img) return out.textContent = 'Espera un segundo: aún se está cargando la bandera.';
-    const geo = notaGeo(cv, img);                    // el crudo, con transparencia: mide cobertura
+    clearInterval(relojGlobal);
+    const geo = notaGeo(cv, img);
     const plano = Object.assign(document.createElement('canvas'), {width:W, height:H});
     const px = plano.getContext('2d'); px.fillStyle = '#fff'; px.fillRect(0,0,W,H); px.drawImage(cv,0,0);
     if(esDiario) sumarRacha();
@@ -841,34 +972,40 @@ function dibujar(code, etiqueta, sesion, esDiario){
   };
 }
 
-/* ═══ RESULTADO ═══════════════════════════════════════════════════ */
+/* ═══ RESULTADO ═══════════════════════════════════════════════ */
 function resultado(code, geo, castigo, dibujo, img, sesion, esDiario){
-  const hay = sesion && sesion.i + 1 < sesion.cola.length;
-  const ini = Math.max(0, geo - castigo);
+  const modo = sesion ? sesion.modo : 'libre';
+  const mult = MODO[modo]?.mult || 1;
+  const ini = Math.min(99, Math.round(Math.max(0, geo - castigo) * mult));
+  const corte = MODO[modo]?.corte;
+  const muere = corte !== undefined && ini < corte;
+  const hay = sesion && sesion.i + 1 < sesion.cola.length && !muere && (!sesion.fin || Date.now() < sesion.fin);
 
   pantalla(`
     <button class="back" id="volver">← Salir</button>
     <section class="result">
-      <div class="verdict" id="vd">${veredictoLocal(ini)}</div>
+      <div class="verdict" id="vd">${muere ? 'Hasta aquí. Fuera.' : veredictoLocal(ini)}</div>
       <div class="versus">
         <figure><canvas id="tuyo" width="${W}" height="${H}"></canvas><figcaption>La tuya</figcaption></figure>
-        <figure><img src="https://flagcdn.com/w1280/${code}.png" alt=""><figcaption>${nombre(code)}</figcaption></figure>
+        <figure><img src="${url(code)}" alt=""><figcaption>${nombre(code)}</figcaption></figure>
       </div>
       <div class="score" id="sc" style="color:var(--spark)">${ini}<small>% de acierto</small></div>
-      <div class="judge" id="jz">${esDiario ? 'El juez está mirando tu bandera…' : `Color ${geo}${castigo?` · pistas −${castigo}`:''}`}</div>
-      <button class="primary" id="sig">${hay ? 'Siguiente bandera' : 'Volver'}</button>
+      <div class="judge" id="jz">${esDiario ? 'El juez está mirando tu bandera…'
+        : `Color ${geo}${castigo?` · pistas −${castigo}`:''}${mult>1?` · estricto ×${mult}`:''}`}</div>
+      <button class="primary" id="sig">${hay ? 'Siguiente bandera' : (sesion && sesion.notas.length ? 'Ver resumen' : 'Volver')}</button>
       <button class="ghostbtn" id="share">Compartir resultado</button>
     </section>`);
 
   document.getElementById('tuyo').getContext('2d').drawImage(dibujo, 0, 0, W, H);
-  let nota = ini, frase = veredictoLocal(ini);
-  const guardarRecord = n => { if(n > +(store.get('mejor')||0)) store.set('mejor', n); };
-  guardarRecord(nota);
+  let nota = ini, frase = muere ? 'Hasta aquí. Fuera.' : veredictoLocal(ini);
+  guardarRecord(code, nota);
+  if(sesion) sesion.notas.push({code, nota});
 
-  document.getElementById('volver').onclick = () => { teñir('#F5D90A'); pintar(); };
+  document.getElementById('volver').onclick = () => { ses = null; teñir('#F5D90A'); pintar(); };
   document.getElementById('sig').onclick = () => {
-    if(hay){ const s = {...sesion, i: sesion.i+1}; dibujar(s.cola[s.i], s.pack.nombre, s, false); }
-    else { teñir('#F5D90A'); pintar(); }
+    if(hay){ sesion.i++; dibujar(sesion.cola[sesion.i], sesion.etiqueta, sesion, false); }
+    else if(sesion && sesion.notas.length) resumen();
+    else { ses = null; teñir('#F5D90A'); pintar(); }
   };
   document.getElementById('share').onclick = () => compartir(code, nota, frase, dibujo, img);
 
@@ -877,7 +1014,7 @@ function resultado(code, geo, castigo, dibujo, img, sesion, esDiario){
     const jz = document.getElementById('jz');
     try{
       const r = await juezIA(dibujo, code, geo, img);
-      nota = Math.max(0, r.nota - castigo); frase = r.veredicto; guardarRecord(nota);
+      nota = Math.max(0, r.nota - castigo); frase = r.veredicto; guardarRecord(code, nota);
       document.getElementById('sc').innerHTML = `${nota}<small>% de acierto</small>`;
       document.getElementById('vd').textContent = frase;
       jz.innerHTML = `Juez IA ${r.nota} · color ${geo}${castigo ? ` · pistas <em>−${castigo}</em>` : ''}`;
@@ -887,7 +1024,40 @@ function resultado(code, geo, castigo, dibujo, img, sesion, esDiario){
   })();
 }
 
-/* ═══ COMPARTIR ═══════════════════════════════════════════════════ */
+/* ═══ RESUMEN DE SESIÓN ═══════════════════════════════════════ */
+function resumen(){
+  clearInterval(relojGlobal);
+  const s = ses; if(!s) return pintar();
+  const n = s.notas.length;
+  const media = n ? Math.round(s.notas.reduce((a,b) => a+b.nota, 0)/n) : 0;
+  const mejor = n ? Math.max(...s.notas.map(x => x.nota)) : 0;
+
+  if(s.modo === 'crono' && n > +(store.get('rec_crono')||0)) store.set('rec_crono', n);
+  if(s.modo === 'vida'  && n > +(store.get('rec_vida') ||0)) store.set('rec_vida',  n);
+
+  teñir('#F5D90A');
+  pantalla(`
+    <button class="back" id="volver">← Salir</button>
+    <div class="brief"><div class="mono dim">${s.etiqueta}</div><h2>Se acabó</h2></div>
+    <section class="result">
+      <div class="tally">
+        <div>Banderas<b>${n}</b></div>
+        <div>Media<b>${media}%</b></div>
+        <div>Mejor<b>${mejor}%</b></div>
+      </div>
+      <div class="gallery">${s.notas.slice(-9).map(x =>
+        `<div class="slot"><img src="${url(x.code,'w160')}" alt=""><div class="p">${x.nota}%</div></div>`).join('')}</div>
+      <button class="primary" id="otra" style="margin-top:20px">Otra ronda</button>
+      <button class="ghostbtn" id="fin">Volver al inicio</button>
+    </section>`);
+
+  const salir = () => { ses = null; tab='hoy'; pintar(); };
+  document.getElementById('volver').onclick = salir;
+  document.getElementById('fin').onclick = salir;
+  document.getElementById('otra').onclick = () => arrancar(barajar(filtrar(todas(), nivel)), s.etiqueta, s.modo);
+}
+
+/* ═══ COMPARTIR ═══════════════════════════════════════════════ */
 async function compartir(code, nota, frase, dibujo, img){
   const CW = 1080, CH = 1350, marca = color(code), t = sobre(marca);
   const cn = Object.assign(document.createElement('canvas'), {width:CW, height:CH});
@@ -898,8 +1068,7 @@ async function compartir(code, nota, frase, dibujo, img){
   for(let i = 1; i < 20; i++){ x.fillRect(i*54, 0, 1, CH); x.fillRect(0, i*54, CW, 1); }
   x.globalAlpha = 1;
 
-  x.fillStyle = t;
-  x.font = '800 44px "Bricolage Grotesque",sans-serif';
+  x.fillStyle = t; x.font = '800 44px "Bricolage Grotesque",sans-serif';
   x.fillText('TRAZO', 70, 105);
 
   x.fillStyle = '#fff'; x.beginPath(); x.roundRect(60, 160, CW-120, 1000, 34); x.fill();
@@ -931,7 +1100,7 @@ async function compartir(code, nota, frase, dibujo, img){
   a.href = URL.createObjectURL(blob); a.download = 'trazo.png'; a.click();
 }
 
-/* ═══ RANKING (maqueta: los datos llegan con Supabase) ════════════ */
+/* ═══ RANKING (maqueta hasta conectar Supabase) ═══════════════ */
 function vistaRank(){
   const c = banderaDelDia();
   const yo = usuario();
@@ -954,7 +1123,7 @@ function vistaRank(){
   if(b) b.onclick = vistaLogin;
 }
 
-/* ═══ PERFIL ══════════════════════════════════════════════════════ */
+/* ═══ PERFIL ══════════════════════════════════════════════════ */
 function vistaPerfil(){
   const u = usuario();
   if(!u){
@@ -968,6 +1137,8 @@ function vistaPerfil(){
     document.getElementById('ent').onclick = vistaLogin;
     return;
   }
+  const r = records();
+  const top = Object.entries(r).sort((a,b) => b[1]-a[1]).slice(0,9);
 
   marco(`
     <div class="me-row">
@@ -976,11 +1147,20 @@ function vistaPerfil(){
     </div>
     <div class="stats">
       <div class="stat"><b>${racha()}</b><span>Racha</span></div>
-      <div class="stat"><b>${+(store.get('jugados')||0)}</b><span>Pintadas</span></div>
+      <div class="stat"><b>${hechas()}</b><span>Pintadas</span></div>
       <div class="stat"><b>${+(store.get('mejor')||0)}%</b><span>Récord</span></div>
     </div>
-    <div class="section-title"><h3>Tu galería</h3><span class="mono dim">Próximamente</span></div>
-    <div class="gallery">${Array.from({length:6},()=>'<div class="slot">+</div>').join('')}</div>
+    <div class="stats">
+      <div class="stat"><b>${+(store.get('rec_crono')||0)}</b><span>Contrarreloj</span></div>
+      <div class="stat"><b>${+(store.get('rec_vida')||0)}</b><span>Supervivencia</span></div>
+      <div class="stat"><b>${eventoHechas()}/${EVENTO.codes.length}</b><span>Mundial</span></div>
+    </div>
+    <div class="section-title"><h3>Tus mejores</h3><span class="mono dim">${hechas()} de ${FLAGS.length}</span></div>
+    <div class="gallery">${
+      top.length
+        ? top.map(([c,n]) => `<div class="slot"><img src="${url(c,'w160')}" alt=""><div class="p">${n}%</div></div>`).join('')
+        : Array.from({length:6},()=>'<div class="slot">+</div>').join('')
+    }</div>
     <button class="ghostbtn" id="salir" style="margin-top:20px">Cerrar sesión</button>`);
 
   document.getElementById('salir').onclick = async () => {
@@ -989,7 +1169,7 @@ function vistaPerfil(){
   };
 }
 
-/* ═══ ARRANQUE ════════════════════════════════════════════════════ */
+/* ═══ ARRANQUE ════════════════════════════════════════════════ */
 (async () => {
   try{
     if(sb){
